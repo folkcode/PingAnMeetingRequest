@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\Reference\log4net\log4net-1.2.13\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,6 +45,12 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scheduler\CycExecution.cs" />
+    <Compile Include="Scheduler\ImmediateExecution.cs" />
+    <Compile Include="Scheduler\IScheduler.cs" />
+    <Compile Include="Scheduler\ScheduleExecutionOnce.cs" />
+    <Compile Include="Scheduler\Task.cs" />
+    <Compile Include="Scheduler\TaskScheduler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,16 +5,27 @@ using System.Text;
 using System.Xml.Linq;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
+using log4net;
+using System.Threading.Tasks;
+using Cosmoser.PingAnMeetingRequest.Common.Scheduler;
+using System.Threading;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 {
     public partial class ThisAddIn
     {
+        private static ILog logger = LogManager.GetLogger(typeof(ThisAddIn));
+        private WrapTask _task = null;
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            logger.Info("ThisAddIn_Startup");
             this.Application.ItemContextMenuDisplay += new Outlook.ApplicationEvents_11_ItemContextMenuDisplayEventHandler(Application_ItemContextMenuDisplay);
             this.Application.ViewContextMenuDisplay += new Outlook.ApplicationEvents_11_ViewContextMenuDisplayEventHandler(Application_ViewContextMenuDisplay);
             this.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
+
+            _task = new WrapTask(new TimerCallback(Log), new CycExecution(new TimeSpan(0, 1, 0)));
+            _task.Start();
         }
 
         void Inspectors_NewInspector(Outlook.Inspector Inspector)
@@ -76,5 +87,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         }
 
         #endregion
+
+        private void Log(object state)
+        {
+            logger.Info(string.Format("Current time: {0} ", DateTime.Now));
+        }        
     }
 }
