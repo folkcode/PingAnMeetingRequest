@@ -55,7 +55,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
                 //this._ribbon.RibbonType = BpmRibbonType.Holiday;
 
                 //Create a holiday appointmet and set properties
-                Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.Test");
+                Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
 
                 //display the appointment
                 Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
@@ -90,7 +90,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 
         private void Log(object state)
         {
-            logger.Info(string.Format("Current time: {0} ", DateTime.Now));
+            string name = "No use";
+            if(Application.Session.Accounts.Count > 0)
+              name = Application.Session.Accounts[0].DisplayName;
+            logger.Info(string.Format("Current time: {0} , current user: {1}", DateTime.Now,name));
         }        
     }
 }

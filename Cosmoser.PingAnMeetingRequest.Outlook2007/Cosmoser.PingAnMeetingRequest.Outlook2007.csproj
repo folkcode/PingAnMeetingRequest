@@ -184,9 +184,16 @@
   -->
   <ItemGroup>
     <Compile Include="MyRibbon.cs" />
+    <Compile Include="PingAnMeetingRequestFormRegion.cs" />
+    <Compile Include="PingAnMeetingRequestFormRegion.Designer.cs">
+      <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="PingAnMeetingRequestFormRegion.resx">
+      <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -202,6 +209,7 @@
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="PingAnMeetingRequestFormRegion.ofs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
