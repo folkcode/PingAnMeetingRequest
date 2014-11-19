@@ -12,7 +12,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
     {
         #region Form Region Factory
 
-        [Microsoft.Office.Tools.Outlook.FormRegionMessageClass(Microsoft.Office.Tools.Outlook.FormRegionMessageClassAttribute.Appointment)]
         [Microsoft.Office.Tools.Outlook.FormRegionMessageClass("IPM.Appointment.PingAnMeetingRequest")]
         [Microsoft.Office.Tools.Outlook.FormRegionName("Cosmoser.PingAnMeetingRequest.Outlook2007.PingAnMeetingRequestFormRegion")]
         public partial class PingAnMeetingRequestFormRegionFactory
@@ -20,13 +19,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             private void InitializeManifest()
             {
                 ResourceManager resources = new ResourceManager(typeof(PingAnMeetingRequestFormRegion));
-                this.Manifest.FormRegionType = Microsoft.Office.Tools.Outlook.FormRegionType.Separate;
+                this.Manifest.FormRegionType = Microsoft.Office.Tools.Outlook.FormRegionType.ReplaceAll;
                 this.Manifest.Title = resources.GetString("Title");
                 this.Manifest.FormRegionName = resources.GetString("FormRegionName");
                 this.Manifest.Description = resources.GetString("Description");
                 this.Manifest.ShowInspectorCompose = true;
                 this.Manifest.ShowInspectorRead = true;
-                this.Manifest.ShowReadingPane = false;
+                this.Manifest.ShowReadingPane = true;
 
             }
 

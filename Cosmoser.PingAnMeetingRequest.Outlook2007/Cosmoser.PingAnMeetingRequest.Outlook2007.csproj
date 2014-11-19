@@ -134,6 +134,9 @@
     <Reference Include="log4net">
       <HintPath>..\Reference\log4net\log4net-1.2.13\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -183,6 +186,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="MyRibbon.cs" />
     <Compile Include="PingAnMeetingRequestFormRegion.cs" />
     <Compile Include="PingAnMeetingRequestFormRegion.Designer.cs">
@@ -190,6 +194,12 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingDateSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingDateSearchForm.Designer.cs">
+      <DependentUpon>MeetingDateSearchForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="PingAnMeetingRequestFormRegion.resx">
       <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
@@ -204,12 +214,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Views\MeetingDateSearchForm.resx">
+      <DependentUpon>MeetingDateSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Cosmoser.PingAnMeetingRequest.Outlook2007_TemporaryKey.pfx" />
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="PingAnMeetingRequestFormRegion.ofs" />
+    <None Include="PingAnMeetingRequestFormRegion1.ofs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -239,6 +252,7 @@
       <Name>Cosmoser.PingAnMeetingRequest.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Include additional build rules for an Office application add-in. -->

@@ -24,8 +24,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             this.Application.ViewContextMenuDisplay += new Outlook.ApplicationEvents_11_ViewContextMenuDisplayEventHandler(Application_ViewContextMenuDisplay);
             this.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
 
-            _task = new WrapTask(new TimerCallback(Log), new CycExecution(new TimeSpan(0, 1, 0)));
-            _task.Start();
+            Menus.MenuManager menuMgr = new Menus.MenuManager(this.Application);
+            menuMgr.RemoveMenubar();
+            menuMgr.AddMenuBar();
+
+            
+            //_task.Start();
         }
 
         void Inspectors_NewInspector(Outlook.Inspector Inspector)
