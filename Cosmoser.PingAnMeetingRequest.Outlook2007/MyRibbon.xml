@@ -2,9 +2,37 @@
 <customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="Ribbon_Load">
   <ribbon>
     <tabs>
-      <tab idMso="TabAddIns">
-        <group id="MyGroup"
-               label="My Group">
+      <tab idMso="TabAppointment" getVisible="SystemBuildInVisible">
+        <group idMso="GroupActions"  />       
+        <group idMso="GroupShow" />
+        <group idMso="GroupAppointmentOptions" />
+        <group idMso="GroupProofing" />      
+      </tab>
+      <tab idMso="TabInsert" getVisible="SystemBuildInVisible">
+        <group idMso="GroupInclude"  />
+        <group idMso="GroupInsertTables" />
+        <group idMso="GroupInsertIllustrations" />
+        <group idMso="GroupInsertLinks" />
+        <group idMso="GroupInsertText" />
+        <group idMso="GroupInsertSymbols" />
+      </tab>
+      <tab idMso="TabFormatText" getVisible="SystemBuildInVisible">
+        <group idMso="GroupClipboard"  />
+        <group idMso="GroupFont" />
+        <group idMso="GroupParagraph" />
+        <group idMso="GroupStyles" />
+        <group idMso="GroupZoom" />
+        <group idMso="GroupEditing" />
+      </tab>
+      <tab id ="SVCMMeeting" label="SVCM会议"  getVisible="GetSVCMCustomGroupVisible" insertAfterMso="TabAppointment">
+        <group id="CustomGroupActions" label="动作">
+          <control idMso="SaveAndClose" size="large"/>
+          <control idMso="Delete" size="large"/>
+        </group>       
+        
+        <group id="groupDisplay"
+            label="显示" >
+          <button id ="btnAppointmentSearch" label ="日程查询" imageMso="CalendarInsert" size="large" screentip="日程查询" />
         </group>
       </tab>
     </tabs>

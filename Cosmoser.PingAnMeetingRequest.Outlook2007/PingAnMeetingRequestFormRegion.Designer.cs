@@ -3,9 +3,9 @@
     partial class PingAnMeetingRequestFormRegion : Microsoft.Office.Tools.Outlook.ImportedFormRegionBase
     {
         private Microsoft.Office.Interop.Outlook.OlkInfoBar olkInfoBar1;
-        private Microsoft.Office.Interop.Outlook._DDocSiteControl _DocSiteControl1;
+        private Microsoft.Office.Interop.Outlook._DDocSiteControl _DocSiteControlComment;
         private Microsoft.Office.Interop.Outlook.OlkFrameHeader olkFrameHeader;
-        private Microsoft.Office.Interop.Outlook.OlkTextBox olkTextBox1;
+        private Microsoft.Office.Interop.Outlook.OlkTextBox olkTxtSubject;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel1;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel3;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel4;
@@ -33,7 +33,7 @@
         private Microsoft.Office.Interop.Outlook.OlkOptionButton obtxsms2;
         private Microsoft.Office.Interop.Outlook.OlkOptionButton obtxsms1;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel11;
-        private Microsoft.Office.Interop.Outlook.OlkTextBox olkTextBox2;
+        private Microsoft.Office.Interop.Outlook.OlkTextBox olkTxtLocation;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel17;
         private Microsoft.Vbe.Interop.Forms.UserForm frame1;
         private Microsoft.Vbe.Interop.Forms.UserForm frame2;
@@ -58,9 +58,9 @@
         protected override void InitializeControls()
         {
             this.olkInfoBar1 = (Microsoft.Office.Interop.Outlook.OlkInfoBar)GetFormRegionControl("OlkInfoBar1");
-            this._DocSiteControl1 = (Microsoft.Office.Interop.Outlook._DDocSiteControl)GetFormRegionControl("_DocSiteControl1");
+            this._DocSiteControlComment = (Microsoft.Office.Interop.Outlook._DDocSiteControl)GetFormRegionControl("_DocSiteControlComment");
             this.olkFrameHeader = (Microsoft.Office.Interop.Outlook.OlkFrameHeader)GetFormRegionControl("OlkFrameHeader");
-            this.olkTextBox1 = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("OlkTextBox1");
+            this.olkTxtSubject = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("OlkTxtSubject");
             this.olkLabel1 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel1");
             this.olkLabel3 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel3");
             this.olkLabel4 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel4");
@@ -88,7 +88,7 @@
             this.obtxsms2 = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("obtxsms2");
             this.obtxsms1 = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("obtxsms1");
             this.olkLabel11 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel11");
-            this.olkTextBox2 = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("OlkTextBox2");
+            this.olkTxtLocation = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("OlkTxtLocation");
             this.olkLabel17 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel17");
             this.frame1 = (Microsoft.Vbe.Interop.Forms.UserForm)GetFormRegionControl("Frame1");
             this.frame2 = (Microsoft.Vbe.Interop.Forms.UserForm)GetFormRegionControl("Frame2");
@@ -140,7 +140,7 @@
             byte[] Microsoft.Office.Tools.Outlook.IFormRegionFactory.GetFormRegionStorage(object outlookItem, Microsoft.Office.Interop.Outlook.OlFormRegionMode formRegionMode, Microsoft.Office.Interop.Outlook.OlFormRegionSize formRegionSize)
             {
                 System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(PingAnMeetingRequestFormRegion));
-                return (byte[])resources.GetObject("PingAnMeetingRequestFormRegion1");
+                return (byte[])resources.GetObject("PingAnMeetingRequestFormRegion");
             }
 
             [System.Diagnostics.DebuggerNonUserCodeAttribute()]

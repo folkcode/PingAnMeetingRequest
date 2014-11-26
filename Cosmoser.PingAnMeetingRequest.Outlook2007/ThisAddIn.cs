@@ -9,6 +9,7 @@ using log4net;
 using System.Threading.Tasks;
 using Cosmoser.PingAnMeetingRequest.Common.Scheduler;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 {
@@ -16,6 +17,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
     {
         private static ILog logger = LogManager.GetLogger(typeof(ThisAddIn));
         private WrapTask _task = null;
+        private MyRibbon _myRibbon = null;
+        Menus.MenuManager _menuMgr = null;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
@@ -24,9 +27,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             this.Application.ViewContextMenuDisplay += new Outlook.ApplicationEvents_11_ViewContextMenuDisplayEventHandler(Application_ViewContextMenuDisplay);
             this.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
 
-            Menus.MenuManager menuMgr = new Menus.MenuManager(this.Application);
-            menuMgr.RemoveMenubar();
-            menuMgr.AddMenuBar();
+            _menuMgr = new Menus.MenuManager(this.Application);
+            _menuMgr.mRibbon = this._myRibbon;
+            _menuMgr.RemoveMenubar();
+            _menuMgr.AddMenuBar();
 
             
             //_task.Start();
@@ -36,10 +40,22 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         {
             Outlook.AppointmentItem appointmentItem = Inspector.CurrentItem as Outlook.AppointmentItem;
 
+            if (appointmentItem != null)
+            {
+                if (appointmentItem.MessageClass == "IPM.Appointment.PingAnMeetingRequest")
+                    this._myRibbon.RibbonType = MyRibbonType.SVCM;
+                else
+                    this._myRibbon.RibbonType = MyRibbonType.Original;
+            }
+
+            //MyRibbon.m_Ribbon.Invalidate();
         }
 
         void Application_ViewContextMenuDisplay(Office.CommandBar CommandBar, Outlook.View View)
         {
+            if (this._myRibbon == null)
+                this._myRibbon = new MyRibbon(this.Application);
+
             if (View.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
             {
                 var meetingMenu = CommandBar.Controls.Add(Office.MsoControlType.msoControlButton, Type.Missing, Type.Missing, 1, false) as Office.CommandBarButton;
@@ -55,8 +71,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 
             if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
             {
-                //set holiday ribbon
-                //this._ribbon.RibbonType = BpmRibbonType.Holiday;
+                //set SVCM ribbon
+                this._myRibbon.RibbonType = MyRibbonType.SVCM;
 
                 //Create a holiday appointmet and set properties
                 Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
@@ -65,7 +81,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
                 Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
                 inspect.Display(false);
                 //reset the ribbon to normal
-                //this._ribbon.RibbonType = BpmRibbonType.original;
+                this._myRibbon.RibbonType = MyRibbonType.Original;
             }
         }
 
@@ -91,6 +107,24 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         }
 
         #endregion
+
+        /// <summary>
+        /// Load Ribbon
+        /// </summary>
+        /// <param name="serviceGuid"></param>
+        /// <returns></returns>
+        protected override object RequestService(Guid serviceGuid)
+        {
+            if (serviceGuid == typeof(Office.IRibbonExtensibility).GUID)
+            {
+                if (this._myRibbon == null)
+                {
+                    this._myRibbon = new MyRibbon(Application);
+                }
+                return this._myRibbon;
+            }
+            return base.RequestService(serviceGuid);
+        }
 
         private void Log(object state)
         {

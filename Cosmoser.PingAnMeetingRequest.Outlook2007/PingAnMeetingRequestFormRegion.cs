@@ -34,7 +34,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             // Use e.OutlookItem to get a reference to the current Outlook item.
             private void PingAnMeetingRequestFormRegionFactory_FormRegionInitializing(object sender, Microsoft.Office.Tools.Outlook.FormRegionInitializingEventArgs e)
             {
+                
             }
+
+          
         }
 
         #endregion
@@ -44,13 +47,27 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         // Use this.OutlookFormRegion to get a reference to the form region.
         private void PingAnMeetingRequestFormRegion_FormRegionShowing(object sender, System.EventArgs e)
         {
+            olkTxtLocation.Click += new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
+            btnCanhuilingdao.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(btnCanhuilingdao_Click);
         }
+
+       
 
         // Occurs when the form region is closed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
         // Use this.OutlookFormRegion to get a reference to the form region.
         private void PingAnMeetingRequestFormRegion_FormRegionClosed(object sender, System.EventArgs e)
         {
+        }
+
+        void olkTxtLocation_Click()
+        {
+            new Views.MeetingRoomSelection().ShowDialog();
+        }
+
+        void btnCanhuilingdao_Click()
+        {
+            new Views.AttendedBossForm().ShowDialog();
         }
     }
 }

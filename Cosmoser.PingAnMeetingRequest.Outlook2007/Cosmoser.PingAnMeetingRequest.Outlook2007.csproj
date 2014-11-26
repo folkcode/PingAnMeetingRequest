@@ -137,15 +137,19 @@
     <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -195,11 +199,35 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Views\AttendedBossForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AttendedBossForm.Designer.cs">
+      <DependentUpon>AttendedBossForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingCenterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingCenterForm.Designer.cs">
+      <DependentUpon>MeetingCenterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\MeetingDateSearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\MeetingDateSearchForm.Designer.cs">
       <DependentUpon>MeetingDateSearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingListSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingListSearchForm.Designer.cs">
+      <DependentUpon>MeetingListSearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingRoomSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingRoomSelection.Designer.cs">
+      <DependentUpon>MeetingRoomSelection.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="PingAnMeetingRequestFormRegion.resx">
       <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
@@ -214,15 +242,27 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Views\AttendedBossForm.resx">
+      <DependentUpon>AttendedBossForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MeetingCenterForm.resx">
+      <DependentUpon>MeetingCenterForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\MeetingDateSearchForm.resx">
       <DependentUpon>MeetingDateSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MeetingListSearchForm.resx">
+      <DependentUpon>MeetingListSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MeetingRoomSelection.resx">
+      <DependentUpon>MeetingRoomSelection.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Cosmoser.PingAnMeetingRequest.Outlook2007_TemporaryKey.pfx" />
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="PingAnMeetingRequestFormRegion1.ofs" />
+    <None Include="PingAnMeetingRequestFormRegion.ofs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -244,7 +284,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MyRibbon.xml" />
+    <EmbeddedResource Include="MyRibbon.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cosmoser.PingAnMeetingRequest.Common\Cosmoser.PingAnMeetingRequest.Common.csproj">
@@ -252,7 +294,6 @@
       <Name>Cosmoser.PingAnMeetingRequest.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Include additional build rules for an Office application add-in. -->

@@ -19,6 +19,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Menus
 
         private Outlook.Application _application;
 
+        public MyRibbon mRibbon { get; set; }
+
         public MenuManager(Outlook.Application application)
         {
             this._application = application;
@@ -34,18 +36,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Menus
                 {
                     newMenuBar.Caption = "定制会议";
                     newMenuBar.Tag = menuTag;
-                    buttonOne = this.CreateMenu(newMenuBar, "预约会议", "yuyue");
+                    buttonOne = this.CreateMenu(newMenuBar, "预约会议", "booking");
                     buttonOne.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonOne_Click);
 
-                    buttonTwo = this.CreateMenu(newMenuBar, "修改会议", "");
+                    buttonTwo = this.CreateMenu(newMenuBar, "个人会议中心", "MeetingCenter");
                     buttonTwo.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonTwo_Click);
 
-                    buttonThree = this.CreateMenu(newMenuBar, "删除会议", "");
-                    buttonThree.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonThree_Click);
-
-
-                    button4 = this.CreateMenu(newMenuBar, "会议列表查询", "");
-                    button4.Click += new Office._CommandBarButtonEvents_ClickEventHandler(button4_Click);
                 }
             }
             catch (Exception ex)
@@ -54,19 +50,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Menus
             }
         }
 
-        void button4_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            throw new NotImplementedException();
-        }
-
-        void buttonThree_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            throw new NotImplementedException();
-        }
-
         void buttonTwo_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            throw new NotImplementedException();
+            new Views.MeetingCenterForm().ShowDialog();
         }
 
         public void RemoveMenubar()
@@ -90,7 +76,21 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Menus
 
         void buttonOne_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            throw new NotImplementedException();
+            Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
+            if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
+            {
+                //set holiday ribbon
+                this.mRibbon.RibbonType = MyRibbonType.SVCM;
+
+                //Create a holiday appointmet and set properties
+                Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+
+                //display the appointment
+                Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
+                inspect.Display(false);
+                //reset the ribbon to normal
+                this.mRibbon.RibbonType = MyRibbonType.Original;
+            }
         }
 
         private Office.CommandBarButton CreateMenu(Office.CommandBarPopup newMenuBar, string caption, string tag)

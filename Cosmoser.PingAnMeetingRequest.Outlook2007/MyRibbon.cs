@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using Office = Microsoft.Office.Core;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -28,20 +29,39 @@ using Office = Microsoft.Office.Core;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 {
+    public enum MyRibbonType
+    {
+        Original,
+        SVCM
+    }
+
     [ComVisible(true)]
     public class MyRibbon : Office.IRibbonExtensibility
     {
         private Office.IRibbonUI ribbon;
+        internal static Office.IRibbonUI m_Ribbon;
+        private Outlook.Application _application;
 
-        public MyRibbon()
+
+        public MyRibbonType RibbonType
         {
+            get;
+            set;
+        }   
+
+        public MyRibbon(Outlook.Application application)
+        {
+            this._application = application;
         }
 
         #region IRibbonExtensibility Members
 
         public string GetCustomUI(string ribbonID)
         {
-            return GetResourceText("Cosmoser.PingAnMeetingRequest.Outlook2007.MyRibbon.xml");
+            string result = string.Empty;
+            if (ribbonID == "Microsoft.Outlook.Appointment")
+                result = GetResourceText("Cosmoser.PingAnMeetingRequest.Outlook2007.MyRibbon.xml");
+            return result;
         }
 
         #endregion
@@ -51,7 +71,41 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
-            this.ribbon = ribbonUI;
+            m_Ribbon = ribbonUI;
+        }
+
+        /// <summary>
+        /// tab idMso="TabAppointment"  getVisible="SystemBuildInVisible" 
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns></returns>
+        public bool SystemBuildInVisible(Office.IRibbonControl control)
+        {
+            if (this.RibbonType != MyRibbonType.Original)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// tab id="BpmCustomTabAppointment" getVisible="GetBpmCustomGroupVisible"
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns></returns>
+        public bool GetSVCMCustomGroupVisible(Office.IRibbonControl control)
+        {
+            if (this.RibbonType == MyRibbonType.SVCM)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         #endregion

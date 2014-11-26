@@ -9,11 +9,16 @@ using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Views
 {
-    public partial class DeleteMeetingForm : Form
+    public partial class MeetingRoomSelection : Form
     {
-        public DeleteMeetingForm()
+        public MeetingRoomSelection()
         {
             InitializeComponent();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
