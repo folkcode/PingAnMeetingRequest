@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cosmoser.PingAnMeetingRequest.Common.Model
 {
-    public enum UserRole
+    public enum UserType
     {
     }
 }

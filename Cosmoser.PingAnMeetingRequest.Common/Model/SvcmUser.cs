@@ -9,6 +9,6 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
     {
         public string Username { get; set; }
         public string DisplayName { get; set; }
-        public UserRole Role { get; set; }
+        public UserType Role { get; set; }
     }
 }
