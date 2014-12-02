@@ -50,7 +50,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
         /// </summary>
         /// <param name="calendarFolder"></param>
         /// <param name="meetingData"></param>
-        private static void SavaMeetingDataToCalendarFolder(Outlook.MAPIFolder calendarFolder, MeetingData meetingData)
+        public static void SavaMeetingDataToCalendarFolder(Outlook.MAPIFolder calendarFolder, MeetingData meetingData)
         {
             string dataString = Toolbox.Serialize(meetingData);
             calendarFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", dataString);

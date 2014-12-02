@@ -6,6 +6,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
 using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Scheduler;
+using Cosmoser.PingAnMeetingRequest.Outlook2007.Manager;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 {
@@ -18,6 +19,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         private static ILog logger = LogManager.GetLogger(typeof(OutlookFacade));
         private WrapTask _task = null;
         Menus.MenuManager _menuMgr = null;
+        private CalendarFolder _calendarFolder;
 
         public MyRibbon MyRibbon
         {
@@ -63,6 +65,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             _menuMgr.mRibbon = this.MyRibbon;
             _menuMgr.RemoveMenubar();
             _menuMgr.AddMenuBar();
+
+            this._calendarFolder = new CalendarFolder();
+            this._calendarFolder.Initialize();
         }
 
         void Inspectors_NewInspector(Outlook.Inspector Inspector)

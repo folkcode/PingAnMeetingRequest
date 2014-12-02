@@ -5,6 +5,8 @@ using System.Resources;
 using System.Text;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using Cosmoser.PingAnMeetingRequest.Outlook2007.Manager;
+using Cosmoser.PingAnMeetingRequest.Common.Model;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 {
@@ -39,6 +41,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 
         #endregion
 
+        private AppointmentManager _apptMgr = new AppointmentManager();
+        SVCMMeeting meeting;
+
         // Occurs before the form region is displayed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
         // Use this.OutlookFormRegion to get a reference to the form region.
@@ -48,6 +53,22 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             this.olkTxtLocation.Click += new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
 
             OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
+
+            if (this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem) != null)
+            {
+                meeting = this._apptMgr.GetMeetingFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
+                this.txtPassword.Text = meeting.Password;
+                if (meeting.Parameter == MeetingParameter.Immediate)
+                    this.obtliji.Value = true;
+                else
+                    this.obtyuyue.Value = true;
+
+            }
+            else
+            {
+                this.meeting = new SVCMMeeting();
+                this.meeting.Id = Guid.NewGuid().ToString();
+            }
         }
 
         void olkTxtLocation_Click()
@@ -66,6 +87,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         private void PingAnMeetingRequestFormRegion_FormRegionClosed(object sender, System.EventArgs e)
         {
             OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+            this.SaveMeetingToAppointment();
+        }
+
+        private void SaveMeetingToAppointment()
+        {
+            meeting.Name = this.olkTxtSubject.Text;
+            meeting.Password = this.txtPassword.Text;
+
+            this._apptMgr.SaveMeetingToAppointment(meeting, (this.OutlookItem as Outlook.AppointmentItem));
+            
         }
     }
 }

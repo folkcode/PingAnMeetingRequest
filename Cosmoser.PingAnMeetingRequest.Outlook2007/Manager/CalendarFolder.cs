@@ -5,6 +5,7 @@ using System.Text;
 using log4net;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
+using Cosmoser.PingAnMeetingRequest.Common.Model;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
 {
@@ -16,12 +17,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
 
         private static ILog logger = LogManager.GetLogger(typeof(CalendarFolder));
 
-        private List<Outlook.AppointmentItem> _appointmentList = new List<Microsoft.Office.Interop.Outlook.AppointmentItem>();
+        private Dictionary<string, Outlook.AppointmentItem> _appointmentList = new Dictionary<string, Outlook.AppointmentItem>();
 
         public CalendarFolder()
         {
             this._appointmentManager = new AppointmentManager();
-            this._calendarManager = new CalendarDataManager();
+            this._calendarManager = new CalendarDataManager(this);
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
         /// <summary>
         /// Keep all the Bpm appointments to avoid losing the item events.
         /// </summary>
-        public List<Outlook.AppointmentItem> AppointmentList
+        public Dictionary<string,Outlook.AppointmentItem> AppointmentCollection
         {
             get
             {
@@ -74,7 +75,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
             {
                 if (IsPingAnMeetingAppointment(item))
                 {
-                    this._appointmentList.Add(item);
+                    string id = this._appointmentManager.GetMeetingIdFromAppointment(item);
+                    this._appointmentList.Add(id,item);
                     item.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
                 }
             }      
@@ -102,17 +104,39 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
 
         void Items_ItemRemove()
         {
-            throw new NotImplementedException();
+            
         }
 
         void Items_ItemChange(object Item)
         {
-            throw new NotImplementedException();
+            Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+            if (IsPingAnMeetingAppointment(appt))
+            {
+                SVCMMeeting meeting = this._appointmentManager.GetMeetingFromAppointment(appt);
+                if (this._calendarManager.MeetingDataLocal.ContainsKey(meeting.Id))
+                {
+                    this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
+                }
+
+                this._calendarManager.MeetingDataLocal.Add(meeting.Id, meeting);
+                CalendarDataManager.SavaMeetingDataToCalendarFolder(this.MAPIFolder, this.CalendarDataManager.MeetingDataLocal);
+            }
         }
 
         void Items_ItemAdd(object Item)
         {
-            throw new NotImplementedException();
+            Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+            if (IsPingAnMeetingAppointment(appt ))
+            {
+                SVCMMeeting meeting = this._appointmentManager.GetMeetingFromAppointment(appt);
+                if (this._calendarManager.MeetingDataLocal.ContainsKey(meeting.Id))
+                {
+                    this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
+                }
+
+                this._calendarManager.MeetingDataLocal.Add(meeting.Id, meeting);
+                CalendarDataManager.SavaMeetingDataToCalendarFolder(this.MAPIFolder, this.CalendarDataManager.MeetingDataLocal);
+            }
         }
     }
 }
