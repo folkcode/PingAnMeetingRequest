@@ -42,11 +42,16 @@
         private Microsoft.Office.Interop.Outlook.OlkTextBox txtVideoCount;
         private Microsoft.Office.Interop.Outlook.OlkTextBox txtIPCount;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel14;
-        private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel15;
         private Microsoft.Office.Interop.Outlook.OlkCommandButton btnCanhuilingdao;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel18;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel19;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel20;
+        private Microsoft.Office.Interop.Outlook.OlkOptionButton optlihui;
+        private Microsoft.Vbe.Interop.Forms.UserForm frame6;
+        private Microsoft.Office.Interop.Outlook.OlkOptionButton optselfbooking;
+        private Microsoft.Office.Interop.Outlook.OlkOptionButton optOtherBooking;
+        private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel21;
+        private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel22;
 
         public PingAnMeetingRequestFormRegion(Microsoft.Office.Interop.Outlook.FormRegion formRegion)
             : base(Globals.Factory, formRegion)
@@ -97,11 +102,16 @@
             this.txtVideoCount = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("txtVideoCount");
             this.txtIPCount = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("txtIPCount");
             this.olkLabel14 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel14");
-            this.olkLabel15 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel15");
             this.btnCanhuilingdao = (Microsoft.Office.Interop.Outlook.OlkCommandButton)GetFormRegionControl("btnCanhuilingdao");
             this.olkLabel18 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel18");
             this.olkLabel19 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel19");
             this.olkLabel20 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel20");
+            this.optlihui = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("optlihui");
+            this.frame6 = (Microsoft.Vbe.Interop.Forms.UserForm)GetFormRegionControl("Frame6");
+            this.optselfbooking = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("optselfbooking");
+            this.optOtherBooking = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("optOtherBooking");
+            this.olkLabel21 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel21");
+            this.olkLabel22 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel22");
 
         }
 

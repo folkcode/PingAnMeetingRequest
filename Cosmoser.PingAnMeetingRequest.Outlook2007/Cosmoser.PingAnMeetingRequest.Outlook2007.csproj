@@ -190,8 +190,12 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Manager\AppointmentManager.cs" />
+    <Compile Include="Manager\CalendarDataManager.cs" />
+    <Compile Include="Manager\CalendarFolder.cs" />
     <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="MyRibbon.cs" />
+    <Compile Include="OutlookFacade.cs" />
     <Compile Include="PingAnMeetingRequestFormRegion.cs" />
     <Compile Include="PingAnMeetingRequestFormRegion.Designer.cs">
       <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
