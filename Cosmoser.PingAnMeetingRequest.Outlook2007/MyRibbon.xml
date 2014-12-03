@@ -26,8 +26,8 @@
       </tab>
       <tab id ="SVCMMeeting" label="SVCM会议"  getVisible="GetSVCMCustomGroupVisible" insertAfterMso="TabAppointment">
         <group id="CustomGroupActions" label="动作">
-          <control idMso="SaveAndClose" size="large"/>
-          <control idMso="Delete" size="large"/>
+          <button id="mySaveAndClose" imageMso="SaveAndClose" label="保存并关闭" onAction="DoSaveAndClose" size="large"/>
+          <button  id="myDelete" imageMso="Delete" label="删除" onAction="DoDelete" size="large"/>
         </group>       
         
         <group id="groupDisplay"

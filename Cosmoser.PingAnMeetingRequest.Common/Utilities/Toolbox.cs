@@ -25,4 +25,5 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Utilities
             TReturn obj = (TReturn)serializer.ReadObject(stream);
             return obj;
         }
+    }
 }

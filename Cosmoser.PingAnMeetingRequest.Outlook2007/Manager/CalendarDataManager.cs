@@ -26,20 +26,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
         public CalendarDataManager(CalendarFolder folder)
         {
             this._calendarFolder = folder;
+
+            this._meetingDataLocal = this.GetMeetingDataFromLocal();
+            this._meetingDataLocal.Clear();
         }
 
-        public static MeetingData GetMeetingDataFromLocal(Outlook.MAPIFolder calendarFolder)
+        private MeetingData GetMeetingDataFromLocal()
         {
             MeetingData meetingData = null;
             try
             {
-                string caledarDataString = (string)calendarFolder.PropertyAccessor.GetProperty(path + "PingAnMeeting");
+                string caledarDataString = (string)this._calendarFolder.MAPIFolder.PropertyAccessor.GetProperty(path + "PingAnMeeting");
                 meetingData = Toolbox.Deserialize<MeetingData>(caledarDataString);
             }
             catch
             {
                 meetingData = new MeetingData();
-                calendarFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meetingData));
+                this._calendarFolder.MAPIFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meetingData));
             }
 
             return meetingData;
@@ -50,10 +53,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
         /// </summary>
         /// <param name="calendarFolder"></param>
         /// <param name="meetingData"></param>
-        public static void SavaMeetingDataToCalendarFolder(Outlook.MAPIFolder calendarFolder, MeetingData meetingData)
+        public void SavaMeetingDataToCalendarFolder()
         {
-            string dataString = Toolbox.Serialize(meetingData);
-            calendarFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", dataString);
+            string dataString = Toolbox.Serialize(this._meetingDataLocal);
+            this._calendarFolder.MAPIFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", dataString);
         }
 
     

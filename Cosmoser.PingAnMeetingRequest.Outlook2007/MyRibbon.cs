@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using Cosmoser.PingAnMeetingRequest.Outlook2007.Manager;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -41,6 +42,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         private Office.IRibbonUI ribbon;
         internal static Office.IRibbonUI m_Ribbon;
         private Outlook.Application _application;
+        private AppointmentManager _apptMgr = new AppointmentManager();
 
 
         public MyRibbonType RibbonType
@@ -105,6 +107,28 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             else
             {
                 return false;
+            }
+        }
+
+        public void DoDelete(Office.IRibbonControl control)
+        {
+            Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+            this._apptMgr.SetAppointmentDeleted(item, true);
+            item.Delete();
+        }
+
+        public void DoSaveAndClose(Office.IRibbonControl control)
+        {
+            Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+            string message;
+
+            if (this._apptMgr.TryValidateApppointmentUIInput(item, out message))
+            {
+                Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show(message);
             }
         }
 

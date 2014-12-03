@@ -14,6 +14,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
         private CalendarDataManager _calendarManager = null;
         private AppointmentManager _appointmentManager = null;
         private Outlook.Items _appointmentItems;
+        Microsoft.Office.Interop.Outlook.MAPIFolder _mapiFolder;
 
         private static ILog logger = LogManager.GetLogger(typeof(CalendarFolder));
 
@@ -22,17 +23,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
         public CalendarFolder()
         {
             this._appointmentManager = new AppointmentManager();
-            this._calendarManager = new CalendarDataManager(this);
         }
 
         /// <summary>
         /// Get the MAPIFolder of calendar. If not existed, we need to recreate it.
         /// </summary>
-        public override Microsoft.Office.Interop.Outlook.MAPIFolder MAPIFolder
+        public Microsoft.Office.Interop.Outlook.MAPIFolder MAPIFolder
         {
             get
             {
-                return Globals.ThisAddIn.Application.Session.Folders["Calendar"];
+                return this._mapiFolder;// Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder.Folders["日历"];
             }
         }
 
@@ -57,12 +57,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
 
         public void Initialize()
         {
-            Outlook.MAPIFolder calendarFolder = this.MAPIFolder;
+            foreach (Outlook.Folder folder in Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder.Folders)
+            {
+                if (folder.Name == "日历" || folder.Name == "Calendar")
+                    this._mapiFolder = folder;
+            }
 
-            this._appointmentItems = this.MAPIFolder.Items;
-            calendarFolder.Items.ItemAdd += new Outlook.ItemsEvents_ItemAddEventHandler(Items_ItemAdd);
-            calendarFolder.Items.ItemChange += new Outlook.ItemsEvents_ItemChangeEventHandler(Items_ItemChange);
-            calendarFolder.Items.ItemRemove += new Outlook.ItemsEvents_ItemRemoveEventHandler(Items_ItemRemove);
+            this._calendarManager = new CalendarDataManager(this);
+
+            this._appointmentItems = this._mapiFolder.Items;
+            _appointmentItems.ItemAdd += new Outlook.ItemsEvents_ItemAddEventHandler(Items_ItemAdd);
+            _appointmentItems.ItemChange += new Outlook.ItemsEvents_ItemChangeEventHandler(Items_ItemChange);
+            _appointmentItems.ItemRemove += new Outlook.ItemsEvents_ItemRemoveEventHandler(Items_ItemRemove);
 
             this.MAPIFolder.Application.ItemContextMenuDisplay += new Outlook.ApplicationEvents_11_ItemContextMenuDisplayEventHandler(Application_ItemContextMenuDisplay);
             this.RegisterAppointmentItemEvents();
@@ -75,8 +81,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
             {
                 if (IsPingAnMeetingAppointment(item))
                 {
-                    string id = this._appointmentManager.GetMeetingIdFromAppointment(item);
-                    this._appointmentList.Add(id,item);
+                    SVCMMeeting meeting = this._appointmentManager.GetMeetingFromAppointment(item);
+                    if (meeting != null)
+                        this._appointmentList.Add(meeting.Id, item);
                     item.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
                 }
             }      
@@ -85,6 +92,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
         void item_BeforeDelete(object Item, ref bool Cancel)
         {
             //throw new NotImplementedException();
+            Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+            if (IsPingAnMeetingAppointment(appt))
+            {
+                SVCMMeeting meeting = this._appointmentManager.GetMeetingFromAppointment(appt);
+                this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
+                this._calendarManager.SavaMeetingDataToCalendarFolder();                
+            }
         }
 
         private bool IsPingAnMeetingAppointment(Outlook.AppointmentItem item)
@@ -119,7 +133,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
                 }
 
                 this._calendarManager.MeetingDataLocal.Add(meeting.Id, meeting);
-                CalendarDataManager.SavaMeetingDataToCalendarFolder(this.MAPIFolder, this.CalendarDataManager.MeetingDataLocal);
+                this._calendarManager.SavaMeetingDataToCalendarFolder();
             }
         }
 
@@ -135,7 +149,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
                 }
 
                 this._calendarManager.MeetingDataLocal.Add(meeting.Id, meeting);
-                CalendarDataManager.SavaMeetingDataToCalendarFolder(this.MAPIFolder, this.CalendarDataManager.MeetingDataLocal);
+                this._calendarManager.SavaMeetingDataToCalendarFolder();
+
+                appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
             }
         }
     }

@@ -59,8 +59,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             Globals.ThisAddIn.Application.ViewContextMenuDisplay += new Outlook.ApplicationEvents_11_ViewContextMenuDisplayEventHandler(Application_ViewContextMenuDisplay);
             Globals.ThisAddIn.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
 
-            Outlook.Folders folders = this._activeExplorer.CurrentFolder.Folders;
-
             _menuMgr = new Menus.MenuManager(Globals.ThisAddIn.Application);
             _menuMgr.mRibbon = this.MyRibbon;
             _menuMgr.RemoveMenubar();

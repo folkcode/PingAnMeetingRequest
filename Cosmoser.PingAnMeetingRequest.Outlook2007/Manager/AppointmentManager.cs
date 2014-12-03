@@ -41,5 +41,31 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
 
             return null;
         }
+
+        public void SetAppointmentDeleted(Outlook.AppointmentItem item, bool isDeleted)
+        {
+            item.PropertyAccessor.SetProperty(path + "IsDeleted", isDeleted);
+        }
+
+        public bool IsAppointmentStatusDeleted(Outlook.AppointmentItem item)
+        {
+            try
+            {
+                return (bool)item.PropertyAccessor.GetProperty(path + "IsDeleted");
+            }
+            catch
+            {
+                //it is a new appointment
+            }
+
+            return false;
+        }
+
+        internal bool TryValidateApppointmentUIInput(Outlook.AppointmentItem item, out string message)
+        {
+            var meeting = Toolbox.Deserialize<SVCMMeeting>( item.PropertyAccessor.GetProperty(path + "PingAnMeeting"));
+            message = "error";
+            return true;
+        }
     }
 }
