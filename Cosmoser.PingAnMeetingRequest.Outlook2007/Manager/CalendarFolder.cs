@@ -151,6 +151,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
                 this._calendarManager.MeetingDataLocal.Add(meeting.Id, meeting);
                 this._calendarManager.SavaMeetingDataToCalendarFolder();
 
+                if (!this._appointmentList.ContainsKey(meeting.Id))
+                    this._appointmentList.Add(meeting.Id, appt);
+
                 appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
             }
         }

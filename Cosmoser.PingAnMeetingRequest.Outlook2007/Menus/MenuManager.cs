@@ -52,7 +52,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Menus
 
         void buttonTwo_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            new Views.MeetingCenterForm().ShowDialog();
+            var form = new Views.MeetingCenterForm();
+            form.MeetingData = OutlookFacade.Instance().MeetingData;
+            form.Show();
         }
 
         public void RemoveMenubar()

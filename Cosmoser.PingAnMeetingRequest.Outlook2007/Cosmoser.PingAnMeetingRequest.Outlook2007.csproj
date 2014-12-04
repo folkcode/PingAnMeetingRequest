@@ -209,6 +209,7 @@
     <Compile Include="Views\AttendedBossForm.Designer.cs">
       <DependentUpon>AttendedBossForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\DataGridViewDisableCheckBox.cs" />
     <Compile Include="Views\MeetingCenterForm.cs">
       <SubType>Form</SubType>
     </Compile>

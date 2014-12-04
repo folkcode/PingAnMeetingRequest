@@ -28,7 +28,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007.Manager
             this._calendarFolder = folder;
 
             this._meetingDataLocal = this.GetMeetingDataFromLocal();
-            this._meetingDataLocal.Clear();
         }
 
         private MeetingData GetMeetingDataFromLocal()

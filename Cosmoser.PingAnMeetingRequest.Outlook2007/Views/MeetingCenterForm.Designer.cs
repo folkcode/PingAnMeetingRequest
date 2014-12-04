@@ -39,7 +39,9 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.MeetingName = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.checkbox = new Cosmoser.PingAnMeetingRequest.Outlook2007.Views.DataGridViewDisableCheckBoxColumn();
+            this.MeetingName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeetingStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -51,6 +53,7 @@
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
+            this.dataGridViewDisableCheckBoxColumn1 = new Cosmoser.PingAnMeetingRequest.Outlook2007.Views.DataGridViewDisableCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -138,8 +141,12 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Id,
+            this.checkbox,
             this.MeetingName,
             this.StartTime,
             this.EndTime,
@@ -148,52 +155,86 @@
             this.MainMeetingRoom,
             this.InNumber,
             this.MeetingPwd});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 186);
+            this.dataGridView1.Location = new System.Drawing.Point(-36, 185);
+            this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(841, 221);
             this.dataGridView1.TabIndex = 12;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // 
+            // Id
+            // 
+            this.Id.DataPropertyName = "Id";
+            this.Id.HeaderText = "Id";
+            this.Id.Name = "Id";
+            this.Id.ReadOnly = true;
+            this.Id.Visible = false;
+            // 
+            // checkbox
+            // 
+            this.checkbox.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.checkbox.DataPropertyName = "Selected";
+            this.checkbox.FalseValue = "NoSelected";
+            this.checkbox.HeaderText = "";
+            this.checkbox.IndeterminateValue = "Indeterminate";
+            this.checkbox.Name = "checkbox";
+            this.checkbox.ReadOnly = true;
+            this.checkbox.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.checkbox.TrueValue = "Selected";
+            this.checkbox.Width = 5;
             // 
             // MeetingName
             // 
+            this.MeetingName.DataPropertyName = "Name";
             this.MeetingName.HeaderText = "会议名称";
             this.MeetingName.Name = "MeetingName";
+            this.MeetingName.ReadOnly = true;
             this.MeetingName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.MeetingName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // StartTime
             // 
+            this.StartTime.DataPropertyName = "StartTime";
             this.StartTime.HeaderText = "召开时间";
             this.StartTime.Name = "StartTime";
+            this.StartTime.ReadOnly = true;
             // 
             // EndTime
             // 
+            this.EndTime.DataPropertyName = "EndTime";
             this.EndTime.HeaderText = "结束时间";
             this.EndTime.Name = "EndTime";
+            this.EndTime.ReadOnly = true;
             // 
             // MeetingStatus
             // 
             this.MeetingStatus.HeaderText = "会议状态";
             this.MeetingStatus.Name = "MeetingStatus";
+            this.MeetingStatus.ReadOnly = true;
             // 
             // MeetingType
             // 
             this.MeetingType.HeaderText = "会议类型";
             this.MeetingType.Name = "MeetingType";
+            this.MeetingType.ReadOnly = true;
             // 
             // MainMeetingRoom
             // 
             this.MainMeetingRoom.HeaderText = "主会场";
             this.MainMeetingRoom.Name = "MainMeetingRoom";
+            this.MainMeetingRoom.ReadOnly = true;
             // 
             // InNumber
             // 
             this.InNumber.HeaderText = "呼入号";
             this.InNumber.Name = "InNumber";
+            this.InNumber.ReadOnly = true;
             // 
             // MeetingPwd
             // 
             this.MeetingPwd.HeaderText = "会议密码";
             this.MeetingPwd.Name = "MeetingPwd";
+            this.MeetingPwd.ReadOnly = true;
             // 
             // btnSearch
             // 
@@ -212,6 +253,7 @@
             this.btnDelete.TabIndex = 14;
             this.btnDelete.Text = "删除";
             this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnCancel
             // 
@@ -221,6 +263,7 @@
             this.btnCancel.TabIndex = 15;
             this.btnCancel.Text = "取消";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnUpdate
             // 
@@ -230,6 +273,14 @@
             this.btnUpdate.TabIndex = 16;
             this.btnUpdate.Text = "修改";
             this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            // 
+            // dataGridViewDisableCheckBoxColumn1
+            // 
+            this.dataGridViewDisableCheckBoxColumn1.HeaderText = "";
+            this.dataGridViewDisableCheckBoxColumn1.Name = "dataGridViewDisableCheckBoxColumn1";
+            this.dataGridViewDisableCheckBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewDisableCheckBoxColumn1.Width = 25;
             // 
             // MeetingCenterForm
             // 
@@ -254,6 +305,8 @@
             this.Controls.Add(this.label1);
             this.Name = "MeetingCenterForm";
             this.Text = "个人会议中心";
+            this.Activated += new System.EventHandler(this.MeetingCenterForm_Activated);
+            this.Load += new System.EventHandler(this.MeetingCenterForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -277,7 +330,10 @@
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnUpdate;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn MeetingName;
+        private DataGridViewDisableCheckBoxColumn dataGridViewDisableCheckBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
+        private DataGridViewDisableCheckBoxColumn checkbox;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MeetingName;
         private System.Windows.Forms.DataGridViewTextBoxColumn StartTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn EndTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeetingStatus;

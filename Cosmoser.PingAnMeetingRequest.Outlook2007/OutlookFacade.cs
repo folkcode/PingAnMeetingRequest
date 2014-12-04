@@ -7,6 +7,7 @@ using Office = Microsoft.Office.Core;
 using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Scheduler;
 using Cosmoser.PingAnMeetingRequest.Outlook2007.Manager;
+using Cosmoser.PingAnMeetingRequest.Common.Model;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2007
 {
@@ -33,12 +34,25 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             }
         }
 
+        public MeetingData MeetingData
+        {
+            get
+            {
+                return this._calendarFolder.CalendarDataManager.MeetingDataLocal;
+            }
+        }
+
         public Outlook.Explorer CurrentExplorer
         {
             get
             {
                 return this._activeExplorer;
             }
+        }
+
+        public CalendarFolder CalendarFolder
+        {
+            get { return this._calendarFolder; }
         }
 
         private static OutlookFacade _outlookFacade;
