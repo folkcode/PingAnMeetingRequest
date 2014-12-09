@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmoser.PingAnMeetingRequest.Outlook2007", "Cosmoser.PingAnMeetingRequest.Outlook2007\Cosmoser.PingAnMeetingRequest.Outlook2007.csproj", "{7E449B17-BDE8-44EC-9A01-21656A43D45A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmoser.PingAnMeetingRequest.Common", "Cosmoser.PingAnMeetingRequest.Common\Cosmoser.PingAnMeetingRequest.Common.csproj", "{EFD83E8C-F288-46AE-9FCB-C3896BD25638}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmoser.PingAnMeetingRequest.Client", "Cosmoser.PingAnMeetingRequest.Client\Cosmoser.PingAnMeetingRequest.Client.csproj", "{26F713F3-1FEE-4FF3-B025-D3D1CE72980F}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7E449B17-BDE8-44EC-9A01-21656A43D45A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E449B17-BDE8-44EC-9A01-21656A43D45A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E449B17-BDE8-44EC-9A01-21656A43D45A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E449B17-BDE8-44EC-9A01-21656A43D45A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EFD83E8C-F288-46AE-9FCB-C3896BD25638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFD83E8C-F288-46AE-9FCB-C3896BD25638}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFD83E8C-F288-46AE-9FCB-C3896BD25638}.Release|Any CPU.ActiveCfg = Release|Any CPU

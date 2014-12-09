@@ -12,7 +12,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         public string AccountName { get; set; }
         public MeetingStatus Status { get; set; }
         bool IsManualConf { get; set; }
-        public MeetingType Type { get; set; }
+        public MideaType Type { get; set; }
         public List<MeetingRoom> Rooms { get; set; }
         public MeetingRoom MainRoom { get; set; }
         //呼入号
@@ -20,7 +20,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         public string Password { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public MeetingParameter Parameter { get; set; }
+        public ConferenceType Parameter { get; set; }
         
     }
 }

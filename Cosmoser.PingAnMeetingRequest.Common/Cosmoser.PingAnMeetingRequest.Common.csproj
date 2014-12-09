@@ -46,15 +46,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Interfaces\IConferenceHandler.cs" />
+    <Compile Include="Model\HandlerSession.cs" />
     <Compile Include="Model\LeaderType.cs" />
     <Compile Include="Model\MeetingData.cs" />
     <Compile Include="Model\MeetingLeader.cs" />
     <Compile Include="Model\MeetingParameter.cs" />
     <Compile Include="Model\MeetingRoom.cs" />
+    <Compile Include="Model\MeetingSeries.cs" />
     <Compile Include="Model\MeetingStatus.cs" />
     <Compile Include="Model\RoomCategory.cs" />
     <Compile Include="Model\RoomLevel.cs" />
     <Compile Include="Model\SVCMMeeting.cs" />
+    <Compile Include="Model\SVCMMeetingDetail.cs" />
     <Compile Include="Model\SvcmUser.cs" />
     <Compile Include="Model\UserType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,9 +70,7 @@
     <Compile Include="Scheduler\TaskScheduler.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

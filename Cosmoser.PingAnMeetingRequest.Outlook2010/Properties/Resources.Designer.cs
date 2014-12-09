@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Properties {
+    using System;
     
     
     /// <summary>

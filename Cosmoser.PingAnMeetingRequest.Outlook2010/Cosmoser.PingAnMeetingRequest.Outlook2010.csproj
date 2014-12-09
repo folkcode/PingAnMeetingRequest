@@ -26,12 +26,26 @@
     <NoStandardLibraries>false</NoStandardLibraries>
     <RootNamespace>Cosmoser.PingAnMeetingRequest.Outlook2010</RootNamespace>
     <AssemblyName>Cosmoser.PingAnMeetingRequest.Outlook2010</AssemblyName>
-    <LoadBehavior>3</LoadBehavior>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <DefineConstants>VSTO40</DefineConstants>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <BootstrapperComponentsLocation>HomeSite</BootstrapperComponentsLocation>
+    <PublishUrl>publish\</PublishUrl>
+    <InstallUrl />
+    <TargetCulture>en</TargetCulture>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>days</UpdateIntervalUnits>
+    <IsWebBootstrapper>False</IsWebBootstrapper>
+    <ProductName>Cosmoser.PingAnMeetingRequest.Outlook2010</ProductName>
+    <PublisherName />
+    <SupportUrl />
+    <FriendlyName>Cosmoser.PingAnMeetingRequest.Outlook2010</FriendlyName>
+    <OfficeApplicationDescription />
+    <LoadBehavior>3</LoadBehavior>
   </PropertyGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -39,10 +53,20 @@
       <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.VSTORuntime.4.0">
-      <Visible>false</Visible>
-      <ProductName>Microsoft Visual Studio 2010 Tools for Office Runtime %28x86 and x64%29</ProductName>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Office.PIARedist.2007">
+      <Visible>False</Visible>
+      <ProductName>Microsoft Office 2007 Primary Interop Assemblies</ProductName>
+      <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
       <Visible>False</Visible>
@@ -130,6 +154,12 @@
   -->
   <ItemGroup>
     <Reference Include="Accessibility" />
+    <Reference Include="log4net">
+      <HintPath>..\Reference\log4net\log4net-1.2.13\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -179,9 +209,53 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Manager\AppointmentManager.cs" />
+    <Compile Include="Manager\CalendarDataManager.cs" />
+    <Compile Include="Manager\CalendarFolder.cs" />
+    <Compile Include="Menus\MenuManager.cs" />
+    <Compile Include="MyRibbon.cs" />
+    <Compile Include="OutlookFacade.cs" />
+    <Compile Include="PingAnMeetingRequestFormRegion.cs" />
+    <Compile Include="PingAnMeetingRequestFormRegion.Designer.cs">
+      <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Views\AttendedBossForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AttendedBossForm.Designer.cs">
+      <DependentUpon>AttendedBossForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DataGridViewDisableCheckBox.cs" />
+    <Compile Include="Views\MeetingCenterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingCenterForm.Designer.cs">
+      <DependentUpon>MeetingCenterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingDateSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingDateSearchForm.Designer.cs">
+      <DependentUpon>MeetingDateSearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingListSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingListSearchForm.Designer.cs">
+      <DependentUpon>MeetingListSearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingRoomSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MeetingRoomSelection.Designer.cs">
+      <DependentUpon>MeetingRoomSelection.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="PingAnMeetingRequestFormRegion.resx">
+      <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -190,8 +264,29 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Views\AttendedBossForm.resx">
+      <DependentUpon>AttendedBossForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MeetingCenterForm.resx">
+      <DependentUpon>MeetingCenterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MeetingDateSearchForm.resx">
+      <DependentUpon>MeetingDateSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MeetingListSearchForm.resx">
+      <DependentUpon>MeetingListSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MeetingRoomSelection.resx">
+      <DependentUpon>MeetingRoomSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="Cosmoser.PingAnMeetingRequest.Outlook2010_TemporaryKey.pfx" />
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="PingAnMeetingRequestFormRegion.ofs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -199,6 +294,7 @@
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
@@ -210,6 +306,17 @@
       <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
     </Compile>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MyRibbon.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cosmoser.PingAnMeetingRequest.Common\Cosmoser.PingAnMeetingRequest.Common.csproj">
+      <Project>{EFD83E8C-F288-46AE-9FCB-C3896BD25638}</Project>
+      <Name>Cosmoser.PingAnMeetingRequest.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

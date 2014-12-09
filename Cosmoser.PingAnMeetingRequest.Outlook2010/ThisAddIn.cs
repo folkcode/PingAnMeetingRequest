@@ -12,6 +12,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
     {
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            OutlookFacade.Instance().StartupOutlook();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
@@ -31,5 +32,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         }
         
         #endregion
+
+        /// <summary>
+        /// Load Ribbon
+        /// </summary>
+        /// <param name="serviceGuid"></param>
+        /// <returns></returns>
+        protected override object RequestService(Guid serviceGuid)
+        {
+            if (serviceGuid == typeof(Office.IRibbonExtensibility).GUID)
+            {
+                if (OutlookFacade.Instance().MyRibbon == null)
+                {
+                    OutlookFacade.Instance().MyRibbon = new MyRibbon(Application);
+                }
+                return OutlookFacade.Instance().MyRibbon;
+            }
+            return base.RequestService(serviceGuid);
+        }
     }
 }

@@ -5,19 +5,19 @@ using System.Text;
 
 namespace Cosmoser.PingAnMeetingRequest.Common.Model
 {
-    public enum MeetingParameter
+    public enum ConferenceType
     {
         Immediate,
         Furture
     }
 
-    public enum MeetingType
+    public enum MideaType
     {
         Local,
         Video
     }
 
-    public enum DisplayMode
+    public enum VideoSet
     {
         Audio,
         MainRoom,
@@ -25,4 +25,5 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         OneNScreen,
         TwoNScreen
     }
+
 }

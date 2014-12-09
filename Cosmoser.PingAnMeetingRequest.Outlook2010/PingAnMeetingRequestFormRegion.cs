@@ -5,17 +5,17 @@ using System.Resources;
 using System.Text;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using Cosmoser.PingAnMeetingRequest.Outlook2007.Manager;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
+using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 
-namespace Cosmoser.PingAnMeetingRequest.Outlook2007
+namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
     public partial class PingAnMeetingRequestFormRegion
     {
         #region Form Region Factory
 
         [Microsoft.Office.Tools.Outlook.FormRegionMessageClass("IPM.Appointment.PingAnMeetingRequest")]
-        [Microsoft.Office.Tools.Outlook.FormRegionName("Cosmoser.PingAnMeetingRequest.Outlook2007.PingAnMeetingRequestFormRegion")]
+        [Microsoft.Office.Tools.Outlook.FormRegionName("Cosmoser.PingAnMeetingRequest.Outlook2010.PingAnMeetingRequestFormRegion")]
         public partial class PingAnMeetingRequestFormRegionFactory
         {
             private void InitializeManifest()
@@ -42,7 +42,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         #endregion
 
         private AppointmentManager _apptMgr = new AppointmentManager();
-        SVCMMeeting meeting;
+        SVCMMeetingDetail meeting;
 
         // Occurs before the form region is displayed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
@@ -59,8 +59,20 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             item.Write += new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
 
             this.RegisterControlValueChangeEvents();
+        }
 
-            
+        // Occurs when the form region is closed.
+        // Use this.OutlookItem to get a reference to the current Outlook item.
+        // Use this.OutlookFormRegion to get a reference to the form region.
+        private void PingAnMeetingRequestFormRegion_FormRegionClosed(object sender, System.EventArgs e)
+        {
+            OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+
+            Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
+            if (!this._apptMgr.IsAppointmentStatusDeleted(item) && item.Saved)
+            {
+                this.SaveMeetingToAppointment();
+            }
         }
 
         private void RegisterControlValueChangeEvents()
@@ -75,7 +87,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             this.obtliji.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
             this.obtshipin.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
             this.obtyuyue.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.optlihui.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
 
             this.txtPeopleCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
             this.txtPhone.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
@@ -111,7 +122,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             {
                 meeting = this._apptMgr.GetMeetingFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
                 this.txtPassword.Text = meeting.Password;
-                if (meeting.Parameter == ConferenceType.Immediate)
+                if (meeting.ConfType == ConferenceType.Immediate)
                     this.obtliji.Value = true;
                 else
                     this.obtyuyue.Value = true;
@@ -119,7 +130,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             }
             else
             {
-                this.meeting = new SVCMMeeting();
+                this.meeting = new SVCMMeetingDetail();
                 this.meeting.Id = Guid.NewGuid().ToString();
             }
         }
@@ -134,20 +145,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             new Views.AttendedBossForm().ShowDialog();
         }
 
-        // Occurs when the form region is closed.
-        // Use this.OutlookItem to get a reference to the current Outlook item.
-        // Use this.OutlookFormRegion to get a reference to the form region.
-        private void PingAnMeetingRequestFormRegion_FormRegionClosed(object sender, System.EventArgs e)
-        {
-            OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
-
-            Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
-            if (!this._apptMgr.IsAppointmentStatusDeleted(item) && item.Saved)
-            {
-                this.SaveMeetingToAppointment();
-            }
-        }
-
         private void SaveMeetingToAppointment()
         {
             Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
@@ -158,7 +155,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
             meeting.EndTime = this.olkEndDateControl.Date;
             meeting.EndTime = this.olkEndTimeControl.Time;
 
-            
+
             meeting.Password = this.txtPassword.Text;
 
             this._apptMgr.SaveMeetingToAppointment(meeting, item);
