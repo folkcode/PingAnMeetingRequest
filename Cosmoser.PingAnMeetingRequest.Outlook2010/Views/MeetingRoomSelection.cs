@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
-    public partial class MeetingRoomSelection : Form
+    public partial class MeetingRoomSelection : Form, IMeetingRoomView
     {
         public MeetingRoomSelection()
         {
@@ -19,6 +19,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        public List<Common.Model.MeetingRoom> MeetingRoomList
+        {
+            get;
+            set;
+        }
+
+        public Common.Model.MeetingRoom MainRoom
+        {
+            get;
+            set;
+        }
+
+        public DialogResult Show()
+        {
+            return this.ShowDialog();
         }
     }
 }

@@ -9,11 +9,28 @@ using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
-    public partial class AttendedBossForm : Form
+    public partial class AttendedBossForm : Form, IAttendedLeadersView
     {
         public AttendedBossForm()
         {
             InitializeComponent();
+        }
+
+        public List<Common.Model.MeetingLeader> LeaderList
+        {
+            get;
+            set;
+        }
+
+        public string LeaderRoom
+        {
+            get;
+            set;
+        }
+
+        public DialogResult Show()
+        {
+           return  this.ShowDialog();
         }
     }
 }

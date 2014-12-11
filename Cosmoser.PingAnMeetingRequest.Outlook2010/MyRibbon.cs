@@ -62,6 +62,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             string result = string.Empty;
             if (ribbonID == "Microsoft.Outlook.Appointment")
                 result = GetResourceText("Cosmoser.PingAnMeetingRequest.Outlook2010.MyRibbon.xml");
+            if (ribbonID == "Microsoft.Outlook.Explorer")
+                result = GetResourceText("Cosmoser.PingAnMeetingRequest.Outlook2010.Ribbon.xml");
             return result;
         }
 
@@ -128,6 +130,25 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             else
             {
                 System.Windows.Forms.MessageBox.Show(message);
+            }
+        }
+
+        public void DoBookingMeeting(Office.IRibbonControl control)
+        {
+            Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
+            if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
+            {
+                //set holiday ribbon
+                this.RibbonType = MyRibbonType.SVCM;
+
+                //Create a holiday appointmet and set properties
+                Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+
+                //display the appointment
+                Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
+                inspect.Display(false);
+                //reset the ribbon to normal
+                this.RibbonType = MyRibbonType.Original;
             }
         }
 

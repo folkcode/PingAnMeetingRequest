@@ -46,6 +46,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 {
                     OutlookFacade.Instance().MyRibbon = new MyRibbon(Application);
                 }
+
                 return OutlookFacade.Instance().MyRibbon;
             }
             return base.RequestService(serviceGuid);

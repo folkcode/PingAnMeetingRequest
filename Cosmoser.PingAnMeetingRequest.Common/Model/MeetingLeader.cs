@@ -7,7 +7,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
 {
     public class MeetingLeader
     {
-        public LeaderType Type { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
         public string Name { get; set; }
+        public string LeaderPRI { get; set; }
+        public string LeaderPRIDesc { get; set; }
     }
 }

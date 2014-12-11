@@ -7,19 +7,19 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
 {
     public enum ConferenceType
     {
-        Immediate,
+        Immediate = 1,
         Furture
     }
 
     public enum MideaType
     {
-        Local,
-        Video
+        Video = 1,
+        Local
     }
 
     public enum VideoSet
     {
-        Audio,
+        Audio = 1,
         MainRoom,
         EqualScreen,
         OneNScreen,

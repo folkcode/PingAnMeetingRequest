@@ -8,6 +8,7 @@ using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Scheduler;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
+using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -21,6 +22,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         private WrapTask _task = null;
         Menus.MenuManager _menuMgr = null;
         private CalendarFolder _calendarFolder;
+        private HandlerSession _session;
+
+        public HandlerSession Session
+        {
+            get
+            {
+                return this._session;
+            }
+        }
 
         public MyRibbon MyRibbon
         {
@@ -68,18 +78,30 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         public void StartupOutlook()
         {
             logger.Info("ThisAddIn_Startup");
+            this.InitializeSession();
+
             this._activeExplorer = Globals.ThisAddIn.Application.ActiveExplorer();
             Globals.ThisAddIn.Application.ItemContextMenuDisplay += new Outlook.ApplicationEvents_11_ItemContextMenuDisplayEventHandler(Application_ItemContextMenuDisplay);
             Globals.ThisAddIn.Application.ViewContextMenuDisplay += new Outlook.ApplicationEvents_11_ViewContextMenuDisplayEventHandler(Application_ViewContextMenuDisplay);
             Globals.ThisAddIn.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
-
-            _menuMgr = new Menus.MenuManager(Globals.ThisAddIn.Application);
-            _menuMgr.mRibbon = this.MyRibbon;
-            _menuMgr.RemoveMenubar();
-            _menuMgr.AddMenuBar();
+            this._activeExplorer.FolderSwitch += new Outlook.ExplorerEvents_10_FolderSwitchEventHandler(_activeExplorer_FolderSwitch);
 
             this._calendarFolder = new CalendarFolder();
             this._calendarFolder.Initialize();
+        }
+
+        void _activeExplorer_FolderSwitch()
+        {
+            
+        }
+
+        private void InitializeSession()
+        {
+            this._session = new HandlerSession();
+            this._session.UserName = this.Application.Session.CurrentUser.Name;
+            this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
+            this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+            ClientServiceFactory.Create().Login(ref this._session);
         }
 
         void Inspectors_NewInspector(Outlook.Inspector Inspector)

@@ -7,6 +7,7 @@ using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
+using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -51,6 +52,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             this.btnCanhuilingdao.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(btnCanhuilingdao_Click);
             this.olkTxtLocation.Click += new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
+            this.olkbtnMobileTerm.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(olkbtnMobileTerm_Click);
 
             OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
 
@@ -59,6 +61,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             item.Write += new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
 
             this.RegisterControlValueChangeEvents();
+        }
+
+        void olkbtnMobileTerm_Click()
+        {
+            new MobileTermForm().ShowDialog();
         }
 
         // Occurs when the form region is closed.
@@ -97,7 +104,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.obtxsms3.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
             this.obtxsms4.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
 
-            this.txtVideoCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
 
             this.txtPassword.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
             this.txtIPCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
@@ -137,12 +143,20 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkTxtLocation_Click()
         {
-            new Views.MeetingRoomSelection().ShowDialog();
+            IMeetingRoomView view = new Views.MeetingRoomSelection();
+            if (view.Show() == System.Windows.Forms.DialogResult.OK)
+            {
+
+            }
         }
 
         void btnCanhuilingdao_Click()
         {
-            new Views.AttendedBossForm().ShowDialog();
+            IAttendedLeadersView view = new Views.AttendedBossForm();
+            if (view.Show() == System.Windows.Forms.DialogResult.OK)
+            {
+
+            }
         }
 
         private void SaveMeetingToAppointment()

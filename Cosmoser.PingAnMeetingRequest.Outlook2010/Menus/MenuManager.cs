@@ -29,19 +29,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
         {
             try
             {
-                menuBar = this._application.ActiveExplorer().CommandBars.ActiveMenuBar;
-                newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(Office.MsoControlType.msoControlPopup);
-                if (newMenuBar != null)
-                {
-                    newMenuBar.Caption = "定制会议";
-                    newMenuBar.Tag = menuTag;
-                    buttonOne = this.CreateMenu(newMenuBar, "预约会议", "booking");
-                    buttonOne.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonOne_Click);
+                //menuBar = this._application.ActiveExplorer().CommandBars.ActiveMenuBar;
+                //newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(Office.MsoControlType.msoControlPopup);
+                //if (newMenuBar != null)
+                //{
+                //    newMenuBar.Caption = "定制会议";
+                //    newMenuBar.Tag = menuTag;
+                //    buttonOne = this.CreateMenu(newMenuBar, "预约会议", "booking");
+                //    buttonOne.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonOne_Click);
 
-                    buttonTwo = this.CreateMenu(newMenuBar, "个人会议中心", "MeetingCenter");
-                    buttonTwo.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonTwo_Click);
+                //    buttonTwo = this.CreateMenu(newMenuBar, "个人会议中心", "MeetingCenter");
+                //    buttonTwo.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonTwo_Click);
 
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -97,7 +97,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
         private Office.CommandBarButton CreateMenu(Office.CommandBarPopup newMenuBar, string caption, string tag)
         {
             Office.CommandBarButton buttonOne = (Office.CommandBarButton)newMenuBar.Controls.
-                    Add(Office.MsoControlType.msoControlButton);
+                    Add(Office.MsoControlType.msoControlButtonPopup);
             buttonOne.Style = Office.MsoButtonStyle.
                 msoButtonIconAndCaption;
             buttonOne.Caption = caption;

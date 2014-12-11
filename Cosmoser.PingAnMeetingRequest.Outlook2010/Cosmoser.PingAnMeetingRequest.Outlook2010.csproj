@@ -161,6 +161,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -229,6 +230,8 @@
       <DependentUpon>AttendedBossForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\DataGridViewDisableCheckBox.cs" />
+    <Compile Include="Views\IAttendedLeadersView.cs" />
+    <Compile Include="Views\IMeetingRoomView.cs" />
     <Compile Include="Views\MeetingCenterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -252,6 +255,12 @@
     </Compile>
     <Compile Include="Views\MeetingRoomSelection.Designer.cs">
       <DependentUpon>MeetingRoomSelection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MobileTermForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MobileTermForm.Designer.cs">
+      <DependentUpon>MobileTermForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="PingAnMeetingRequestFormRegion.resx">
       <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
@@ -280,6 +289,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\MeetingRoomSelection.resx">
       <DependentUpon>MeetingRoomSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MobileTermForm.resx">
+      <DependentUpon>MobileTermForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Cosmoser.PingAnMeetingRequest.Outlook2010_TemporaryKey.pfx" />
@@ -317,6 +329,12 @@
       <Project>{EFD83E8C-F288-46AE-9FCB-C3896BD25638}</Project>
       <Name>Cosmoser.PingAnMeetingRequest.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Ribbon.xml" />
+    <Content Include="Xml\Request_StartConfer.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
