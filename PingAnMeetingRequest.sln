@@ -7,7 +7,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmoser.PingAnMeetingReque
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmoser.PingAnMeetingRequest.Outlook2010", "Cosmoser.PingAnMeetingRequest.Outlook2010\Cosmoser.PingAnMeetingRequest.Outlook2010.csproj", "{90D9CD9C-5F97-46B6-A76B-2931954F3868}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmoser.PingAnMeetingRequest.UnitTest", "Cosmoser.PingAnMeetingRequest.UnitTest\Cosmoser.PingAnMeetingRequest.UnitTest.csproj", "{EB784450-E4FA-4558-9F89-A4EE9BFCEB12}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{57EB01FD-466F-4DA0-B250-B80F7DF6811D}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		PingAnMeetingRequest.vsmdi = PingAnMeetingRequest.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = PingAnMeetingRequest.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -25,6 +37,10 @@ Global
 		{90D9CD9C-5F97-46B6-A76B-2931954F3868}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90D9CD9C-5F97-46B6-A76B-2931954F3868}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90D9CD9C-5F97-46B6-A76B-2931954F3868}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB784450-E4FA-4558-9F89-A4EE9BFCEB12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB784450-E4FA-4558-9F89-A4EE9BFCEB12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB784450-E4FA-4558-9F89-A4EE9BFCEB12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB784450-E4FA-4558-9F89-A4EE9BFCEB12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

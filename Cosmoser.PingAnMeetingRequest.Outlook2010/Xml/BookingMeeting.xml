@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<startConfer>
+  <messageId>1</messageId>
+  <token>1418544231804358</token>
+  <conferName>test-tony</conferName>
+  <startTime>2014-12-14 16:04:10</startTime>
+  <durationHour>0</durationHour>
+  <durationMinute>30</durationMinute>
+  <mcuTemplateId></mcuTemplateId>
+  <confPassword></confPassword>
+  <chairPassword></chairPassword>
+  <caption></caption>
+  <conferMemo>test</conferMemo>
+  <meetingRoom>13483,0,0</meetingRoom>
+  <termIds>13483,0,0,13484,0,0,13702,13703</termIds>
+  <videoSet>1</videoSet>
+  <ifPolling>1</ifPolling>
+  <chairRoom>1</chairRoom>
+  <participateIds></participateIds>
+  <sendmsgflag></sendmsgflag>
+  <isSperate></isSperate>
+  <participatorNumber>3</participatorNumber>
+  <phone>138138899</phone>
+  <ipdesc>23324,333,4343</ipdesc>
+  <inMCU>0</inMCU>
+  <leader>ALIBROKER,CAOLIUYI,CENXINJIANG757</leader>
+  <leaderRoom>main room</leaderRoom>
+  <conferType>2</conferType>
+  <conferMideaType>2</conferMideaType>
+  <regularMeetingType>1</regularMeetingType>
+  <regularMaxnum>1</regularMaxnum>
+  <regularMeetingNum>0</regularMeetingNum>
+  <multiExceptDay></multiExceptDay>
+  <multiExceptWeek></multiExceptWeek>
+  <everyFewMonths>1</everyFewMonths>
+  <theFirstFew>3</theFirstFew>
+  <week>4</week>
+</startConfer>

@@ -6,6 +6,7 @@ using log4net;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
+using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -81,7 +82,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             {
                 if (IsPingAnMeetingAppointment(item))
                 {
-                    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(item);
+                    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(item,false);
                     if (meeting != null)
                         this._appointmentList.Add(meeting.Id, item);
                     item.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
@@ -95,9 +96,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
             if (IsPingAnMeetingAppointment(appt))
             {
-                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt);
-                this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
-                this._calendarManager.SavaMeetingDataToCalendarFolder();                
+                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
+                bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session);
+
+                if (suceed)
+                {
+                    this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
+                    this._calendarManager.SavaMeetingDataToCalendarFolder();
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
+                    Cancel = true;
+                }
             }
         }
 
@@ -126,7 +137,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
             if (IsPingAnMeetingAppointment(appt))
             {
-                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt);
+                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
                 if (this._calendarManager.MeetingDataLocal.ContainsKey(meeting.Id))
                 {
                     this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
@@ -142,7 +153,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
             if (IsPingAnMeetingAppointment(appt ))
             {
-                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt);
+                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
                 if (this._calendarManager.MeetingDataLocal.ContainsKey(meeting.Id))
                 {
                     this._calendarManager.MeetingDataLocal.Remove(meeting.Id);

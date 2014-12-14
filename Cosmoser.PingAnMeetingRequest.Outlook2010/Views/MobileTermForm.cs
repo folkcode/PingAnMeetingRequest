@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
-    public partial class MobileTermForm : Form
+    public partial class MobileTermForm : Form,IMobileTermView
     {
         public MobileTermForm()
         {
@@ -19,6 +19,20 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        public List<Common.Model.MobileTerm> MobileTermList
+        {
+            get;
+
+            set;
+
+        }
+
+
+        public DialogResult Display()
+        {
+            return this.ShowDialog();
         }
     }
 }

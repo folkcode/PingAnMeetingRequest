@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<startConfer>
+  <messageId></messageId>
+  <token></token>
+  <conferName></conferName>
+  <startTime>2013-03-30 13:56:09</startTime>
+  <durationHour></durationHour>
+  <durationMinute></durationMinute>
+  <mcuTemplateId></mcuTemplateId>
+  <confPassword></confPassword>
+  <chairPassword> </chairPassword>
+  <caption></caption>
+  <conferMemo></conferMemo>
+  <meetingRoom></meetingRoom>
+  <termIds></termIds>
+  <videoSet>1</videoSet>
+  <ifPolling>1</ifPolling>
+  <chairRoom>1</chairRoom >
+  <participateIds ></participateIds >
+  <sendmsgflag></sendmsgflag>
+  <isSperate>1</isSperate>
+  <participatorNumber>3</participatorNumber>
+  <phone></phone>
+  <ipdesc></ipdesc>
+  <inMCU>0</inMCU>
+  <leader></leader>
+  <leaderRoom></leaderRoom>
+  <conferType></conferType>
+  <conferMideaType></conferMideaType>
+</startConfer>

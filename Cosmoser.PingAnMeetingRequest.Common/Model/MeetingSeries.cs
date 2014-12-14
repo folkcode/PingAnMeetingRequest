@@ -5,11 +5,9 @@ using System.Text;
 
 namespace Cosmoser.PingAnMeetingRequest.Common.Model
 {
-    public class MeetingRoom
+    public class MeetingSeries
     {
-        public string RoomId { get; set; }
-        public RoomCategory Category { get; set; }
-        public RoomLevel Level { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

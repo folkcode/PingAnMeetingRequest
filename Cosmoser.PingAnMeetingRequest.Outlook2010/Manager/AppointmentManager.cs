@@ -22,17 +22,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             return null;
         }
 
-        public void SaveMeetingToAppointment(SVCMMeetingDetail meeting, Outlook.AppointmentItem item)
+        public void SaveMeetingToAppointment(SVCMMeetingDetail meeting, Outlook.AppointmentItem item, bool isUpdating)
         {
-            item.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meeting));
+            if (isUpdating)
+                item.PropertyAccessor.SetProperty(path + "PingAnMeetingUpdating", Toolbox.Serialize(meeting));
+            else
+                item.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meeting));
             item.PropertyAccessor.SetProperty(path + "PingAnMeetingId", meeting.Id);
         }
 
-        public SVCMMeetingDetail GetMeetingFromAppointment(Outlook.AppointmentItem item)
+        public SVCMMeetingDetail GetMeetingFromAppointment(Outlook.AppointmentItem item, bool isUpdating)
         {
             try
             {
-                return Toolbox.Deserialize<SVCMMeetingDetail>(item.PropertyAccessor.GetProperty(path + "PingAnMeeting"));
+                if (isUpdating)
+                    return Toolbox.Deserialize<SVCMMeetingDetail>(item.PropertyAccessor.GetProperty(path + "PingAnMeetingUpdating"));
+                else
+                    return Toolbox.Deserialize<SVCMMeetingDetail>(item.PropertyAccessor.GetProperty(path + "PingAnMeeting"));
             }
             catch
             {

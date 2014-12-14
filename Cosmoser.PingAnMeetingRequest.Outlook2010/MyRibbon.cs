@@ -8,6 +8,7 @@ using System.Text;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
+using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -125,7 +126,37 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
             if (this._apptMgr.TryValidateApppointmentUIInput(item, out message))
             {
-                Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                
+                var meeting = this._apptMgr.GetMeetingFromAppointment(item,true);
+
+                if (string.IsNullOrEmpty(meeting.Id))
+                {
+                    bool succeed = ClientServiceFactory.Create().BookingMeeting(meeting, OutlookFacade.Instance().Session);
+
+                    if (succeed)
+                    {
+                        this._apptMgr.SaveMeetingToAppointment(meeting, item,false);
+                        Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("向服务端预约会议失败！请重试。");
+                    }
+                }
+                else
+                {
+                    bool succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, OutlookFacade.Instance().Session);
+
+                    if (succeed)
+                    {
+                        this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                        Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("向服务端更新会议失败！请重试。");
+                    }
+                }
             }
             else
             {

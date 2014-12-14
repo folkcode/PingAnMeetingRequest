@@ -12,6 +12,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         List<MeetingLeader> LeaderList { get; set; }
         string LeaderRoom { get; set; }
 
-        DialogResult Show();
+        DialogResult Display();
     }
 }

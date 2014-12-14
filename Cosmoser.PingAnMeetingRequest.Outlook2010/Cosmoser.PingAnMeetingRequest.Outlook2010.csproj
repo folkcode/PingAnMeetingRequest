@@ -232,6 +232,7 @@
     <Compile Include="Views\DataGridViewDisableCheckBox.cs" />
     <Compile Include="Views\IAttendedLeadersView.cs" />
     <Compile Include="Views\IMeetingRoomView.cs" />
+    <Compile Include="Views\IMobileTermView.cs" />
     <Compile Include="Views\MeetingCenterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -331,6 +332,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Xml\BookingMeeting.xml" />
+    <Content Include="Xml\MeetingDetail.xml" />
+    <Content Include="Xml\MobileTermList.xml" />
+    <Content Include="Xml\Copy of LevelIds.xml" />
+    <Content Include="Xml\LeaderList.xml" />
+    <Content Include="Xml\RoomList.xml" />
+    <Content Include="Xml\LevelIds.xml" />
+    <Content Include="Xml\SeriesList.xml" />
     <EmbeddedResource Include="Ribbon.xml" />
     <Content Include="Xml\Request_StartConfer.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

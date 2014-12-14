@@ -12,6 +12,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         List<MeetingRoom> MeetingRoomList { get; set; }
         MeetingRoom MainRoom { get; set; }
 
-        DialogResult Show();
+        DialogResult Display();
     }
 }

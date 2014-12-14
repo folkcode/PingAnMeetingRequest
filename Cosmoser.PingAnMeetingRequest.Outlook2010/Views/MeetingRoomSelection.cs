@@ -33,7 +33,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             set;
         }
 
-        public DialogResult Show()
+        public DialogResult Display()
         {
             return this.ShowDialog();
         }

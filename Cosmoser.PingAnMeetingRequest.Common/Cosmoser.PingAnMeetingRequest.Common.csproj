@@ -69,8 +69,10 @@
     <Compile Include="Model\LeaderType.cs" />
     <Compile Include="Model\MeetingData.cs" />
     <Compile Include="Model\MeetingLeader.cs" />
+    <Compile Include="Model\MeetingListQuery.cs" />
     <Compile Include="Model\MeetingParameter.cs" />
     <Compile Include="Model\MeetingRoom.cs" />
+    <Compile Include="Model\MeetingRoomListQuery.cs" />
     <Compile Include="Model\MeetingSeries.cs" />
     <Compile Include="Model\MeetingStatus.cs" />
     <Compile Include="Model\MobileTerm.cs" />

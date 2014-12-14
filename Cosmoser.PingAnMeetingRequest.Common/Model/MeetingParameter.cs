@@ -8,12 +8,21 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
     public enum ConferenceType
     {
         Immediate = 1,
-        Furture
+        Furture,
+        Recurring
     }
 
     public enum MideaType
     {
         Video = 1,
+        Local
+    }
+
+    public enum MideaType2
+    {
+        Two = 1,
+        Multiple,
+        Midea,
         Local
     }
 

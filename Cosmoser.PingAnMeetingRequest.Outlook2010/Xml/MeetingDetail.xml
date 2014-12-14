@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<confInfo>
+  <result property="����ɹ�!">200</result>
+  <conferId>1410960</conferId>
+  <conferName>test-tony</conferName>
+  <startTime>2014-12-15 16:19:35</startTime>
+  <endTime>2014-12-15 16:49:35</endTime>
+  <durations>30</durations>
+  <status>6</status>
+  <mediaType>4</mediaType>
+  <participatorNumber>3</participatorNumber>
+  <seriesName>ƽ���Ƽ�</seriesName>
+  <videoSession>1</videoSession>
+  <accountName>��ѩ</accountName>
+  <telephone>138138899</telephone>
+  <department>���ڵ��Է�����</department>
+  <leader></leader>
+  <leaderRoom>main room</leaderRoom>
+  <ipTelephoneNumber>1</ipTelephoneNumber>
+  <ipdesc>23324,333,4343</ipdesc>
+  <confMemo>test</confMemo>
+  <confPassword>null</confPassword>
+  <videoSet>0</videoSet>
+  <reservIpPhoneDetail></reservIpPhoneDetail>
+  <roomList>
+    <roomInfo>
+      <roomType>1</roomType>
+      <roomName>3.52</roomName>
+      <roomId>13483</roomId>
+      <alias>2423</alias>
+      <servicegk>null</servicegk>
+      <mcuName>null</mcuName>
+      <address>12321</address>
+    </roomInfo>
+    <roomInfo>
+      <roomType>0</roomType>
+      <roomName>3.53</roomName>
+      <roomId>13484</roomId>
+      <alias>23423432</alias>
+      <servicegk>null</servicegk>
+      <mcuName>null</mcuName>
+      <address>123</address>
+    </roomInfo>
+    <roomInfo>
+      <roomType>0</roomType>
+      <roomName>�ƶ��ն�2</roomName>
+      <roomId>13703</roomId>
+      <alias>42342</alias>
+      <servicegk>null</servicegk>
+      <mcuName>null</mcuName>
+      <address>2</address>
+    </roomInfo>
+    <roomInfo>
+      <roomType>0</roomType>
+      <roomName>�ƶ��ն�1</roomName>
+      <roomId>13702</roomId>
+      <alias>42342323</alias>
+      <servicegk>null</servicegk>
+      <mcuName>null</mcuName>
+      <address>111</address>
+    </roomInfo>
+  </roomList>
+  <ipphoneList></ipphoneList>
+</confInfo>
