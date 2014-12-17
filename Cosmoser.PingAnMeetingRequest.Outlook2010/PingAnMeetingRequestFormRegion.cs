@@ -66,7 +66,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void olkbtnMobileTerm_Click()
         {
             IMobileTermView view = new MobileTermForm();
-            new MobileTermForm().ShowDialog();
+            view.MobileTermList = new List<MobileTerm>();
+            view.MobileTermList.AddRange(meeting.MobileTermList);
+            if (view.Display() == System.Windows.Forms.DialogResult.OK)
+            {
+                meeting.MobileTermList = view.MobileTermList;
+                this.SaveMeetingToAppointment();
+            }
         }
 
         // Occurs when the form region is closed.
@@ -109,8 +115,40 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.txtPassword.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
             this.txtIPCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
 
-            this.optOtherBooking.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.optselfbooking.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            //this.optOtherBooking.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            //this.optselfbooking.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+        }
+
+        void obtliji_Click()
+        {
+            this.obtyuyue.Value = false;
+            this.obtliji.Value = true;
+
+            this.SaveMeetingToAppointment();
+        }
+
+        void obtyuyue_Click()
+        {
+            this.obtyuyue.Value = true;
+            this.obtliji.Value = false;
+
+            this.SaveMeetingToAppointment();
+        }
+
+        void obtshipin_Click()
+        {
+            this.obtshipin.Value = true;
+            this.obtbendi.Value = false;
+
+            this.SaveMeetingToAppointment();
+        }
+
+        void obtbendi_Click()
+        {
+            this.obtshipin.Value = true;
+            this.obtbendi.Value = false;
+
+            this.SaveMeetingToAppointment();
         }
 
         void ValueChanged()
@@ -190,7 +228,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                 this.txtIPCount.Text = meeting.IPDesc;
                 (this.OutlookItem as Outlook.AppointmentItem).Body = meeting.Memo;
-                
+
             }
             else
             {
@@ -201,18 +239,32 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void olkTxtLocation_Click()
         {
             IMeetingRoomView view = new Views.MeetingRoomSelection();
+            view.MeetingRoomList = new List<MeetingRoom>();
+            view.MeetingRoomList.AddRange(meeting.Rooms);
+            view.MainRoom = new MeetingRoom();
+
+            view.ConfType = meeting.ConfType;
+
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {
-
+                meeting.Rooms = view.MeetingRoomList;
+                meeting.MainRoom = view.MainRoom;
+                this.olkTxtLocation.Text = meeting.RoomsStr;
+                this.SaveMeetingToAppointment();
             }
         }
 
         void btnCanhuilingdao_Click()
         {
             IAttendedLeadersView view = new Views.AttendedBossForm();
+            view.LeaderRoom = meeting.LeaderRoom;
+            view.LeaderList = new List<MeetingLeader>();
+            view.LeaderList.AddRange(meeting.LeaderList);
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {
-
+                meeting.LeaderList = view.LeaderList;
+                meeting.LeaderRoom = view.LeaderRoom;
+                this.SaveMeetingToAppointment();
             }
         }
 
@@ -226,11 +278,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             meeting.EndTime = this.olkEndDateControl.Date;
             meeting.EndTime = this.olkEndTimeControl.Time;
 
-            if (this.obtliji.Value = true)
+            if (this.obtliji.Value == true)
             {
                 meeting.ConfType = ConferenceType.Immediate;
             }
-            else if (this.obtyuyue.Value = true)
+            else if (this.obtyuyue.Value == true)
             {
                 meeting.ConfType = ConferenceType.Furture;
             }
@@ -247,8 +299,30 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             if (!string.IsNullOrEmpty(this.txtPeopleCount.Text))
                 meeting.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text);
             meeting.Password = this.txtPassword.Text;
+            meeting.IPDesc = this.txtIPCount.Text;
             meeting.Phone = this.txtPhone.Text;
             meeting.Memo = item.Body;
+
+            if (this.obtxsms0.Value)
+            {
+                meeting.VideoSet = VideoSet.Audio;
+            }
+            else if (this.obtxsms1.Value)
+            {
+                meeting.VideoSet = VideoSet.MainRoom;
+            }
+            else if (this.obtxsms2.Value)
+            {
+                meeting.VideoSet = VideoSet.EqualScreen;
+            }
+            else if (this.obtxsms3.Value)
+            {
+                meeting.VideoSet = VideoSet.OneNScreen;
+            }
+            else if (this.obtxsms4.Value)
+            {
+                meeting.VideoSet = VideoSet.TwoNScreen;
+            }
 
             this._apptMgr.SaveMeetingToAppointment(meeting, item,true);
 

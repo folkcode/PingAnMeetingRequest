@@ -64,6 +64,7 @@
             this.btnAdd.TabIndex = 2;
             this.btnAdd.Text = ">>添加>>";
             this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnRemove
             // 
@@ -73,6 +74,7 @@
             this.btnRemove.TabIndex = 3;
             this.btnRemove.Text = "<<去除<<";
             this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // lblAvailable
             // 
@@ -100,6 +102,7 @@
             this.btnSubmit.TabIndex = 6;
             this.btnSubmit.Text = "提交";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
             // btnClose
             // 
@@ -128,6 +131,7 @@
             this.MinimizeBox = false;
             this.Name = "MobileTermForm";
             this.Text = "选择移动终端";
+            this.Load += new System.EventHandler(this.MobileTermForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

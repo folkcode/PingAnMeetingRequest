@@ -333,8 +333,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Xml\BookingMeeting.xml" />
+    <Content Include="Xml\SearchCity.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Xml\MeetingDetail.xml" />
-    <Content Include="Xml\MobileTermList.xml" />
+    <Content Include="Xml\MobileTermList.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Xml\Copy of LevelIds.xml" />
     <Content Include="Xml\LeaderList.xml" />
     <Content Include="Xml\RoomList.xml" />

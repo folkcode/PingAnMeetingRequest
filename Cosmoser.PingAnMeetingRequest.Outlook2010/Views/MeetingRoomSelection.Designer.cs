@@ -53,6 +53,7 @@
             this.listBoxMeetingRoom.Name = "listBoxMeetingRoom";
             this.listBoxMeetingRoom.Size = new System.Drawing.Size(219, 88);
             this.listBoxMeetingRoom.TabIndex = 0;
+            this.listBoxMeetingRoom.SelectedIndexChanged += new System.EventHandler(this.listBoxMeetingRoom_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -80,6 +81,7 @@
             this.listBoxLevel.Name = "listBoxLevel";
             this.listBoxLevel.Size = new System.Drawing.Size(219, 52);
             this.listBoxLevel.TabIndex = 2;
+            this.listBoxLevel.SelectedIndexChanged += new System.EventHandler(this.listBoxLevel_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -125,6 +127,7 @@
             this.btnAdd.TabIndex = 8;
             this.btnAdd.Text = ">>添加>>";
             this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnDelete
             // 
@@ -134,6 +137,7 @@
             this.btnDelete.TabIndex = 9;
             this.btnDelete.Text = "<<去除<<";
             this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnSelectAllOnSecondLevel
             // 
@@ -143,6 +147,7 @@
             this.btnSelectAllOnSecondLevel.TabIndex = 10;
             this.btnSelectAllOnSecondLevel.Text = "某系列二级全选";
             this.btnSelectAllOnSecondLevel.UseVisualStyleBackColor = true;
+            this.btnSelectAllOnSecondLevel.Click += new System.EventHandler(this.btnSelectAllOnSecondLevel_Click);
             // 
             // btnSelectAllOnCountry
             // 
@@ -152,6 +157,7 @@
             this.btnSelectAllOnCountry.TabIndex = 11;
             this.btnSelectAllOnCountry.Text = "某系列全国全选";
             this.btnSelectAllOnCountry.UseVisualStyleBackColor = true;
+            this.btnSelectAllOnCountry.Click += new System.EventHandler(this.btnSelectAllOnCountry_Click);
             // 
             // btnOk
             // 
@@ -161,6 +167,7 @@
             this.btnOk.TabIndex = 12;
             this.btnOk.Text = "确定";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // btnCancel
             // 
@@ -180,6 +187,7 @@
             this.btnMainRoomSetting.TabIndex = 14;
             this.btnMainRoomSetting.Text = "设定主会场";
             this.btnMainRoomSetting.UseVisualStyleBackColor = true;
+            this.btnMainRoomSetting.Click += new System.EventHandler(this.btnMainRoomSetting_Click);
             // 
             // MeetingRoomSelection
             // 
@@ -205,6 +213,7 @@
             this.MinimizeBox = false;
             this.Name = "MeetingRoomSelection";
             this.Text = "会议室选择";
+            this.Load += new System.EventHandler(this.MeetingRoomSelection_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -101,6 +101,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this._session.UserName = this.Application.Session.CurrentUser.Name;
             this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
             this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+            this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"]; ;
             ClientServiceFactory.Create().Login(ref this._session);
         }
 

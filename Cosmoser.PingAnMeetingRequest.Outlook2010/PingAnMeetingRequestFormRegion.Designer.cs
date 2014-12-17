@@ -45,10 +45,10 @@
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel18;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel19;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel20;
-        private Microsoft.Vbe.Interop.Forms.UserForm frame6;
-        private Microsoft.Office.Interop.Outlook.OlkOptionButton optselfbooking;
-        private Microsoft.Office.Interop.Outlook.OlkOptionButton optOtherBooking;
-        private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel21;
+        //private Microsoft.Vbe.Interop.Forms.UserForm frame6;
+        //private Microsoft.Office.Interop.Outlook.OlkOptionButton optselfbooking;
+        //private Microsoft.Office.Interop.Outlook.OlkOptionButton optOtherBooking;
+        //private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel21;
         private Microsoft.Office.Interop.Outlook.OlkCommandButton olkbtnMobileTerm;
 
         public PingAnMeetingRequestFormRegion(Microsoft.Office.Interop.Outlook.FormRegion formRegion)
@@ -103,10 +103,10 @@
             this.olkLabel18 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel18");
             this.olkLabel19 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel19");
             this.olkLabel20 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel20");
-            this.frame6 = (Microsoft.Vbe.Interop.Forms.UserForm)GetFormRegionControl("Frame6");
-            this.optselfbooking = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("optselfbooking");
-            this.optOtherBooking = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("optOtherBooking");
-            this.olkLabel21 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel21");
+            //this.frame6 = (Microsoft.Vbe.Interop.Forms.UserForm)GetFormRegionControl("Frame6");
+            //this.optselfbooking = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("optselfbooking");
+            //this.optOtherBooking = (Microsoft.Office.Interop.Outlook.OlkOptionButton)GetFormRegionControl("optOtherBooking");
+            //this.olkLabel21 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel21");
             this.olkbtnMobileTerm = (Microsoft.Office.Interop.Outlook.OlkCommandButton)GetFormRegionControl("OlkbtnMobileTerm");
 
         }
