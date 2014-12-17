@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.IO;
 using System.Xml;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
+using System.Reflection;
 
 namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 {
@@ -220,6 +221,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><leaderList><messageId>{0}</messageId><token>{1}</token></leaderList>", session.MessageId, session.Token);
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "leaderList", xmlData);
 
+                //var response = new XmlDocument();
+                //response.Load(Assembly.GetExecutingAssembly().CodeBase.Replace("Cosmoser.PingAnMeetingRequest.Common.DLL", @"Xml\LeaderList.xml"));
+
                 XmlNode root = response.SelectSingleNode("leaderList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -259,11 +263,14 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             try
             {
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><mobileTermList><messageId>{0}</messageId><token>{1}</token><startTime>{2}</startTime><endTime>{3}</endTime></mobileTermList>",
-                                                session.MessageId, 
+                                                session.MessageId,
                                                 session.Token,
                                                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                                 DateTime.Now.AddMinutes(30).ToString("yyyy-MM-dd HH:mm:ss"));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "mobileTermList", xmlData);
+
+                //var response = new XmlDocument();
+                //response.Load(Assembly.GetExecutingAssembly().CodeBase.Replace("Cosmoser.PingAnMeetingRequest.Common.DLL",@"Xml\MobileTermList.xml"));
 
                 XmlNode root = response.SelectSingleNode("mobileTermList");
                 string status = root.SelectSingleNode("result").InnerText;
@@ -306,7 +313,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 session.Token,
                                                 seriesId);
 
-                var response = this._client.DoHttpWebRequest(session.BaseUrl + "searchCity", xmlData);
+                var response = this._client.DoHttpWebRequest(session.BaseUrl + "searchcity", xmlData);
 
                 XmlNode root = response.SelectSingleNode("searchCity");
                 string status = root.SelectSingleNode("result").InnerText;

@@ -39,8 +39,8 @@ namespace Cosmoser.PingAnMeetingRequest.UnitTest
         private HandlerSession _session = new HandlerSession()
         {
             UserName = "zhangxue016",
-            IP = "192.166.5.190",
-            Port = "7080"
+            IP = "218.94.61.130",//192.166.5.190",
+            Port = "55000"//"7080"
         };
 
         #region Additional test attributes
@@ -175,15 +175,11 @@ namespace Cosmoser.PingAnMeetingRequest.UnitTest
         public void LoginTest()
         {
             IConferenceHandler target = CreateIConferenceHandler(); // TODO: Initialize to an appropriate value
-            HandlerSession session = new HandlerSession(); // TODO: Initialize to an appropriate value
-            session.UserName = "zhangxue016";
-            session.IP = "192.166.5.190";
-            session.Port = "7080";
+            HandlerSession session = this._session;
             bool expected = true; // TODO: Initialize to an appropriate value
             bool actual;
             actual = target.Login(ref session);
             Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
         /// <summary>
@@ -265,7 +261,7 @@ namespace Cosmoser.PingAnMeetingRequest.UnitTest
             query.LevelId = "1,1";
             query.ConfType = ConferenceType.Immediate;
             query.StartTime = DateTime.Now;
-            query.EndTime = DateTime.Now.AddMinutes(30);
+            query.EndTime = DateTime.Now.AddDays(30);
 
             HandlerSession session = this._session; // TODO: Initialize to an appropriate value
             List<MeetingRoom> roomList = null; // TODO: Initialize to an appropriate value

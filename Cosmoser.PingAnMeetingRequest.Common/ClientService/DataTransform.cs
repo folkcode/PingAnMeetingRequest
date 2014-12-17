@@ -23,11 +23,15 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             this.AddChildrenNode(xmlDoc, root, "durationHour", detail.DurantionHours.ToString());
             this.AddChildrenNode(xmlDoc, root, "durationMinute", detail.DurantionMinutes.ToString());
             this.AddChildrenNode(xmlDoc, root, "mcuTemplateId", "");
-            this.AddChildrenNode(xmlDoc, root, "confPassword", detail.Password.Trim());
+            this.AddChildrenNode(xmlDoc, root, "confPassword", detail.Password);
             this.AddChildrenNode(xmlDoc, root, "chairPassword", "");
             this.AddChildrenNode(xmlDoc, root, "caption", "");
             this.AddChildrenNode(xmlDoc, root, "conferMemo", detail.Memo);
+            if(detail.MainRoom != null && detail.MainRoom.RoomId != null)
             this.AddChildrenNode(xmlDoc, root, "meetingRoom", detail.MainRoom.RoomId.Split(",".ToArray())[0]);
+            else
+                this.AddChildrenNode(xmlDoc, root, "meetingRoom", "");
+
             this.AddChildrenNode(xmlDoc, root, "termIds", detail.RoomIds);
             this.AddChildrenNode(xmlDoc, root, "videoSet", ((int)detail.VideoSet).ToString());
             //是否设定轮询 1 是 0 否，平安业务无此字段，保留

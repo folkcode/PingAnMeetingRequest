@@ -8,5 +8,6 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
     public class RoomLevel
     {
         public string LevelName { get; set; }
+        public string LevelId { get; set; }
     }
 }
