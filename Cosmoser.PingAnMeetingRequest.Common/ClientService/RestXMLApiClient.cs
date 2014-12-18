@@ -26,7 +26,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
             using (var response = req.GetResponse() as HttpWebResponse)
             {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
+                Encoding encoding = Encoding.GetEncoding("GB2312");
+
+                StreamReader reader = new StreamReader(response.GetResponseStream(),encoding);
+
                 string result = reader.ReadToEnd();
 
                 doc.LoadXml(result);

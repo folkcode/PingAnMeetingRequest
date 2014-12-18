@@ -11,7 +11,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
     {
         List<MeetingRoom> MeetingRoomList { get; set; }
         MeetingRoom MainRoom { get; set; }
-        ConferenceType ConfType { get; set; }
+        MideaType ConfType { get; set; }
+
+        DateTime StarTime { get; set; }
+        DateTime EndTime { get; set; }
 
         DialogResult Display();
     }

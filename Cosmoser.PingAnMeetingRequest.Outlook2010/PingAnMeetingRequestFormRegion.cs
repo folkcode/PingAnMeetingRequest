@@ -8,6 +8,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
+using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -233,17 +234,26 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             else
             {
                 this.meeting = new SVCMMeetingDetail();
+                this.SaveMeetingToAppointment();
             }
         }
 
         void olkTxtLocation_Click()
         {
+            if (meeting.ConfMideaType == MideaType.Local)
+            {
+                MessageBox.Show("你选的是本地会议，不需要会议室！");
+                return;
+            }
+
             IMeetingRoomView view = new Views.MeetingRoomSelection();
             view.MeetingRoomList = new List<MeetingRoom>();
             view.MeetingRoomList.AddRange(meeting.Rooms);
             view.MainRoom = new MeetingRoom();
 
-            view.ConfType = meeting.ConfType;
+            view.ConfType = meeting.ConfMideaType;
+            view.StarTime = meeting.StartTime;
+            view.EndTime = meeting.EndTime;
 
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {

@@ -47,7 +47,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 {
                     this.listView1.Items.Add(new ListViewItem()
                     {
-                        Text = item.UserName,
+                        Text = item.Name,
+                        Tag = item.UserName,
                         Checked = this.LeaderList.Exists(x=>x.UserName == item.UserName)
                     });
                 }
@@ -57,7 +58,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 {
                     this.listView2.Items.Add(new ListViewItem()
                     {
-                        Text = item.UserName,
+                        Text = item.Name,
+                        Tag = item.UserName,
                         Checked = this.LeaderList.Exists(x => x.UserName == item.UserName)
                     });
                 }
@@ -66,7 +68,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 {
                     this.listView3.Items.Add(new ListViewItem()
                     {
-                        Text = item.UserName,
+                        Text = item.Name,
+                        Tag = item.UserName,
                         Checked = this.LeaderList.Exists(x => x.UserName == item.UserName)
                     });
                 }
@@ -87,7 +90,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 ListViewItem viewItem = item as ListViewItem;
                 if (viewItem.Checked)
                 {
-                   var leader = this._allLeaders.Find(x => x.UserName == viewItem.Text);
+                   var leader = this._allLeaders.Find(x => x.UserName == viewItem.Tag.ToString());
 
                    this.LeaderList.Add(leader);
                 }
@@ -98,7 +101,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 ListViewItem viewItem = item as ListViewItem;
                 if (viewItem.Checked)
                 {
-                    var leader = this._allLeaders.Find(x => x.UserName == viewItem.Text);
+                    var leader = this._allLeaders.Find(x => x.UserName == viewItem.Tag.ToString());
 
                     this.LeaderList.Add(leader);
                 }
@@ -109,7 +112,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 ListViewItem viewItem = item as ListViewItem;
                 if (viewItem.Checked)
                 {
-                    var leader = this._allLeaders.Find(x => x.UserName == viewItem.Text);
+                    var leader = this._allLeaders.Find(x => x.UserName == viewItem.Tag.ToString());
 
                     this.LeaderList.Add(leader);
                 }

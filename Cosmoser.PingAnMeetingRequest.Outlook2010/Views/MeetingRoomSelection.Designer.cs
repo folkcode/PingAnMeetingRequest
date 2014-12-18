@@ -98,6 +98,7 @@
             this.listBoxAvailableRoom.ItemHeight = 12;
             this.listBoxAvailableRoom.Location = new System.Drawing.Point(53, 308);
             this.listBoxAvailableRoom.Name = "listBoxAvailableRoom";
+            this.listBoxAvailableRoom.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.listBoxAvailableRoom.Size = new System.Drawing.Size(219, 88);
             this.listBoxAvailableRoom.TabIndex = 4;
             // 

@@ -28,11 +28,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         {
             get
             {
-                lock (locker)
-                {
-                    messageId++;
-                    return messageId;
-                }
+                return messageId;
             }
         }
 
@@ -43,6 +39,14 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
                 messageId = 0;
             }
 
+        }
+
+        public void AddMessageId()
+        {
+            lock (locker)
+            {
+                messageId++;
+            }
         }
     }
 }

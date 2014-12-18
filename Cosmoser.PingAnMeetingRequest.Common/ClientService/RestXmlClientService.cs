@@ -48,6 +48,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
         {
             try
             {
+                session.AddMessageId();
                 string xmlData = this._dataTransform.GetXmlDataFromMeetingDetail(meetingDetail, session);
 
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "startConfer", xmlData);
@@ -76,7 +77,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
         {
             try
             {
-                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><deleteConfer><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId></deleteConfer>", session.MessageId, session.Token,conferId);
+                session.AddMessageId();
+                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><deleteConfer><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId></deleteConfer>", session.MessageId, session.Token, conferId);
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "deleteConfer", xmlData);
 
                 XmlNode root = response.SelectSingleNode("deleteConfer");
@@ -103,6 +105,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
         {
             try
             {
+                session.AddMessageId();
                 string xmlData = this._dataTransform.GetXmlDataForUpdatingMeeting(meetingDetail, session);
 
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "updateConfer", xmlData);
@@ -131,6 +134,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             seriesList = new List<Model.MeetingSeries>();
             try
             {
+                session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><seriesList><messageId>{0}</messageId><token>{1}</token></seriesList>", session.MessageId, session.Token);
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "seriesList", xmlData);
 
@@ -170,6 +174,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
             try
             {
+                session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><roomList><messageId>{0}</messageId><token>{1}</token><seriesId>{2}</seriesId><levelId>{3}</levelId><confType>{4}</confType><startTime>{5}</startTime><endTime>{6}</endTime></roomList>",
                                                 session.MessageId,
                                                 session.Token,
@@ -218,6 +223,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             leaderList = new List<MeetingLeader>();
             try
             {
+                session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><leaderList><messageId>{0}</messageId><token>{1}</token></leaderList>", session.MessageId, session.Token);
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "leaderList", xmlData);
 
@@ -262,6 +268,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             mobileTermList = new List<MobileTerm>();
             try
             {
+                session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><mobileTermList><messageId>{0}</messageId><token>{1}</token><startTime>{2}</startTime><endTime>{3}</endTime></mobileTermList>",
                                                 session.MessageId,
                                                 session.Token,
@@ -308,6 +315,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
             try
             {
+                session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><searchCity><messageId>{0}</messageId><token>{1}</token><seriesId>{2}</seriesId ><provinceCode>0</provinceCode ><cityCode>0</cityCode ><boroughCode>0</boroughCode></searchCity>",
                                                 session.MessageId,
                                                 session.Token,
@@ -387,7 +395,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
            try
            {
-               string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><confInfo><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId></confInfo>", session.MessageId, session.Token,meetingId);
+               session.AddMessageId();
+               string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><confInfo><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId></confInfo>", session.MessageId, session.Token, meetingId);
                var response = this._client.DoHttpWebRequest(session.BaseUrl + "getConfInfo", xmlData);
 
                XmlNode root = response.SelectSingleNode("confInfo");
@@ -465,6 +474,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
             try
             {
+                session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><bookingConferList><messageId>{0}</messageId><token>{1}</token><conferName>{2}</conferName><roomName>{3}</roomName><servicegk>{4}</servicegk><alias>{5}</alias><startTime>{6}</startTime><endTime>{7}</endTime ><confProperty>{8}</confProperty><statVideoType>{9}</statVideoType><confType>{10}</confType></bookingConferList>",
                                                session.MessageId,
                                                session.Token,

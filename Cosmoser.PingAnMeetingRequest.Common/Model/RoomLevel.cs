@@ -9,5 +9,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
     {
         public string LevelName { get; set; }
         public string LevelId { get; set; }
+
+        public override string ToString()
+        {
+            return this.LevelName;
+        }
     }
 }

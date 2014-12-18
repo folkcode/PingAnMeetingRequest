@@ -69,7 +69,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         internal bool TryValidateApppointmentUIInput(Outlook.AppointmentItem item, out string message)
         {
-            //var meeting = Toolbox.Deserialize<SVCMMeetingDetail>(item.PropertyAccessor.GetProperty(path + "PingAnMeetingUpdate"));
+            //var meeting = Toolbox.Deserialize<SVCMMeetingDetail>(item.PropertyAccessor.GetProperty(path + "PingAnMeetingUpdating"));
             message = "error";
             return true;
         }

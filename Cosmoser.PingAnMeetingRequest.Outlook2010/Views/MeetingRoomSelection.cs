@@ -35,11 +35,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             set;
         }
 
-        public ConferenceType ConfType
+        public MideaType ConfType
         {
             get;
             set;
         }
+
+        public DateTime StarTime { get; set; }
+        public DateTime EndTime { get; set; }
 
         public DialogResult Display()
         {
@@ -54,11 +57,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             {
                 foreach (var item in seriesList)
                 {
-                    this.listBoxMeetingRoom.Items.Add(new ListViewItem()
-                    {
-                        Text = item.Name,
-                        Tag = item.Id
-                    });
+                    this.listBoxMeetingRoom.Items.Add(item);
                 }
             }
             else
@@ -66,28 +65,28 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 MessageBox.Show("获取会议室分组信息失败，请重试！");
             }
 
-            this.listBoxLevel.Items.Add(new ListViewItem()
+            this.listBoxLevel.Items.Add(new RoomLevel()
             {
-                Text = "总部级",
-                Tag = "1,1"
+                LevelName = "总部级",
+                LevelId = "1,1"
             });
 
-            this.listBoxLevel.Items.Add(new ListViewItem()
+            this.listBoxLevel.Items.Add(new RoomLevel()
             {
-                Text = "二级机构",
-                Tag = "1,2"
+                LevelName = "二级机构",
+                LevelId = "1,2"
             });
 
-            this.listBoxLevel.Items.Add(new ListViewItem()
+            this.listBoxLevel.Items.Add(new RoomLevel()
             {
-                Text = "三级机构",
-                Tag = "1,3"
+                LevelName = "三级机构",
+                LevelId = "1,3"
             });
 
-            this.listBoxLevel.Items.Add(new ListViewItem()
+            this.listBoxLevel.Items.Add(new RoomLevel()
             {
-                Text = "四级机构",
-                Tag = "1,4"
+                LevelName = "四级机构",
+                LevelId = "1,4"
             });
 
             this.listBoxLevel.SelectedIndex = 0;
@@ -102,7 +101,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (this.listBoxLevel.SelectedIndex > -1)
             {
-                this.LoadRoomList((this.listBoxLevel.SelectedItem as ListViewItem).Tag.ToString());
+                this.LoadRoomList((this.listBoxLevel.SelectedItem as RoomLevel).LevelId);
             }
         }
 
@@ -110,7 +109,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (this.listBoxMeetingRoom.SelectedIndex > -1)
             {
-                this.LoadRoomList((this.listBoxLevel.SelectedItem as ListViewItem).Tag.ToString());
+                this.LoadRoomList((this.listBoxLevel.SelectedItem as RoomLevel).LevelId);
 
                 if (select2all || select1all)
                 {
@@ -127,12 +126,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             MeetingRoomListQuery query = new MeetingRoomListQuery();
             query.LevelId = leverId;// (this.listBoxLevel.SelectedItem as ListViewItem).Tag.ToString();
-            query.SeriesId = (this.listBoxMeetingRoom.SelectedItem as ListViewItem).Tag.ToString();
+            query.SeriesId = (this.listBoxMeetingRoom.SelectedItem as MeetingSeries).Id;
             query.ConfType = this.ConfType;
-            query.StartTime = DateTime.Now;
-            query.EndTime = query.StartTime.AddDays(30);
+            query.StartTime = this.StarTime;
+            query.EndTime = this.EndTime;
 
             this._availableroomList = null;
+            listBoxAvailableRoom.Items.Clear();
             if (ClientServiceFactory.Create().TryGetMeetingRoomList(query, OutlookFacade.Instance().Session, out _availableroomList))
             {
                 foreach (var item in _availableroomList)

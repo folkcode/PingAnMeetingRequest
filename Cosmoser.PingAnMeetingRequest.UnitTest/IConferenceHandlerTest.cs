@@ -4,6 +4,7 @@ using System;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using System.Collections.Generic;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using System.Text;
 
 namespace Cosmoser.PingAnMeetingRequest.UnitTest
 {
@@ -259,7 +260,7 @@ namespace Cosmoser.PingAnMeetingRequest.UnitTest
             MeetingRoomListQuery query = new MeetingRoomListQuery();
             query.SeriesId = "2";
             query.LevelId = "1,1";
-            query.ConfType = ConferenceType.Immediate;
+            query.ConfType = MideaType.Local;
             query.StartTime = DateTime.Now;
             query.EndTime = DateTime.Now.AddDays(30);
 

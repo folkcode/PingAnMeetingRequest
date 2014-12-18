@@ -9,5 +9,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
     {
         public string Id { get; set; }
         public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

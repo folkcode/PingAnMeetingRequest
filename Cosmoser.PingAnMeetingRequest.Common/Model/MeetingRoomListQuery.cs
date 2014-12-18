@@ -9,7 +9,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
     {
         public string SeriesId { get; set; }
         public string LevelId { get; set; }
-        public ConferenceType ConfType { get; set; }
+        public MideaType ConfType { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
     }
