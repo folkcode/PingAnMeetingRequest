@@ -93,7 +93,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void _activeExplorer_FolderSwitch()
         {
-            this.CalendarFolder.CalendarDataManager.SyncMeetingList();
+            if (this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
+                this.CalendarFolder.CalendarDataManager.SyncMeetingList();
         }
 
         private void InitializeSession()

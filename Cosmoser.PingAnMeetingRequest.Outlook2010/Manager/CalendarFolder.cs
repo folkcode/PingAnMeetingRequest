@@ -92,7 +92,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         void item_BeforeDelete(object Item, ref bool Cancel)
         {
-            //throw new NotImplementedException();
             Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
             if (IsPingAnMeetingAppointment(appt))
             {
@@ -107,6 +106,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 else
                 {
                     System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
+                    this._appointmentManager.RemoveItemDeleteStatus(appt);
                     Cancel = true;
                 }
             }

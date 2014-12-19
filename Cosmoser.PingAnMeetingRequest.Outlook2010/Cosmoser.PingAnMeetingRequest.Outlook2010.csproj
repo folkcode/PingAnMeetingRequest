@@ -343,7 +343,6 @@
     <Content Include="Xml\Copy of LevelIds.xml" />
     <Content Include="Xml\LeaderList.xml" />
     <Content Include="Xml\RoomList.xml" />
-    <Content Include="Xml\LevelIds.xml" />
     <Content Include="Xml\SeriesList.xml" />
     <EmbeddedResource Include="Ribbon.xml" />
     <Content Include="Xml\Request_StartConfer.xml">

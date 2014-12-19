@@ -75,7 +75,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
         {
             Task<MeetingData> task = GetMeetingListSyncTask();
 
-            task.Start();
+            //task.Start();
 
             task.Wait();
 

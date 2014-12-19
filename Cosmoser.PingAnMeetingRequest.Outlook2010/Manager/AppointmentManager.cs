@@ -67,6 +67,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             return false;
         }
 
+        public void RemoveItemDeleteStatus(Outlook.AppointmentItem item)
+        {
+            try
+            {
+                item.PropertyAccessor.DeleteProperty(path + "IsDeleted");
+            }
+            catch
+            {
+                //it is a new appointment
+            }
+        }
+
         internal bool TryValidateApppointmentUIInput(Outlook.AppointmentItem item, out string message)
         {
             //var meeting = Toolbox.Deserialize<SVCMMeetingDetail>(item.PropertyAccessor.GetProperty(path + "PingAnMeetingUpdating"));
@@ -80,6 +92,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             item.Subject = detail.Name;
             item.Start = detail.StartTime;
             item.End = detail.EndTime;
+            item.MessageClass = "IPM.Appointment.PingAnMeetingRequest";
 
             this.SaveMeetingToAppointment(detail, item, false);
             item.Save();
