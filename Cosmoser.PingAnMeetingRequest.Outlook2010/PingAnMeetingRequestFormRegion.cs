@@ -180,64 +180,61 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void InitializeUI()
         {
-            string meetingid = this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
-            if (meetingid != null)
+            string meetingId = this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
+            if ( meetingId != null)
             {
-
-                if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingid, OutlookFacade.Instance().Session, out meeting))
+                if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
-                    MessageBox.Show("获取服务端会议信息失败");
                     meeting = this._apptMgr.GetMeetingFromAppointment(this.OutlookItem as Outlook.AppointmentItem, false);
                 }
-                    this.olkStartDateControl.Date = meeting.StartTime.Date;
-                    this.olkStartTimeControl.Time = meeting.StartTime;
-                    this.olkEndDateControl.Date = meeting.EndTime.Date;
-                    this.olkEndTimeControl.Time = meeting.EndTime;
 
-                    this.olkTxtSubject.Text = meeting.Name;
-                    this.olkTxtLocation.Text = meeting.RoomsStr;
+                this.olkStartDateControl.Date = meeting.StartTime.Date;
+                this.olkStartTimeControl.Time = meeting.StartTime;
+                this.olkEndDateControl.Date = meeting.EndTime.Date;
+                this.olkEndTimeControl.Time = meeting.EndTime;
 
-                    this.txtPassword.Text = meeting.Password;
-                    if (meeting.ConfType == ConferenceType.Immediate)
-                        this.obtliji.Value = true;
-                    else if (meeting.ConfType == ConferenceType.Furture)
-                        this.obtyuyue.Value = true;
-                    else
-                    {
-                        this.obtliji.Value = false;
-                        this.obtyuyue.Value = false;
-                    }
+                this.olkTxtSubject.Text = meeting.Name;
+                this.olkTxtLocation.Text = meeting.RoomsStr;
 
-                    if (meeting.ConfMideaType == MideaType.Local)
-                        this.obtbendi.Value = true;
-                    else
-                        this.obtshipin.Value = true;
-                    this.txtPeopleCount.Text = meeting.ParticipatorNumber.ToString();
-                    this.txtPhone.Text = meeting.Phone;
+                this.txtPassword.Text = meeting.Password;
+                if (meeting.ConfType == ConferenceType.Immediate)
+                    this.obtliji.Value = true;
+                else if (meeting.ConfType == ConferenceType.Furture)
+                    this.obtyuyue.Value = true;
+                else
+                {
+                    this.obtliji.Value = false;
+                    this.obtyuyue.Value = false;
+                }
 
-                    switch (meeting.VideoSet)
-                    {
-                        case VideoSet.Audio:
-                            this.obtxsms0.Value = true;
-                            break;
-                        case VideoSet.MainRoom:
-                            this.obtxsms1.Value = true;
-                            break;
-                        case VideoSet.EqualScreen:
-                            this.obtxsms2.Value = true;
-                            break;
-                        case VideoSet.OneNScreen:
-                            this.obtxsms3.Value = true;
-                            break;
-                        case VideoSet.TwoNScreen:
-                            this.obtxsms4.Value = true;
-                            break;
-                    }
+                if (meeting.ConfMideaType == MideaType.Local)
+                    this.obtbendi.Value = true;
+                else
+                    this.obtshipin.Value = true;
+                this.txtPeopleCount.Text = meeting.ParticipatorNumber.ToString();
+                this.txtPhone.Text = meeting.Phone;
 
-                    this.txtIPCount.Text = meeting.IPDesc;
-                    (this.OutlookItem as Outlook.AppointmentItem).Body = meeting.Memo;
+                switch (meeting.VideoSet)
+                {
+                    case VideoSet.Audio:
+                        this.obtxsms0.Value = true;
+                        break;
+                    case VideoSet.MainRoom:
+                        this.obtxsms1.Value = true;
+                        break;
+                    case VideoSet.EqualScreen:
+                        this.obtxsms2.Value = true;
+                        break;
+                    case VideoSet.OneNScreen:
+                        this.obtxsms3.Value = true;
+                        break;
+                    case VideoSet.TwoNScreen:
+                        this.obtxsms4.Value = true;
+                        break;
+                }
 
-              
+                this.txtIPCount.Text = meeting.IPDesc;
+                (this.OutlookItem as Outlook.AppointmentItem).Body = meeting.Memo;
 
             }
             else

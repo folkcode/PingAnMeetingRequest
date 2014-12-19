@@ -52,7 +52,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
         void buttonTwo_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var form = new Views.MeetingCenterForm();
-            form.MeetingData = OutlookFacade.Instance().MeetingData;
+            form.MeetingData = OutlookFacade.Instance().MeetingDetaiData;
             form.Show();
         }
 

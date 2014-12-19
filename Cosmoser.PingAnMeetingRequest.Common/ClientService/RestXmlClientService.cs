@@ -8,6 +8,7 @@ using System.IO;
 using System.Xml;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using System.Reflection;
+using log4net;
 
 namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 {
@@ -15,6 +16,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
     {
         private DataTransform _dataTransform = new DataTransform();
         private RestXMLApiClient _client = new RestXMLApiClient();
+
+        private static ILog logger = log4net.LogManager.GetLogger(typeof(RestXmlClientService));
         
         public bool Login(ref Model.HandlerSession session)
         {
@@ -34,10 +37,14 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     session.ResetMessageId();
                     return true;
                 }
+                else
+                {
+                    logger.Error(string.Format("Login failed, status: {0}, error:{1}",status,response.InnerXml));
+                }
             }
-            catch
+            catch(Exception ex)
             {
-
+                logger.Error("Login failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             session.IsActive = false;
@@ -62,12 +69,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("BookingMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
-            catch
+            catch(Exception ex)
             {
-
+                logger.Error("BookingMeeting failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;
@@ -90,12 +98,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("DeleteMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
             catch (Exception ex)
             {
-
+                logger.Error("DeleteMeeting failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;
@@ -118,12 +127,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("UpdateMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
-            catch
+            catch(Exception ex)
             {
-
+                logger.Error("UpdateMeeting failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;
@@ -157,11 +167,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("TryGetSeriesList failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
             catch (Exception ex)
             {
+                logger.Error("TryGetSeriesList failed, error:" + ex.Message + "\n" + ex.StackTrace);
 
             }
 
@@ -206,12 +218,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("TryGetMeetingRoomList failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
             catch (Exception ex)
             {
-
+                logger.Error("TryGetMeetingRoomList failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;
@@ -251,11 +264,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("TryGetLeaderList failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
             catch (Exception ex)
             {
+                logger.Error("TryGetLeaderList failed, error:" + ex.Message + "\n" + ex.StackTrace);
 
             }
 
@@ -298,12 +313,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("TryGetMobileTermList failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
             catch (Exception ex)
             {
-
+                logger.Error("TryGetMobileTermList failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;
@@ -376,12 +392,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("TryGetRegionCatagory failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
-            catch
+            catch(Exception ex)
             {
-
+                logger.Error("TryGetRegionCatagory failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;
@@ -449,6 +466,15 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                            RoomId = node.SelectSingleNode("roomId").InnerText,
                            Name = node.SelectSingleNode("roomName").InnerText
                        });
+
+                       if (node.SelectSingleNode("roomType").InnerText == "1")
+                       {
+                           detail.MainRoom = new MeetingRoom()
+                           {
+                               RoomId = node.SelectSingleNode("roomId").InnerText,
+                               Name = node.SelectSingleNode("roomName").InnerText
+                           };
+                       }
                    }
 
                    //TermList
@@ -457,12 +483,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                }
                else
                {
+                   logger.Error(string.Format("TryGetMeetingDetail failed, status: {0}, error:{1}", status, response.InnerXml));
                    return false;
                }
            }
            catch (Exception ex)
            {
-
+               logger.Error("TryGetMeetingDetail failed, error:" + ex.Message + "\n" + ex.StackTrace);
            }
 
            return false;
@@ -515,12 +542,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    logger.Error(string.Format("TryGetMeetingList failed, status: {0}, error:{1}", status, response.InnerXml));
                     return false;
                 }
             }
             catch (Exception ex)
             {
-
+                logger.Error("TryGetMeetingList failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;

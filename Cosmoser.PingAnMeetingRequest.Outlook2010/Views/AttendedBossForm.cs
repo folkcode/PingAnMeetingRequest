@@ -43,6 +43,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             {
                 var list1 = this._allLeaders.FindAll(x => x.LeaderPRI.StartsWith("1"));
 
+                //主任层
                 foreach (var item in list1)
                 {
                     this.listView1.Items.Add(new ListViewItem()
@@ -53,6 +54,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                     });
                 }
 
+                //常委层 
                 var list2 = this._allLeaders.FindAll(x => x.LeaderPRI.StartsWith("2"));
                 foreach (var item in list2)
                 {
@@ -63,6 +65,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                         Checked = this.LeaderList.Exists(x => x.UserName == item.UserName)
                     });
                 }
+
+                //委员
                 var list3 = this._allLeaders.FindAll(x => x.LeaderPRI.StartsWith("3"));
                 foreach (var item in list3)
                 {
