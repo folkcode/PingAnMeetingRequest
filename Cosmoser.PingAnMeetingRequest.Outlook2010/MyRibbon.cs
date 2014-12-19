@@ -9,6 +9,7 @@ using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -181,6 +182,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 //reset the ribbon to normal
                 this.RibbonType = MyRibbonType.Original;
             }
+        }
+
+        public void DoMeetingList(Office.IRibbonControl control)
+        {
+            MeetingListSearchForm form = new MeetingListSearchForm();
+            form.Show();
         }
 
         #endregion

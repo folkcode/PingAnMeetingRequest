@@ -12,7 +12,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
     public partial class MeetingCenterForm : Form
     {
-        public MeetingData MeetingData
+        public MeetingDetailData MeetingData
         {
             get;
             set;

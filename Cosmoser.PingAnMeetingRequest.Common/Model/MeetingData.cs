@@ -5,7 +5,12 @@ using System.Text;
 
 namespace Cosmoser.PingAnMeetingRequest.Common.Model
 {
-    public class MeetingData : Dictionary<string, SVCMMeetingDetail>
+    public class MeetingDetailData : Dictionary<string, SVCMMeetingDetail>
     {
     }
+
+    public class MeetingData : Dictionary<string, SVCMMeeting>
+    {
+    }
+  
 }

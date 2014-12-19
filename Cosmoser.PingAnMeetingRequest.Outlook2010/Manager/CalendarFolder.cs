@@ -101,7 +101,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                 if (suceed)
                 {
-                    this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
+                    this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
                     this._calendarManager.SavaMeetingDataToCalendarFolder();
                 }
                 else
@@ -138,12 +138,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             if (IsPingAnMeetingAppointment(appt))
             {
                 SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
-                if (this._calendarManager.MeetingDataLocal.ContainsKey(meeting.Id))
+                if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
                 {
-                    this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
+                    this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
                 }
 
-                this._calendarManager.MeetingDataLocal.Add(meeting.Id, meeting);
+                this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
                 this._calendarManager.SavaMeetingDataToCalendarFolder();
             }
         }
@@ -154,12 +154,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             if (IsPingAnMeetingAppointment(appt ))
             {
                 SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
-                if (this._calendarManager.MeetingDataLocal.ContainsKey(meeting.Id))
+                if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
                 {
-                    this._calendarManager.MeetingDataLocal.Remove(meeting.Id);
+                    this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
                 }
 
-                this._calendarManager.MeetingDataLocal.Add(meeting.Id, meeting);
+                this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
                 this._calendarManager.SavaMeetingDataToCalendarFolder();
 
                 if (!this._appointmentList.ContainsKey(meeting.Id))
@@ -167,6 +167,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                 appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
             }
+        }
+
+        internal void AddAppointment(SVCMMeeting item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

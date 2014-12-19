@@ -73,5 +73,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             message = "error";
             return true;
         }
+
+        internal Outlook.AppointmentItem AddAppointment(Outlook.MAPIFolder mAPIFolder, SVCMMeetingDetail detail)
+        {
+            Outlook.AppointmentItem item = mAPIFolder.Application.CreateItem(Outlook.OlItemType.olAppointmentItem);
+            item.Subject = detail.Name;
+            item.Start = detail.StartTime;
+            item.End = detail.EndTime;
+
+            this.SaveMeetingToAppointment(detail, item, false);
+            item.Save();
+
+            return item;
+        }
     }
 }

@@ -5,7 +5,7 @@
             <tab idMso="TabAddIns" label="SVCM会议">
                 <group id="group1" label="动作">
                     <button id="btnBooking" label="预约会议" imageMso="NewCalendar" onAction="DoBookingMeeting" size="large" />
-                    <button id="btnMeetingList" label="预约会议列表" imageMso="CalendarInsert" size="large" />
+                    <button id="btnMeetingList" label="预约会议列表" imageMso="CalendarInsert" onAction="DoMeetingList" size="large" />
                 </group>
             </tab>
         </tabs>

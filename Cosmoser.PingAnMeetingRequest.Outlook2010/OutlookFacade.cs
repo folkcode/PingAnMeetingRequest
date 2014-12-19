@@ -9,6 +9,7 @@ using Cosmoser.PingAnMeetingRequest.Common.Scheduler;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using System.Threading.Tasks;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -44,11 +45,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             }
         }
 
-        public MeetingData MeetingData
+        public MeetingDetailData MeetingDetaiData
         {
             get
             {
-                return this._calendarFolder.CalendarDataManager.MeetingDataLocal;
+                return this._calendarFolder.CalendarDataManager.MeetingDetailDataLocal;
             }
         }
 
@@ -92,7 +93,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void _activeExplorer_FolderSwitch()
         {
-            
+            this.CalendarFolder.CalendarDataManager.SyncMeetingList();
         }
 
         private void InitializeSession()
@@ -166,6 +167,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             if (Application.Session.Accounts.Count > 0)
                 name = Application.Session.Accounts[0].DisplayName;
             logger.Info(string.Format("Current time: {0} , current user: {1}", DateTime.Now, name));
-        }   
+        }
+
+        
+
     }
 }
