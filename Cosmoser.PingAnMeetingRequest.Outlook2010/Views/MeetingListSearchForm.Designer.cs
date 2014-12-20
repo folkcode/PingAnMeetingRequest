@@ -274,42 +274,50 @@
             // 
             // MeetingName
             // 
+            this.MeetingName.DataPropertyName = "Name";
             this.MeetingName.HeaderText = "会议名称";
             this.MeetingName.Name = "MeetingName";
             this.MeetingName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
             // StartTime
             // 
+            this.StartTime.DataPropertyName = "StartTime";
             this.StartTime.HeaderText = "召开时间";
             this.StartTime.Name = "StartTime";
             // 
             // EndTime
             // 
+            this.EndTime.DataPropertyName = "EndTime";
             this.EndTime.HeaderText = "结束时间";
             this.EndTime.Name = "EndTime";
             // 
             // MeetingStatus
             // 
+            this.MeetingStatus.DataPropertyName = "Status";
             this.MeetingStatus.HeaderText = "会议状态";
             this.MeetingStatus.Name = "MeetingStatus";
             // 
             // MeetingType
             // 
+            this.MeetingType.DataPropertyName = "MideaTypeStr";
             this.MeetingType.HeaderText = "会议类型";
             this.MeetingType.Name = "MeetingType";
             // 
             // MainMeetingRoom
             // 
+            this.MainMeetingRoom.DataPropertyName = "MainRomm";
             this.MainMeetingRoom.HeaderText = "主会场";
             this.MainMeetingRoom.Name = "MainMeetingRoom";
             // 
             // InNumber
             // 
+            this.InNumber.DataPropertyName = "ServiceKey";
             this.InNumber.HeaderText = "呼入号";
             this.InNumber.Name = "InNumber";
             // 
             // MeetingPwd
             // 
+            this.MeetingPwd.DataPropertyName = "Password";
             this.MeetingPwd.HeaderText = "会议密码";
             this.MeetingPwd.Name = "MeetingPwd";
             // 
@@ -345,6 +353,7 @@
             this.Controls.Add(this.label1);
             this.Name = "MeetingListSearchForm";
             this.Text = "MeetingListSearchForm";
+            this.Load += new System.EventHandler(this.MeetingListSearchForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

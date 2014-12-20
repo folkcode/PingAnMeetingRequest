@@ -406,9 +406,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
         }
 
-        public bool TryGetMeetingDetail(string meetingId, Model.HandlerSession session, out Model.SVCMMeetingDetail meetingDetail)
+        public bool TryGetMeetingDetail(string meetingId, Model.HandlerSession session, out Model.SVCMMeetingDetail detail)
         {
-           meetingDetail = new SVCMMeetingDetail();
+           detail = new SVCMMeetingDetail();
 
            try
            {
@@ -421,10 +421,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
                if (status == "200")
                {
-
-                   var detail = new SVCMMeetingDetail();
                    detail.Id = root.SelectSingleNode("conferId").InnerText;
-                   detail.Name = root.SelectSingleNode("conferName").InnerText;
+                   detail.Name = root.SelectSingleNode("conferName").InnerText??string.Empty;
                    detail.StartTime = DateTime.Parse(root.SelectSingleNode("startTime").InnerText);
                    detail.EndTime = DateTime.Parse(root.SelectSingleNode("endTime").InnerText);
                    detail.Status = root.SelectSingleNode("status").InnerText;
@@ -438,7 +436,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    detail.ParticipatorNumber = int.Parse(root.SelectSingleNode("participatorNumber").InnerText);
                    detail.Series.Name = root.SelectSingleNode("seriesName").InnerText;
                    detail.AccountName = root.SelectSingleNode("accountName").InnerText;
-                   detail.Phone = root.SelectSingleNode("telephone").InnerText;
+                   detail.Phone = root.SelectSingleNode("telephone").InnerText.Replace("null", "");
 
                    var leaders = root.SelectSingleNode("leader").InnerText.Split(",".ToArray());
                    foreach (var item in leaders)
@@ -449,14 +447,14 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                        });
                    }
 
-                   detail.LeaderRoom = root.SelectSingleNode("leaderRoom").InnerText;
+                   detail.LeaderRoom = root.SelectSingleNode("leaderRoom").InnerText.Replace("null", "");
                    //detail.Id = root.SelectSingleNode("ipTelephoneNumber").InnerText;
-                   detail.Memo= root.SelectSingleNode("confMemo").InnerText;
-                   detail.Password = root.SelectSingleNode("confPassword").InnerText;
+                   detail.Memo = root.SelectSingleNode("confMemo").InnerText.Replace("null", "");
+                   detail.Password = root.SelectSingleNode("confPassword").InnerText.Replace("null", "");
                    
                    detail.VideoSet = (VideoSet)int.Parse(root.SelectSingleNode("videoSet").InnerText);
 
-                   detail.IPDesc = root.SelectSingleNode("ipdesc").InnerText;
+                   detail.IPDesc = root.SelectSingleNode("ipdesc").InnerText.Replace("null","");
 
                    foreach (var item in root.SelectSingleNode("roomList").SelectNodes("roomInfo"))
                    {

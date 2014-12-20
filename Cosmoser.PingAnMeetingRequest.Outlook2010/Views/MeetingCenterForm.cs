@@ -7,18 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
+using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
     public partial class MeetingCenterForm : Form
     {
-        public MeetingDetailData MeetingData
-        {
-            get;
-            set;
-        }
-
         private string currentMeetingId;
+        private MeetingData _meetingData;
 
         public MeetingCenterForm()
         {
@@ -28,12 +24,43 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         private void MeetingCenterForm_Load(object sender, EventArgs e)
         {
             this.dataGridView1.AutoGenerateColumns = false;
-            this.SetDataSource();
+
+            var task = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.GetMeetingListSyncTask();
+
+            task.Wait();
+
+            _meetingData = task.Result;
+
+            this.SetDataSource(_meetingData.Values.ToList());
+
+            this.InitializeUI();
         }
 
-        private void SetDataSource()
+        private void InitializeUI()
         {
-            var list = this.MeetingData.Values.ToList();
+            this.dateTimePickerStart.Value = DateTime.Today;
+            this.dateTimePickerEnd.Value = DateTime.Today.AddMonths(2);
+
+            this.comboBoxConfProperty.Items.Add("全部");//sting.Empty
+            this.comboBoxConfProperty.Items.Add("执委会议"); //1
+            this.comboBoxConfProperty.Items.Add("非执委会议"); //2
+            this.comboBoxConfProperty.SelectedIndex = 0;
+
+            this.comboBoxMideaType.Items.Add("全部");//-1
+            this.comboBoxMideaType.Items.Add("本地会议");//4
+            this.comboBoxMideaType.Items.Add("两方视频会议");//1
+            this.comboBoxMideaType.Items.Add("多方视频会议");//2
+            this.comboBoxMideaType.SelectedIndex = 0;
+
+            this.comboBoxConfType.Items.Add("全部");//-1
+            this.comboBoxConfType.Items.Add("视频");//1
+            this.comboBoxConfType.Items.Add("本地");//2
+            this.comboBoxConfType.SelectedIndex = 0;
+
+        }
+
+        private void SetDataSource(List<SVCMMeeting> list)
+        {
             this.dataGridView1.DataSource = null;
             this.dataGridView1.DataSource = list;
             //this.dataGridView1.RowCount = list.Count;
@@ -44,6 +71,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 dataGridView1.Rows[i].Cells["MeetingName"].Value = list[i].Name;
                 dataGridView1.Rows[i].Cells["StartTime"].Value = list[i].StartTime;
                 dataGridView1.Rows[i].Cells["EndTime"].Value = list[i].EndTime;
+                dataGridView1.Rows[i].Cells["MeetingStatus"].Value = list[i].Status;
+                dataGridView1.Rows[i].Cells["MeetingType"].Value = list[i].MideaTypeStr;
+                dataGridView1.Rows[i].Cells["MainMeetingRoom"].Value = list[i].MainRoom;
+                dataGridView1.Rows[i].Cells["ServiceKey"].Value = list[i].ServiceKey;
+                dataGridView1.Rows[i].Cells["MeetingPwd"].Value = list[i].Password;
             }
         }
 
@@ -115,13 +147,59 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             {
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Delete();
-                this.SetDataSource();
+                _meetingData.Remove(currentMeetingId);
+                this.SetDataSource(_meetingData.Values.ToList());
             }
         }
 
         private void MeetingCenterForm_Activated(object sender, EventArgs e)
         {
-            this.SetDataSource();
+            //this.SetDataSource(_meetingData.Values.ToList());
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            MeetingListQuery query = new MeetingListQuery();
+            query.StartTime = this.dateTimePickerStart.Value;
+            query.EndTime = this.dateTimePickerEnd.Value;
+            
+            int index = this.comboBoxConfType.SelectedIndex;
+
+            switch (index)
+            {
+                case 0:
+                    query.StatVideoType = -1;
+                    break;
+                case 1:
+                    query.StatVideoType = 4;
+                    break;
+                case 2:
+                    query.StatVideoType = 1;
+                    break;
+                case 3:
+                    query.StatVideoType = 2;
+                    break;
+
+            }
+
+            query.ConferenceProperty = this.comboBoxConfProperty.SelectedIndex == 0 ? string.Empty : this.comboBoxConfProperty.SelectedIndex.ToString();
+
+            query.ConfType = this.comboBoxConfType.SelectedIndex == 0 ? "-1" : this.comboBoxConfType.SelectedIndex.ToString();
+
+            query.MeetingName = this.txtMeetingName.Text;
+            query.RoomName = this.txtRoomName.Text;
+            query.Alias = this.txtAlias.Text;
+            query.ServiceKey = this.txtServiceKey.Text;
+
+            List<SVCMMeeting> list;
+            if (ClientServiceFactory.Create().TryGetMeetingList(query, OutlookFacade.Instance().Session, out list))
+            {
+                this.SetDataSource(list);
+            }
+            else
+            {
+                MessageBox.Show("获取会议列表失败！");
+            }
         }
     }
 }

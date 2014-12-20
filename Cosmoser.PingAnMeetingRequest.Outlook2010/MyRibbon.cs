@@ -186,7 +186,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         public void DoMeetingList(Office.IRibbonControl control)
         {
-            MeetingListSearchForm form = new MeetingListSearchForm();
+            MeetingCenterForm form = new MeetingCenterForm();
             form.Show();
         }
 

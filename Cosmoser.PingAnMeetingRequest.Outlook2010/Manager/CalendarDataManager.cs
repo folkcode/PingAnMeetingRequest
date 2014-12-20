@@ -130,7 +130,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 query.RoomName = string.Empty;
                 query.ServiceKey = string.Empty;
                 query.StartTime = DateTime.Now;
-                query.EndTime = DateTime.Now.AddDays(60);
+                query.EndTime = DateTime.Now.AddMonths(2);
                 query.StatVideoType = -1;
 
                 List<SVCMMeeting> list;

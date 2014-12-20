@@ -79,6 +79,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         public void StartupOutlook()
         {
             logger.Info("ThisAddIn_Startup");
+            
             this.InitializeSession();
 
             this._activeExplorer = Globals.ThisAddIn.Application.ActiveExplorer();
@@ -99,12 +100,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         private void InitializeSession()
         {
-            this._session = new HandlerSession();
-            this._session.UserName = this.Application.Session.CurrentUser.Name;
-            this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
-            this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
-            this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"]; ;
-            ClientServiceFactory.Create().Login(ref this._session);
+            Task task = Task.Factory.StartNew(() =>
+            {
+                this._session = new HandlerSession();
+                this._session.UserName = this.Application.Session.CurrentUser.Name;
+                this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
+                this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+                this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"]; ;
+                ClientServiceFactory.Create().Login(ref this._session);
+            });
         }
 
         void Inspectors_NewInspector(Outlook.Inspector Inspector)

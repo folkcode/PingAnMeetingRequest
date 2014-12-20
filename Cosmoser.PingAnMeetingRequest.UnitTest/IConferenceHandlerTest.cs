@@ -233,7 +233,7 @@ namespace Cosmoser.PingAnMeetingRequest.UnitTest
             query.MeetingName = "";
             query.RoomName = "";
             query.ConferenceProperty = "";
-            query.ConfType = ConferenceType.Immediate;
+            query.ConfType = "-1";
             query.Alias = "";
             query.ServiceKey = "";
             query.StatVideoType = 2;
