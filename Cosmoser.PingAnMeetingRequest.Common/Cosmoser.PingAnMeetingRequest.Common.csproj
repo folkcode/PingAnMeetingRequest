@@ -65,6 +65,7 @@
     <Compile Include="ClientService\RestXMLApiClient.cs" />
     <Compile Include="ClientService\RestXmlClientService.cs" />
     <Compile Include="Interfaces\IConferenceHandler.cs" />
+    <Compile Include="Model\RegionCatagoryQuery.cs" />
     <Compile Include="Model\HandlerSession.cs" />
     <Compile Include="Model\LeaderType.cs" />
     <Compile Include="Model\MeetingData.cs" />
@@ -73,6 +74,8 @@
     <Compile Include="Model\MeetingParameter.cs" />
     <Compile Include="Model\MeetingRoom.cs" />
     <Compile Include="Model\MeetingRoomListQuery.cs" />
+    <Compile Include="Model\MeetingScheduler.cs" />
+    <Compile Include="Model\MeetingSchedulerQuery.cs" />
     <Compile Include="Model\MeetingSeries.cs" />
     <Compile Include="Model\MeetingStatus.cs" />
     <Compile Include="Model\MobileTerm.cs" />

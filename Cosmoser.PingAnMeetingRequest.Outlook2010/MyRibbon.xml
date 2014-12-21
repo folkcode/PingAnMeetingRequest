@@ -32,7 +32,7 @@
         
         <group id="groupDisplay"
             label="显示" >
-          <button id ="btnAppointmentSearch" label ="日程查询" imageMso="CalendarInsert" size="large" screentip="日程查询" />
+          <button id ="btnAppointmentSearch" label ="日程查询" imageMso="CalendarInsert" onAction="DoSchedulerSearch" size="large" screentip="日程查询" />
         </group>
       </tab>
     </tabs>

@@ -190,6 +190,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             form.Show();
         }
 
+        public void DoSchedulerSearch(Office.IRibbonControl control)
+        {
+            MeetingDateSearchForm form = new MeetingDateSearchForm();
+            form.Show();
+        }
+
         #endregion
 
         #region Helpers

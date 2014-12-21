@@ -325,35 +325,38 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             return false;
         }
 
-        public bool TryGetRegionCatagory(string seriesId, Model.HandlerSession session, out Model.RegionCatagory regionCatagory)
+        public bool TryGetRegionCatagory(RegionCatagoryQuery query, Model.HandlerSession session, out Model.RegionCatagory regionCatagory)
         {
             regionCatagory = new RegionCatagory();
 
             try
             {
                 session.AddMessageId();
-                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><searchCity><messageId>{0}</messageId><token>{1}</token><seriesId>{2}</seriesId ><provinceCode>0</provinceCode ><cityCode>0</cityCode ><boroughCode>0</boroughCode></searchCity>",
+                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><searchCity><messageId>{0}</messageId><token>{1}</token><seriesId>{2}</seriesId ><provinceCode>{3}</provinceCode ><cityCode>{4}</cityCode ><boroughCode>{5}</boroughCode></searchCity>",
                                                 session.MessageId,
                                                 session.Token,
-                                                seriesId);
+                                                query.SeriesId,
+                                                query.ProvinceCode,
+                                                query.CityCode,
+                                                query.BoroughCode);
 
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "searchcity", xmlData);
 
                 XmlNode root = response.SelectSingleNode("searchCity");
-                string status = root.SelectSingleNode("result").InnerText;
+                string status = "200";// root.SelectSingleNode("result").InnerText;
 
                 if (status == "200")
                 {
-                    regionCatagory.SeriesList = new List<MeetingSeries>();
-                    foreach (var item in root.SelectSingleNode("seriesList").SelectNodes("seriesInfo"))
-                    {
-                        var node = item as XmlNode;
-                        var series = new MeetingSeries();
-                        series.Id = node.SelectSingleNode("seriesId").InnerText;
-                        series.Name = node.SelectSingleNode("seriesName").InnerText;
+                    //regionCatagory.SeriesList = new List<MeetingSeries>();
+                    //foreach (var item in root.SelectSingleNode("seriesList").SelectNodes("seriesInfo"))
+                    //{
+                    //    var node = item as XmlNode;
+                    //    var series = new MeetingSeries();
+                    //    series.Id = node.SelectSingleNode("seriesId").InnerText;
+                    //    series.Name = node.SelectSingleNode("seriesName").InnerText;
 
-                        regionCatagory.SeriesList.Add(series);
-                    }
+                    //    regionCatagory.SeriesList.Add(series);
+                    //}
 
                     regionCatagory.ProvinceList = new List<RegionInfo>();
                     foreach (var item in root.SelectSingleNode("provinceList").SelectNodes("provinceInfo"))
@@ -547,6 +550,67 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("TryGetMeetingList failed, error:" + ex.Message + "\n" + ex.StackTrace);
+            }
+
+            return false;
+        }
+
+
+        public bool TryGetMeetingScheduler(MeetingSchedulerQuery query, HandlerSession session, out List<MeetingScheduler> schedulerList)
+        {
+            schedulerList = new List<MeetingScheduler>();
+
+            try
+            {
+                session.AddMessageId();
+                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><termConferList><messageId>{0}</messageId><token>{1}</token><roomName>{2}</roomName><levelId>{3}</levelId><seriesId>{4}</seriesId><provinceCode>{5}</provinceCode><cityCode>{6}</cityCode><boroughCode>{7}</boroughCode ><boardroomState>{8}</boardroomState><roomIfTerminal>{9}</roomIfTerminal><capacity>{10}</capacity><startTime>{11}</startTime><endTime>{12}</endTime></termConferList>",
+                                               session.MessageId,
+                                               session.Token,
+                                               query.RoomName,
+                                               query.LevelId,
+                                               query.SeriesId,
+                                               query.ProvinceCode,                                               
+                                               query.CityCode,                                               
+                                               query.BoroughCode,                                               
+                                               query.BoardRoomState,
+                                               query.RoomIfTerminal,
+                                               query.Capacity,
+                                               query.StartTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                               query.EndTime.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                var response = this._client.DoHttpWebRequest(session.BaseUrl + "termConferList", xmlData);
+                XmlNode root = response.SelectSingleNode("termConferList");
+                string status = root.SelectSingleNode("result").InnerText;
+
+                if (status == "200")
+                {
+                    foreach (var item in root.SelectSingleNode("roomList").SelectNodes("roomInfo"))
+                    {
+                        var node = item as XmlNode;
+                        var meeting = new MeetingScheduler();
+                        meeting.RoomId = node.SelectSingleNode("roomId").InnerText;
+                        meeting.RoomName = node.SelectSingleNode("roomName").InnerText;
+                        meeting.IfTerminal = int.Parse(node.SelectSingleNode("IfTerminal").InnerText);
+                        meeting.StartTime = DateTime.Parse(node.SelectSingleNode("startTime").InnerText);
+                        meeting.EndTime = DateTime.Parse(node.SelectSingleNode("endTime").InnerText);
+                        meeting.ConferId = node.SelectSingleNode("conferId").InnerText;
+                        meeting.Property = node.SelectSingleNode("property").InnerText;
+                        meeting.Address = node.SelectSingleNode("address").InnerText;
+                        meeting.Status = int.Parse(node.SelectSingleNode("status").InnerText);
+                        schedulerList.Add(meeting);
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    logger.Error(string.Format("TryGetMeetingScheduler failed, status: {0}, error:{1}", status, response.InnerXml));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("TryGetMeetingScheduler failed, error:" + ex.Message + "\n" + ex.StackTrace);
             }
 
             return false;

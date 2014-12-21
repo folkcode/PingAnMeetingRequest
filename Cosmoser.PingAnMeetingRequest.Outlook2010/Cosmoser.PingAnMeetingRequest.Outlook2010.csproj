@@ -229,6 +229,7 @@
     <Compile Include="Views\AttendedBossForm.Designer.cs">
       <DependentUpon>AttendedBossForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\CapacityInfo.cs" />
     <Compile Include="Views\DataGridViewDisableCheckBox.cs" />
     <Compile Include="Views\IAttendedLeadersView.cs" />
     <Compile Include="Views\IMeetingRoomView.cs" />
@@ -263,6 +264,7 @@
     <Compile Include="Views\MobileTermForm.Designer.cs">
       <DependentUpon>MobileTermForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\RoomScheduler.cs" />
     <EmbeddedResource Include="PingAnMeetingRequestFormRegion.resx">
       <DependentUpon>PingAnMeetingRequestFormRegion.cs</DependentUpon>
     </EmbeddedResource>
