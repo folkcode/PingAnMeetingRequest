@@ -139,6 +139,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Display();
             }
+            else
+            {
+                MessageBox.Show("请选择一个会议！");
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -149,6 +153,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 appt.Delete();
                 _meetingData.Remove(currentMeetingId);
                 this.SetDataSource(_meetingData.Values.ToList());
+            }
+            else
+            {
+                MessageBox.Show("请选择一个会议！");
             }
         }
 

@@ -29,6 +29,16 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.checkbox = new Cosmoser.PingAnMeetingRequest.Outlook2010.Views.DataGridViewDisableCheckBoxColumn();
+            this.MeetingName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MeetingStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MeetingType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MainMeetingRoom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ServiceKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MeetingPwd = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
@@ -56,16 +66,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.checkbox = new Cosmoser.PingAnMeetingRequest.Outlook2010.Views.DataGridViewDisableCheckBoxColumn();
-            this.MeetingName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MeetingStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MeetingType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MainMeetingRoom = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ServiceKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MeetingPwd = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -92,6 +92,79 @@
             this.dataGridView1.Size = new System.Drawing.Size(852, 221);
             this.dataGridView1.TabIndex = 12;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // 
+            // Id
+            // 
+            this.Id.DataPropertyName = "Id";
+            this.Id.HeaderText = "Id";
+            this.Id.Name = "Id";
+            this.Id.ReadOnly = true;
+            this.Id.Visible = false;
+            // 
+            // checkbox
+            // 
+            this.checkbox.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.checkbox.DataPropertyName = "Selected";
+            this.checkbox.FalseValue = "NoSelected";
+            this.checkbox.HeaderText = "";
+            this.checkbox.IndeterminateValue = "Indeterminate";
+            this.checkbox.Name = "checkbox";
+            this.checkbox.ReadOnly = true;
+            this.checkbox.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.checkbox.TrueValue = "Selected";
+            this.checkbox.Width = 5;
+            // 
+            // MeetingName
+            // 
+            this.MeetingName.DataPropertyName = "Name";
+            this.MeetingName.HeaderText = "会议名称";
+            this.MeetingName.Name = "MeetingName";
+            this.MeetingName.ReadOnly = true;
+            this.MeetingName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // StartTime
+            // 
+            this.StartTime.DataPropertyName = "StartTime";
+            this.StartTime.HeaderText = "召开时间";
+            this.StartTime.Name = "StartTime";
+            this.StartTime.ReadOnly = true;
+            // 
+            // EndTime
+            // 
+            this.EndTime.DataPropertyName = "EndTime";
+            this.EndTime.HeaderText = "结束时间";
+            this.EndTime.Name = "EndTime";
+            this.EndTime.ReadOnly = true;
+            // 
+            // MeetingStatus
+            // 
+            this.MeetingStatus.HeaderText = "会议状态";
+            this.MeetingStatus.Name = "MeetingStatus";
+            this.MeetingStatus.ReadOnly = true;
+            // 
+            // MeetingType
+            // 
+            this.MeetingType.HeaderText = "会议类型";
+            this.MeetingType.Name = "MeetingType";
+            this.MeetingType.ReadOnly = true;
+            // 
+            // MainMeetingRoom
+            // 
+            this.MainMeetingRoom.HeaderText = "主会场";
+            this.MainMeetingRoom.Name = "MainMeetingRoom";
+            this.MainMeetingRoom.ReadOnly = true;
+            // 
+            // ServiceKey
+            // 
+            this.ServiceKey.HeaderText = "呼入号";
+            this.ServiceKey.Name = "ServiceKey";
+            this.ServiceKey.ReadOnly = true;
+            // 
+            // MeetingPwd
+            // 
+            this.MeetingPwd.HeaderText = "会议密码";
+            this.MeetingPwd.Name = "MeetingPwd";
+            this.MeetingPwd.ReadOnly = true;
             // 
             // btnDelete
             // 
@@ -206,6 +279,7 @@
             // 
             // comboBoxMideaType
             // 
+            this.comboBoxMideaType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMideaType.FormattingEnabled = true;
             this.comboBoxMideaType.Location = new System.Drawing.Point(309, 154);
             this.comboBoxMideaType.Name = "comboBoxMideaType";
@@ -214,6 +288,7 @@
             // 
             // comboBoxConfType
             // 
+            this.comboBoxConfType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxConfType.FormattingEnabled = true;
             this.comboBoxConfType.Location = new System.Drawing.Point(309, 121);
             this.comboBoxConfType.Name = "comboBoxConfType";
@@ -222,6 +297,7 @@
             // 
             // comboBoxConfProperty
             // 
+            this.comboBoxConfProperty.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxConfProperty.FormattingEnabled = true;
             this.comboBoxConfProperty.Location = new System.Drawing.Point(309, 89);
             this.comboBoxConfProperty.Name = "comboBoxConfProperty";
@@ -322,79 +398,6 @@
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 23;
             this.label1.Text = "开始时间";
-            // 
-            // Id
-            // 
-            this.Id.DataPropertyName = "Id";
-            this.Id.HeaderText = "Id";
-            this.Id.Name = "Id";
-            this.Id.ReadOnly = true;
-            this.Id.Visible = false;
-            // 
-            // checkbox
-            // 
-            this.checkbox.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.checkbox.DataPropertyName = "Selected";
-            this.checkbox.FalseValue = "NoSelected";
-            this.checkbox.HeaderText = "";
-            this.checkbox.IndeterminateValue = "Indeterminate";
-            this.checkbox.Name = "checkbox";
-            this.checkbox.ReadOnly = true;
-            this.checkbox.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.checkbox.TrueValue = "Selected";
-            this.checkbox.Width = 5;
-            // 
-            // MeetingName
-            // 
-            this.MeetingName.DataPropertyName = "Name";
-            this.MeetingName.HeaderText = "会议名称";
-            this.MeetingName.Name = "MeetingName";
-            this.MeetingName.ReadOnly = true;
-            this.MeetingName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // StartTime
-            // 
-            this.StartTime.DataPropertyName = "StartTime";
-            this.StartTime.HeaderText = "召开时间";
-            this.StartTime.Name = "StartTime";
-            this.StartTime.ReadOnly = true;
-            // 
-            // EndTime
-            // 
-            this.EndTime.DataPropertyName = "EndTime";
-            this.EndTime.HeaderText = "结束时间";
-            this.EndTime.Name = "EndTime";
-            this.EndTime.ReadOnly = true;
-            // 
-            // MeetingStatus
-            // 
-            this.MeetingStatus.HeaderText = "会议状态";
-            this.MeetingStatus.Name = "MeetingStatus";
-            this.MeetingStatus.ReadOnly = true;
-            // 
-            // MeetingType
-            // 
-            this.MeetingType.HeaderText = "会议类型";
-            this.MeetingType.Name = "MeetingType";
-            this.MeetingType.ReadOnly = true;
-            // 
-            // MainMeetingRoom
-            // 
-            this.MainMeetingRoom.HeaderText = "主会场";
-            this.MainMeetingRoom.Name = "MainMeetingRoom";
-            this.MainMeetingRoom.ReadOnly = true;
-            // 
-            // ServiceKey
-            // 
-            this.ServiceKey.HeaderText = "呼入号";
-            this.ServiceKey.Name = "ServiceKey";
-            this.ServiceKey.ReadOnly = true;
-            // 
-            // MeetingPwd
-            // 
-            this.MeetingPwd.HeaderText = "会议密码";
-            this.MeetingPwd.Name = "MeetingPwd";
-            this.MeetingPwd.ReadOnly = true;
             // 
             // MeetingCenterForm
             // 

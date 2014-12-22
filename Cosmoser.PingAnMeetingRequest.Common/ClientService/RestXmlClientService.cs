@@ -24,9 +24,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             try
             {
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><login><userName>{0}</userName><userType>1</userType></login>", session.UserName);
-
+                logger.Debug(string.Format("Login, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "login", xmlData);
-
+                logger.Debug(string.Format("Login response, xmldata: {0}", response.OuterXml));
                 string status = response.SelectSingleNode("login").SelectSingleNode("result").InnerText;
 
                 if (status == "200")
@@ -57,9 +57,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             {
                 session.AddMessageId();
                 string xmlData = this._dataTransform.GetXmlDataFromMeetingDetail(meetingDetail, session);
-
+                logger.Debug(string.Format("BookingMeeting, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "startConfer", xmlData);
-
+                logger.Debug(string.Format("BookingMeeting response, xmldata: {0}", response.OuterXml));
                 string status = response.SelectSingleNode("startConfer").SelectSingleNode("result").InnerText;
 
                 if (status == "200")
@@ -70,6 +70,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("BookingMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, response.SelectSingleNode("startConfer").SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -81,14 +82,25 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             return false;
         }
 
+        private void ReLogin(HandlerSession session, XmlNode resultNode)
+        {
+            string property = resultNode.Attributes["property"].Value;
+            if (property == "TOKEN不存在!")
+            {
+                //重新登录
+                this.Login(ref session);
+            }
+        }
+
         public bool DeleteMeeting(string conferId, Model.HandlerSession session)
         {
             try
             {
                 session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><deleteConfer><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId></deleteConfer>", session.MessageId, session.Token, conferId);
+                logger.Debug(string.Format("DeleteMeeting, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "deleteConfer", xmlData);
-
+                logger.Debug(string.Format("DeleteMeeting response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("deleteConfer");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -99,6 +111,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("DeleteMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -116,9 +129,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             {
                 session.AddMessageId();
                 string xmlData = this._dataTransform.GetXmlDataForUpdatingMeeting(meetingDetail, session);
-
+                logger.Debug(string.Format("UpdateMeeting, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "updateConfer", xmlData);
-
+                logger.Debug(string.Format("UpdateMeeting response, xmldata: {0}", response.OuterXml));
                 string status = response.SelectSingleNode("updateConfer").SelectSingleNode("result").InnerText;
 
                 if (status == "200")
@@ -128,6 +141,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("UpdateMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, response.SelectSingleNode("updateConfer").SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -146,8 +160,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             {
                 session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><seriesList><messageId>{0}</messageId><token>{1}</token></seriesList>", session.MessageId, session.Token);
+                logger.Debug(string.Format("TryGetSeriesList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "seriesList", xmlData);
-
+                logger.Debug(string.Format("TryGetSeriesList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("seriesList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -168,6 +183,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("TryGetSeriesList failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -196,8 +212,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 query.StartTime.ToString("yyyy-MM-dd HH:mm:ss"),
                                                 query.EndTime.ToString("yyyy-MM-dd HH:mm:ss")
                                                 );
-
+                logger.Debug(string.Format("TryGetMeetingRoomList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "roomList", xmlData);
+                logger.Debug(string.Format("TryGetMeetingRoomList response, xmldata: {0}", response.OuterXml));
 
                 XmlNode root = response.SelectSingleNode("roomList");
                 string status = root.SelectSingleNode("result").InnerText;
@@ -219,6 +236,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("TryGetMeetingRoomList failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -238,11 +256,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             {
                 session.AddMessageId();
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><leaderList><messageId>{0}</messageId><token>{1}</token></leaderList>", session.MessageId, session.Token);
+                logger.Debug(string.Format("TryGetLeaderList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "leaderList", xmlData);
-
-                //var response = new XmlDocument();
-                //response.Load(Assembly.GetExecutingAssembly().CodeBase.Replace("Cosmoser.PingAnMeetingRequest.Common.DLL", @"Xml\LeaderList.xml"));
-
+                logger.Debug(string.Format("TryGetLeaderList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("leaderList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -265,6 +281,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("TryGetLeaderList failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -289,11 +306,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 session.Token,
                                                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                                 DateTime.Now.AddMinutes(30).ToString("yyyy-MM-dd HH:mm:ss"));
+                logger.Debug(string.Format("TryGetMobileTermList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "mobileTermList", xmlData);
-
-                //var response = new XmlDocument();
-                //response.Load(Assembly.GetExecutingAssembly().CodeBase.Replace("Cosmoser.PingAnMeetingRequest.Common.DLL",@"Xml\MobileTermList.xml"));
-
+                logger.Debug(string.Format("TryGetMobileTermList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("mobileTermList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -314,6 +329,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("TryGetMobileTermList failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -339,9 +355,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 query.ProvinceCode,
                                                 query.CityCode,
                                                 query.BoroughCode);
-
+                logger.Debug(string.Format("TryGetRegionCatagory, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "searchcity", xmlData);
-
+                logger.Debug(string.Format("TryGetRegionCatagory response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("searchCity");
                 string status = "200";// root.SelectSingleNode("result").InnerText;
 
@@ -396,6 +412,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("TryGetRegionCatagory failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -417,8 +434,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
            {
                session.AddMessageId();
                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><confInfo><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId></confInfo>", session.MessageId, session.Token, meetingId);
+               logger.Debug(string.Format("TryGetMeetingDetail, xmldata: {0}", xmlData));
                var response = this._client.DoHttpWebRequest(session.BaseUrl + "getConfInfo", xmlData);
-
+               logger.Debug(string.Format("TryGetMeetingDetail response, xmldata: {0}", response.OuterXml));
                XmlNode root = response.SelectSingleNode("confInfo");
                string status = root.SelectSingleNode("result").InnerText;
 
@@ -485,6 +503,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                else
                {
                    logger.Error(string.Format("TryGetMeetingDetail failed, status: {0}, error:{1}", status, response.InnerXml));
+                   this.ReLogin(session, root.SelectSingleNode("result"));
                    return false;
                }
            }
@@ -515,8 +534,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                query.ConferenceProperty,
                                                query.StatVideoType,
                                                query.ConfType);
-
+                logger.Debug(string.Format("TryGetMeetingDetail, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "bookingConferList", xmlData);
+                logger.Debug(string.Format("TryGetMeetingDetail response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("bookingConferList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -544,6 +564,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("TryGetMeetingList failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }
@@ -577,8 +598,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                query.Capacity,
                                                query.StartTime.ToString("yyyy-MM-dd HH:mm:ss"),
                                                query.EndTime.ToString("yyyy-MM-dd HH:mm:ss"));
-
+                logger.Debug(string.Format("TryGetMeetingScheduler, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "termConferList", xmlData);
+                logger.Debug(string.Format("TryGetMeetingScheduler response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("termConferList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -605,6 +627,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 else
                 {
                     logger.Error(string.Format("TryGetMeetingScheduler failed, status: {0}, error:{1}", status, response.InnerXml));
+                    this.ReLogin(session, root.SelectSingleNode("result"));
                     return false;
                 }
             }

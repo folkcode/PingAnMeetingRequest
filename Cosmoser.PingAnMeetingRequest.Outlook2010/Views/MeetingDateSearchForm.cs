@@ -81,7 +81,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             this.rbStatusAll.Checked = true;
             this.rbTypeAll.Checked = true;
 
-            this.comboBoxCapacity.Items.Add("全部");
+            this.comboBoxCapacity.Items.Add(new CapacityInfo() { Label = "--全部--", Value = string.Empty });
             this.comboBoxCapacity.Items.Add(new CapacityInfo()
             {
                 Label = "0< 人数 <=10",
