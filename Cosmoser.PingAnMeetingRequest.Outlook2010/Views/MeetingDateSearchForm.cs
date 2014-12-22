@@ -221,11 +221,46 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             if (ClientServiceFactory.Create().TryGetMeetingScheduler(query, OutlookFacade.Instance().Session, out list))
             {
+                List<RoomScheduler> rlist = RoomScheduler.PopulateFromMeetingScheduler(list, query.StartTime, query.EndTime);
 
+                this.SetDataSource(rlist,query.StartTime,query.EndTime);
             }
             else
             {
+                MessageBox.Show("查询会议日程失败，请重试！");
+            }
+        }
 
+        private void SetDataSource(List<RoomScheduler> list, DateTime startTime, DateTime endTime)
+        {
+            this.dataGridView1.DataSource = null;
+            this.dataGridView1.DataSource = list;
+
+            this.dataGridView1.Columns.Clear();
+
+            dataGridView1.Columns.Add("SeriesName", "系列");
+            dataGridView1.Columns.Add("RoomName", "会议室");
+            dataGridView1.Columns.Add("Type", "类型");
+            int n = (startTime - endTime).Minutes / 30;
+            if (list.Count > 0)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    dataGridView1.Columns.Add("c" + i, startTime.AddMinutes(30 * i).ToString("HH:mm"));
+                    dataGridView1.Columns["c" + i].Width = 40;
+                }
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                dataGridView1.Rows[i].Cells["SeriesName"].Value = list[i].SeriesName;
+                dataGridView1.Rows[i].Cells["RoomName"].Value = list[i].RoomName;
+                dataGridView1.Rows[i].Cells["Type"].Value = list[i].Type;
+
+                for (int j = 0; j < n; j++)
+                {
+                    dataGridView1.Rows[i].Cells["c" + j].Style.BackColor = list[i].TimeSheduler[j];
+                }
             }
         }
     }

@@ -18,8 +18,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             req.KeepAlive = false;
             req.ContentType = "application/xml";
             req.Method = "POST";
-            
-            byte[] buffer = Encoding.UTF8.GetBytes(data);
+
+            byte[] buffer = Encoding.GetEncoding("GB2312").GetBytes(data);
             Stream PostData = req.GetRequestStream();
             PostData.Write(buffer, 0, buffer.Length);
             PostData.Close();

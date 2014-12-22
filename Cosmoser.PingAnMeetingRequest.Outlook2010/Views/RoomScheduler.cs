@@ -31,8 +31,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
                 foreach (var room in roomList)
                 {
-                    int start = (room.StartTime - room.StartTime.Date).Minutes / 30;
-                    int end = (room.EndTime - room.StartTime.Date).Minutes / 30 + 1;
+                    int start = (room.StartTime - startTime).Minutes / 30;
+                    int end = (room.EndTime - startTime).Minutes / 30 + 1;
 
                     for (int i = start; i <= end; i++)
                     {
@@ -55,14 +55,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                     }
                 }
 
-                int s = (startTime - startTime.Date).Minutes / 30;
-                int e = (endTime - startTime.Date).Minutes / 30 + 1;
+                //int s = (startTime - startTime.Date).Minutes / 30;
+                int e = (endTime - startTime).Minutes / 30 + 1;
 
-                for (int i = s; i <= e; i++)
+                for (int i = 0; i < e; i++)
                 {
                     if (!rScheduler.TimeSheduler.ContainsKey(i))
                         rScheduler.TimeSheduler.Add(i, Color.Blue);
                 }
+
             }
 
             return list;
