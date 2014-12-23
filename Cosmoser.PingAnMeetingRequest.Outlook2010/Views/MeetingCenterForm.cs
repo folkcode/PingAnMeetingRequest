@@ -71,11 +71,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 dataGridView1.Rows[i].Cells["MeetingName"].Value = list[i].Name;
                 dataGridView1.Rows[i].Cells["StartTime"].Value = list[i].StartTime;
                 dataGridView1.Rows[i].Cells["EndTime"].Value = list[i].EndTime;
+                if (list[i].Status == "正在进行")
+                    dataGridView1.Rows[i].Cells["MeetingStatus"].Style.ForeColor = Color.Red;
                 dataGridView1.Rows[i].Cells["MeetingStatus"].Value = list[i].Status;
                 dataGridView1.Rows[i].Cells["MeetingType"].Value = list[i].MideaTypeStr;
                 dataGridView1.Rows[i].Cells["MainMeetingRoom"].Value = list[i].MainRoom;
                 dataGridView1.Rows[i].Cells["ServiceKey"].Value = list[i].ServiceKey;
-                dataGridView1.Rows[i].Cells["MeetingPwd"].Value = list[i].Password;
+                //dataGridView1.Rows[i].Cells["MeetingPwd"].Value = list[i].Password;
             }
         }
 
@@ -136,6 +138,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (!string.IsNullOrWhiteSpace(currentMeetingId))
             {
+                if (_meetingData[currentMeetingId].Status == "正在进行")
+                {
+                    MessageBox.Show("会议正在进行，不能修改！");
+                }
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Display();
             }
@@ -149,6 +155,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (!string.IsNullOrWhiteSpace(currentMeetingId))
             {
+                if (_meetingData[currentMeetingId].Status == "正在进行")
+                {
+                    MessageBox.Show("会议正在进行，不能删除！");
+                }
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Delete();
                 _meetingData.Remove(currentMeetingId);

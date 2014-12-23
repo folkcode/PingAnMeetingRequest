@@ -29,16 +29,6 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.checkbox = new Cosmoser.PingAnMeetingRequest.Outlook2010.Views.DataGridViewDisableCheckBoxColumn();
-            this.MeetingName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MeetingStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MeetingType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MainMeetingRoom = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ServiceKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MeetingPwd = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
@@ -66,6 +56,15 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.checkbox = new Cosmoser.PingAnMeetingRequest.Outlook2010.Views.DataGridViewDisableCheckBoxColumn();
+            this.MeetingName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MeetingStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MeetingType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MainMeetingRoom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ServiceKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -83,8 +82,7 @@
             this.MeetingStatus,
             this.MeetingType,
             this.MainMeetingRoom,
-            this.ServiceKey,
-            this.MeetingPwd});
+            this.ServiceKey});
             this.dataGridView1.Location = new System.Drawing.Point(12, 383);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
@@ -92,79 +90,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(852, 221);
             this.dataGridView1.TabIndex = 12;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            // 
-            // Id
-            // 
-            this.Id.DataPropertyName = "Id";
-            this.Id.HeaderText = "Id";
-            this.Id.Name = "Id";
-            this.Id.ReadOnly = true;
-            this.Id.Visible = false;
-            // 
-            // checkbox
-            // 
-            this.checkbox.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.checkbox.DataPropertyName = "Selected";
-            this.checkbox.FalseValue = "NoSelected";
-            this.checkbox.HeaderText = "";
-            this.checkbox.IndeterminateValue = "Indeterminate";
-            this.checkbox.Name = "checkbox";
-            this.checkbox.ReadOnly = true;
-            this.checkbox.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.checkbox.TrueValue = "Selected";
-            this.checkbox.Width = 5;
-            // 
-            // MeetingName
-            // 
-            this.MeetingName.DataPropertyName = "Name";
-            this.MeetingName.HeaderText = "会议名称";
-            this.MeetingName.Name = "MeetingName";
-            this.MeetingName.ReadOnly = true;
-            this.MeetingName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // StartTime
-            // 
-            this.StartTime.DataPropertyName = "StartTime";
-            this.StartTime.HeaderText = "召开时间";
-            this.StartTime.Name = "StartTime";
-            this.StartTime.ReadOnly = true;
-            // 
-            // EndTime
-            // 
-            this.EndTime.DataPropertyName = "EndTime";
-            this.EndTime.HeaderText = "结束时间";
-            this.EndTime.Name = "EndTime";
-            this.EndTime.ReadOnly = true;
-            // 
-            // MeetingStatus
-            // 
-            this.MeetingStatus.HeaderText = "会议状态";
-            this.MeetingStatus.Name = "MeetingStatus";
-            this.MeetingStatus.ReadOnly = true;
-            // 
-            // MeetingType
-            // 
-            this.MeetingType.HeaderText = "会议类型";
-            this.MeetingType.Name = "MeetingType";
-            this.MeetingType.ReadOnly = true;
-            // 
-            // MainMeetingRoom
-            // 
-            this.MainMeetingRoom.HeaderText = "主会场";
-            this.MainMeetingRoom.Name = "MainMeetingRoom";
-            this.MainMeetingRoom.ReadOnly = true;
-            // 
-            // ServiceKey
-            // 
-            this.ServiceKey.HeaderText = "呼入号";
-            this.ServiceKey.Name = "ServiceKey";
-            this.ServiceKey.ReadOnly = true;
-            // 
-            // MeetingPwd
-            // 
-            this.MeetingPwd.HeaderText = "会议密码";
-            this.MeetingPwd.Name = "MeetingPwd";
-            this.MeetingPwd.ReadOnly = true;
             // 
             // btnDelete
             // 
@@ -321,7 +246,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(223, 263);
+            this.label9.Location = new System.Drawing.Point(223, 269);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(53, 12);
             this.label9.TabIndex = 31;
@@ -330,7 +255,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(223, 298);
+            this.label8.Location = new System.Drawing.Point(223, 304);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(53, 12);
             this.label8.TabIndex = 30;
@@ -339,7 +264,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(223, 58);
+            this.label7.Location = new System.Drawing.Point(223, 61);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(53, 12);
             this.label7.TabIndex = 29;
@@ -348,7 +273,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(223, 92);
+            this.label6.Location = new System.Drawing.Point(223, 97);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 12);
             this.label6.TabIndex = 28;
@@ -357,7 +282,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(223, 124);
+            this.label5.Location = new System.Drawing.Point(223, 129);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 12);
             this.label5.TabIndex = 27;
@@ -366,7 +291,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(217, 157);
+            this.label4.Location = new System.Drawing.Point(217, 162);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 12);
             this.label4.TabIndex = 26;
@@ -375,7 +300,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(223, 192);
+            this.label3.Location = new System.Drawing.Point(223, 198);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 12);
             this.label3.TabIndex = 25;
@@ -384,7 +309,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(211, 228);
+            this.label2.Location = new System.Drawing.Point(211, 234);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(65, 12);
             this.label2.TabIndex = 24;
@@ -393,17 +318,84 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(223, 24);
+            this.label1.Location = new System.Drawing.Point(223, 27);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 23;
             this.label1.Text = "开始时间";
             // 
+            // Id
+            // 
+            this.Id.DataPropertyName = "Id";
+            this.Id.HeaderText = "Id";
+            this.Id.Name = "Id";
+            this.Id.ReadOnly = true;
+            this.Id.Visible = false;
+            // 
+            // checkbox
+            // 
+            this.checkbox.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.checkbox.DataPropertyName = "Selected";
+            this.checkbox.FalseValue = "NoSelected";
+            this.checkbox.HeaderText = "";
+            this.checkbox.IndeterminateValue = "Indeterminate";
+            this.checkbox.Name = "checkbox";
+            this.checkbox.ReadOnly = true;
+            this.checkbox.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.checkbox.TrueValue = "Selected";
+            this.checkbox.Width = 5;
+            // 
+            // MeetingName
+            // 
+            this.MeetingName.DataPropertyName = "Name";
+            this.MeetingName.HeaderText = "会议名称";
+            this.MeetingName.Name = "MeetingName";
+            this.MeetingName.ReadOnly = true;
+            this.MeetingName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // StartTime
+            // 
+            this.StartTime.DataPropertyName = "StartTime";
+            this.StartTime.HeaderText = "召开时间";
+            this.StartTime.Name = "StartTime";
+            this.StartTime.ReadOnly = true;
+            // 
+            // EndTime
+            // 
+            this.EndTime.DataPropertyName = "EndTime";
+            this.EndTime.HeaderText = "结束时间";
+            this.EndTime.Name = "EndTime";
+            this.EndTime.ReadOnly = true;
+            // 
+            // MeetingStatus
+            // 
+            this.MeetingStatus.HeaderText = "会议状态";
+            this.MeetingStatus.Name = "MeetingStatus";
+            this.MeetingStatus.ReadOnly = true;
+            // 
+            // MeetingType
+            // 
+            this.MeetingType.HeaderText = "会议类型";
+            this.MeetingType.Name = "MeetingType";
+            this.MeetingType.ReadOnly = true;
+            // 
+            // MainMeetingRoom
+            // 
+            this.MainMeetingRoom.HeaderText = "主会场";
+            this.MainMeetingRoom.Name = "MainMeetingRoom";
+            this.MainMeetingRoom.ReadOnly = true;
+            // 
+            // ServiceKey
+            // 
+            this.ServiceKey.HeaderText = "呼入号";
+            this.ServiceKey.Name = "ServiceKey";
+            this.ServiceKey.ReadOnly = true;
+            // 
             // MeetingCenterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(876, 654);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.label13);
@@ -481,6 +473,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn MeetingType;
         private System.Windows.Forms.DataGridViewTextBoxColumn MainMeetingRoom;
         private System.Windows.Forms.DataGridViewTextBoxColumn ServiceKey;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MeetingPwd;
     }
 }

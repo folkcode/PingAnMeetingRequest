@@ -196,6 +196,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 this.olkTxtSubject.Text = meeting.Name;
                 this.olkTxtLocation.Text = meeting.RoomsStr;
 
+               
+
                 this.txtPassword.Text = meeting.Password;
                 if (meeting.ConfType == ConferenceType.Immediate)
                     this.obtliji.Value = true;
