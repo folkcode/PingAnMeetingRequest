@@ -246,11 +246,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkTxtLocation_Click()
         {
-            if (meeting.ConfMideaType == MideaType.Local)
-            {
-                MessageBox.Show("你选的是本地会议，不需要会议室！");
-                return;
-            }
+            //if (meeting.ConfMideaType == MideaType.Local)
+            //{
+            //    MessageBox.Show("你选的是本地会议，不需要会议室！");
+            //    return;
+            //}
 
             IMeetingRoomView view = new Views.MeetingRoomSelection();
             view.MeetingRoomList = new List<MeetingRoom>();
