@@ -9,6 +9,7 @@ using System.Xml;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using System.Reflection;
 using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 {
@@ -17,7 +18,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
         private DataTransform _dataTransform = new DataTransform();
         private RestXMLApiClient _client = new RestXMLApiClient();
 
-        private static ILog logger = log4net.LogManager.GetLogger(typeof(RestXmlClientService));
+        private static ILog logger = IosLogManager.GetLogger(typeof(RestXmlClientService));
         
         public bool Login(ref Model.HandlerSession session)
         {

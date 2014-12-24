@@ -7,6 +7,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -17,7 +18,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
         private Outlook.Items _appointmentItems;
         Microsoft.Office.Interop.Outlook.MAPIFolder _mapiFolder;
 
-        private static ILog logger = LogManager.GetLogger(typeof(CalendarFolder));
+        private static ILog logger = IosLogManager.GetLogger(typeof(CalendarFolder));
 
         private Dictionary<string, Outlook.AppointmentItem> _appointmentList = new Dictionary<string, Outlook.AppointmentItem>();
 

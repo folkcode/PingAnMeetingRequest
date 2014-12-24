@@ -5,13 +5,18 @@ using System.Text;
 using System.Xml.Linq;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
+using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
+using log4net;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
     public partial class ThisAddIn
     {
+        static ILog logger = IosLogManager.GetLogger(typeof(ThisAddIn));
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            //IosLogManager.InitializeLog4Net();
             OutlookFacade.Instance().StartupOutlook();
         }
 
@@ -42,9 +47,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             if (serviceGuid == typeof(Office.IRibbonExtensibility).GUID)
             {
-                if (OutlookFacade.Instance().MyRibbon == null)
+                try
                 {
-                    OutlookFacade.Instance().MyRibbon = new MyRibbon(Application);
+                    if (OutlookFacade.Instance().MyRibbon == null)
+                    {
+                        OutlookFacade.Instance().MyRibbon = new MyRibbon(Application);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.Message + ex.StackTrace);
                 }
 
                 return OutlookFacade.Instance().MyRibbon;

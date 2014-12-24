@@ -10,6 +10,7 @@ using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using System.Threading.Tasks;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -19,12 +20,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         private MyRibbon _ribbon;
         private Outlook.Application Application = Globals.ThisAddIn.Application;
 
-        private static ILog logger = LogManager.GetLogger(typeof(OutlookFacade));
+        private static ILog logger = IosLogManager.GetLogger(typeof(OutlookFacade));
         private WrapTask _task = null;
         Menus.MenuManager _menuMgr = null;
         private CalendarFolder _calendarFolder;
         private HandlerSession _session;
-
+        
         public HandlerSession Session
         {
             get
@@ -78,18 +79,25 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         public void StartupOutlook()
         {
-            logger.Info("ThisAddIn_Startup");
-            
-            this.InitializeSession();
+            try
+            {
+                logger.Info("ThisAddIn_Startup");
 
-            this._activeExplorer = Globals.ThisAddIn.Application.ActiveExplorer();
-            Globals.ThisAddIn.Application.ItemContextMenuDisplay += new Outlook.ApplicationEvents_11_ItemContextMenuDisplayEventHandler(Application_ItemContextMenuDisplay);
-            Globals.ThisAddIn.Application.ViewContextMenuDisplay += new Outlook.ApplicationEvents_11_ViewContextMenuDisplayEventHandler(Application_ViewContextMenuDisplay);
-            Globals.ThisAddIn.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
-            this._activeExplorer.FolderSwitch += new Outlook.ExplorerEvents_10_FolderSwitchEventHandler(_activeExplorer_FolderSwitch);
+                this.InitializeSession();
 
-            this._calendarFolder = new CalendarFolder();
-            this._calendarFolder.Initialize();
+                this._activeExplorer = Globals.ThisAddIn.Application.ActiveExplorer();
+                Globals.ThisAddIn.Application.ItemContextMenuDisplay += new Outlook.ApplicationEvents_11_ItemContextMenuDisplayEventHandler(Application_ItemContextMenuDisplay);
+                Globals.ThisAddIn.Application.ViewContextMenuDisplay += new Outlook.ApplicationEvents_11_ViewContextMenuDisplayEventHandler(Application_ViewContextMenuDisplay);
+                Globals.ThisAddIn.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
+                this._activeExplorer.FolderSwitch += new Outlook.ExplorerEvents_10_FolderSwitchEventHandler(_activeExplorer_FolderSwitch);
+
+                this._calendarFolder = new CalendarFolder();
+                this._calendarFolder.Initialize();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("ThisAddIn_Startup 启动失败！" + ex.Message + "\n" + ex.StackTrace);
+            }
         }
 
         void _activeExplorer_FolderSwitch()
@@ -103,7 +111,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             Task task = Task.Factory.StartNew(() =>
             {
                 this._session = new HandlerSession();
-                this._session.UserName = this.Application.Session.CurrentUser.Name;
+                if (!string.IsNullOrEmpty(this.Application.Session.CurrentUser.Address))
+                    this._session.UserName = this.Application.Session.CurrentUser.Address.Split("@".ToArray())[0];
                 this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
                 this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
                 this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"]; 
@@ -174,6 +183,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             logger.Info(string.Format("Current time: {0} , current user: {1}", DateTime.Now, name));
         }
 
+
+        
         
 
     }

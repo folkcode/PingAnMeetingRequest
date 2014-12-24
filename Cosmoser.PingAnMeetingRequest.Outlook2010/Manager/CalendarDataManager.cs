@@ -84,13 +84,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             //TODO:
             foreach (var item in this._meetingListServer.Values)
             {
-                if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
+                if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
                 {
                     SVCMMeetingDetail detail = this.ConvertDetail(item);
 
                     var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
 
-                    this.MeetingDetailDataLocal.Add(detail.Id, detail);
+                    if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
+                        this.MeetingDetailDataLocal.Add(detail.Id, detail);
 
                    if (!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id))
                    {
