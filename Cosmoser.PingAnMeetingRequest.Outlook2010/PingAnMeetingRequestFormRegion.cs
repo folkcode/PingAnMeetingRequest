@@ -183,6 +183,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
             if ( meetingId != null)
             {
+                this.txtPassword.Enabled = false;
+                this.txtPassword.PasswordChar = "*";
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
                     meeting = this._apptMgr.GetMeetingFromAppointment(this.OutlookItem as Outlook.AppointmentItem, false);
