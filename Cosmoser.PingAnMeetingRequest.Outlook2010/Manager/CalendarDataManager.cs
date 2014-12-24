@@ -7,6 +7,7 @@ using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Threading.Tasks;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using log4net;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -17,6 +18,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
         private MeetingDetailData _meetingDataLocal = new MeetingDetailData();
         private MeetingData _meetingListServer = new MeetingData();
         private AppointmentManager _appointmentManager;
+
+        static ILog logger = IosLogManager.GetLogger(typeof(CalendarDataManager));
 
         public MeetingDetailData MeetingDetailDataLocal
         {
@@ -48,13 +51,20 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             MeetingDetailData meetingData = null;
             try
             {
-                string caledarDataString = (string)this._calendarFolder.MAPIFolder.PropertyAccessor.GetProperty(path + "PingAnMeeting");
-                meetingData = Toolbox.Deserialize<MeetingDetailData>(caledarDataString);
+                try
+                {
+                    string caledarDataString = (string)this._calendarFolder.MAPIFolder.PropertyAccessor.GetProperty(path + "PingAnMeeting");
+                    meetingData = Toolbox.Deserialize<MeetingDetailData>(caledarDataString);
+                }
+                catch
+                {
+                    meetingData = new MeetingDetailData();
+                    this._calendarFolder.MAPIFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meetingData));
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                meetingData = new MeetingDetailData();
-                this._calendarFolder.MAPIFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meetingData));
+                logger.Error(ex.Message + ex.StackTrace);
             }
 
             return meetingData;

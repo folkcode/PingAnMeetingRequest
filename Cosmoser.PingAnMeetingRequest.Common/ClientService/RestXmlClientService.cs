@@ -477,23 +477,26 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    detail.VideoSet = (VideoSet)int.Parse(root.SelectSingleNode("videoSet").InnerText);
 
                    detail.IPDesc = root.SelectSingleNode("ipdesc").InnerText.Replace("null","");
-
-                   foreach (var item in root.SelectSingleNode("roomList").SelectNodes("roomInfo"))
+                   XmlNode roomlistNode = root.SelectSingleNode("roomList");
+                   if (roomlistNode != null)
                    {
-                       var node = item as XmlNode;
-                       detail.Rooms.Add(new MeetingRoom()
+                       foreach (var item in root.SelectSingleNode("roomList").SelectNodes("roomInfo"))
                        {
-                           RoomId = node.SelectSingleNode("roomId").InnerText,
-                           Name = node.SelectSingleNode("roomName").InnerText
-                       });
-
-                       if (node.SelectSingleNode("roomType").InnerText == "1")
-                       {
-                           detail.MainRoom = new MeetingRoom()
+                           var node = item as XmlNode;
+                           detail.Rooms.Add(new MeetingRoom()
                            {
                                RoomId = node.SelectSingleNode("roomId").InnerText,
                                Name = node.SelectSingleNode("roomName").InnerText
-                           };
+                           });
+
+                           if (node.SelectSingleNode("roomType").InnerText == "1")
+                           {
+                               detail.MainRoom = new MeetingRoom()
+                               {
+                                   RoomId = node.SelectSingleNode("roomId").InnerText,
+                                   Name = node.SelectSingleNode("roomName").InnerText
+                               };
+                           }
                        }
                    }
 
@@ -535,9 +538,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                query.ConferenceProperty,
                                                query.StatVideoType,
                                                query.ConfType);
-                logger.Debug(string.Format("TryGetMeetingDetail, xmldata: {0}", xmlData));
+                logger.Debug(string.Format("TryGetMeetingList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "bookingConferList", xmlData);
-                logger.Debug(string.Format("TryGetMeetingDetail response, xmldata: {0}", response.OuterXml));
+                logger.Debug(string.Format("TryGetMeetingList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("bookingConferList");
                 string status = root.SelectSingleNode("result").InnerText;
 

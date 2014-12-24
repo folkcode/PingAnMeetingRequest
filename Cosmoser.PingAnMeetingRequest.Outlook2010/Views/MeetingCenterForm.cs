@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
@@ -15,6 +17,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
     {
         private string currentMeetingId;
         private MeetingData _meetingData;
+        static ILog logger = IosLogManager.GetLogger(typeof(MeetingCenterForm));
 
         public MeetingCenterForm()
         {
@@ -23,17 +26,25 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void MeetingCenterForm_Load(object sender, EventArgs e)
         {
-            this.dataGridView1.AutoGenerateColumns = false;
+            try
+            {
+                this.dataGridView1.AutoGenerateColumns = false;
 
-            var task = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.GetMeetingListSyncTask();
+                var task = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.GetMeetingListSyncTask();
 
-            task.Wait();
+                task.Wait();
 
-            _meetingData = task.Result;
+                _meetingData = task.Result;
 
-            this.SetDataSource(_meetingData.Values.ToList());
+                this.SetDataSource(_meetingData.Values.ToList());
 
-            this.InitializeUI();
+                this.InitializeUI();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Load failed!" + ex.Message + ex.StackTrace);
+                MessageBox.Show("加载失败！" + ex.Message);
+            }
         }
 
         private void InitializeUI()

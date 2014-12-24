@@ -59,10 +59,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         public void Initialize()
         {
-            foreach (Outlook.Folder folder in Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder.Folders)
+            logger.Debug("GetRootFolder: " + Globals.ThisAddIn.Application.Session.DefaultStore.GetRootFolder().Name);
+            foreach (Outlook.Folder folder in Globals.ThisAddIn.Application.Session.DefaultStore.GetRootFolder().Folders)
             {
-                if (folder.Name == "日历" || folder.Name == "Calendar")
+                if (folder.DefaultItemType == Outlook.OlItemType.olAppointmentItem || folder.Name == "日历" || folder.Name == "Calendar")
+                {
                     this._mapiFolder = folder;
+                    logger.Debug("Calendar Folder catched!");
+                }
+            }
+
+            if (this._mapiFolder == null)
+            {
+                logger.Error("没有找到日历目录!");
             }
 
             this._calendarManager = new CalendarDataManager(this);

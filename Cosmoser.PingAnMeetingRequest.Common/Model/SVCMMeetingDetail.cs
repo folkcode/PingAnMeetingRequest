@@ -60,10 +60,24 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         {
             get
             {
-                StringBuilder sb = new StringBuilder(this.MainRoom.Name + "(主会场)");
-                foreach (var item in this.Rooms)
+                StringBuilder sb = new StringBuilder();
+                if (this.MainRoom != null)
                 {
-                    sb.Append("," + item.Name);
+                    sb.Append(this.MainRoom.Name + "(主会场)");
+                    foreach (var item in this.Rooms)
+                    {
+                        sb.Append("," + item.Name);
+                    }
+                }
+                else
+                {
+                    foreach (var item in this.Rooms)
+                    {
+                        sb.Append(item.Name + ",");
+                    }
+
+                    if(sb.Length > 0)
+                    sb.Remove(sb.Length - 1,1);
                 }
 
                 return sb.ToString();
