@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
+using Microsoft.Vbe.Interop.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -188,8 +189,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
             if ( meetingId != null)
             {
-                this.txtPassword.Enabled = false;
-                this.txtPassword.PasswordChar = "*";
+                
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
                     meeting = this._apptMgr.GetMeetingFromAppointment(this.OutlookItem as Outlook.AppointmentItem, false);
@@ -203,9 +203,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 this.olkTxtSubject.Text = meeting.Name;
                 this.olkTxtLocation.Text = meeting.RoomsStr;
 
-               
+                //hide password
+                Microsoft.Vbe.Interop.Forms.IControl ctrl = this.txtPassword as IControl;
+                ctrl.Visible = false;
+                this.olkLabel7.Caption = string.Empty;
+                this.olkLabel9.Caption = string.Empty;
 
-                this.txtPassword.Text = meeting.Password;
+                //this.txtPassword.Text = meeting.Password;
                 if (meeting.ConfType == ConferenceType.Immediate)
                     this.obtliji.Value = true;
                 else if (meeting.ConfType == ConferenceType.Furture)
