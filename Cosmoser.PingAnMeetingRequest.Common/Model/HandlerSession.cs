@@ -48,5 +48,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
                 messageId++;
             }
         }
+
+        /// <summary>
+        ///  用户可预约的会议类型
+        /// </summary>
+        public ConferenceType ConfType { get; set; }
+
+        public bool IfBookMobileTerm { get; set; }
+
     }
 }

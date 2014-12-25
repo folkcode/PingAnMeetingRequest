@@ -33,6 +33,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 if (status == "200")
                 {
                     session.Token = response.SelectSingleNode("login").SelectSingleNode("token").InnerText;
+                    string confType = response.SelectSingleNode("login").SelectSingleNode("confType").InnerText;
+                    session.ConfType = (ConferenceType)int.Parse(confType);
+                    session.IfBookMobileTerm = response.SelectSingleNode("login").SelectSingleNode("confType").InnerText == "1" ? true : false;
                     session.IsActive = true;
                     //每次登陆都需要重设messageId
                     session.ResetMessageId();
@@ -78,6 +81,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch(Exception ex)
             {
                 logger.Error("BookingMeeting failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
+
             }
 
             return false;
@@ -86,7 +91,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
         private void ReLogin(HandlerSession session, XmlNode resultNode)
         {
             string property = resultNode.Attributes["property"].Value;
-            if (property == "TOKEN不存在!")
+            string status = resultNode.InnerText;
+
+            if (property == "TOKEN不存在!" || property == "MESSAGEID有误,出现丢包现象!" || status == "404" || status == "502")
             {
                 //重新登录
                 this.Login(ref session);
@@ -119,6 +126,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("DeleteMeeting failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
             }
 
             return false;
@@ -149,10 +157,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch(Exception ex)
             {
                 logger.Error("UpdateMeeting failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
             }
 
             return false;
         }
+
+       
 
         public bool TryGetSeriesList(Model.HandlerSession session, out List<Model.MeetingSeries> seriesList)
         {
@@ -191,6 +202,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("TryGetSeriesList failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
 
             }
 
@@ -244,6 +256,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("TryGetMeetingRoomList failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
             }
 
             return false;
@@ -289,6 +302,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("TryGetLeaderList failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
 
             }
 
@@ -337,6 +351,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("TryGetMobileTermList failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
+
             }
 
             return false;
@@ -420,6 +436,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch(Exception ex)
             {
                 logger.Error("TryGetRegionCatagory failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
+
             }
 
             return false;
@@ -514,6 +532,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
            catch (Exception ex)
            {
                logger.Error("TryGetMeetingDetail failed, error:" + ex.Message + "\n" + ex.StackTrace);
+               this.Login(ref session);
+
            }
 
            return false;
@@ -575,6 +595,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("TryGetMeetingList failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
+
             }
 
             return false;
@@ -638,6 +660,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch (Exception ex)
             {
                 logger.Error("TryGetMeetingScheduler failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                this.Login(ref session);
+
             }
 
             return false;

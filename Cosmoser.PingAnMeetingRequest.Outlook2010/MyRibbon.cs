@@ -10,6 +10,8 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
+using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -44,7 +46,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         internal static Office.IRibbonUI m_Ribbon;
         private Outlook.Application _application;
         private AppointmentManager _apptMgr = new AppointmentManager();
-
+        static ILog logger = IosLogManager.GetLogger(typeof(MyRibbon));
 
         public MyRibbonType RibbonType
         {
@@ -116,15 +118,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         public void DoDelete(Office.IRibbonControl control)
         {
             Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+            logger.Debug("DoDelete appointment:" + item.Subject);
             this._apptMgr.SetAppointmentDeleted(item, true);
             item.Delete();
         }
 
         public void DoSaveAndClose(Office.IRibbonControl control)
         {
+            logger.Debug("Begin DoSaveAndClose appointment!");
             Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
             string message;
 
+            logger.Debug("TryValidateApppointmentUIInput!");
             if (this._apptMgr.TryValidateApppointmentUIInput(item, out message))
             {
                 
@@ -132,6 +137,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                 if (string.IsNullOrEmpty(meeting.Id))
                 {
+                    logger.Debug("This is a new appointment, booking Meeting to server!");
                     bool succeed = ClientServiceFactory.Create().BookingMeeting(meeting, OutlookFacade.Instance().Session);
 
                     if (succeed)
@@ -146,6 +152,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 }
                 else
                 {
+                    logger.Debug("This is a existing appointment, updating Meeting to server!");
                     bool succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, OutlookFacade.Instance().Session);
 
                     if (succeed)

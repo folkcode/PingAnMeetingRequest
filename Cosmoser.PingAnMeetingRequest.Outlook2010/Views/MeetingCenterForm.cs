@@ -10,6 +10,7 @@ using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
+using System.Threading.Tasks;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
@@ -30,15 +31,20 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             {
                 this.dataGridView1.AutoGenerateColumns = false;
 
-                var task = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.GetMeetingListSyncTask();
+                lblMessage.Text = "正在同步...";
+                lblMessage.ForeColor = Color.Red;
+                Func<MeetingData> func = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.LoadMeetingdataFromServer;
+                Task.Factory.FromAsync<MeetingData>(func.BeginInvoke, func.EndInvoke, null)
+                    .ContinueWith((result) =>
+                    {
+                        _meetingData = result.Result;
+                        this.SetDataSource(_meetingData.Values.ToList());
+                        this.InitializeUI();
 
-                task.Wait();
+                        lblMessage.Text = string.Empty;
+                    });
 
-                _meetingData = task.Result;
-
-                this.SetDataSource(_meetingData.Values.ToList());
-
-                this.InitializeUI();
+              
             }
             catch (Exception ex)
             {
@@ -82,13 +88,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 dataGridView1.Rows[i].Cells["MeetingName"].Value = list[i].Name;
                 dataGridView1.Rows[i].Cells["StartTime"].Value = list[i].StartTime;
                 dataGridView1.Rows[i].Cells["EndTime"].Value = list[i].EndTime;
-                if (list[i].Status == "正在进行")
-                    dataGridView1.Rows[i].Cells["MeetingStatus"].Style.ForeColor = Color.Red;
                 dataGridView1.Rows[i].Cells["MeetingStatus"].Value = list[i].Status;
                 dataGridView1.Rows[i].Cells["MeetingType"].Value = list[i].MideaTypeStr;
                 dataGridView1.Rows[i].Cells["MainMeetingRoom"].Value = list[i].MainRoom;
                 dataGridView1.Rows[i].Cells["ServiceKey"].Value = list[i].ServiceKey;
                 //dataGridView1.Rows[i].Cells["MeetingPwd"].Value = list[i].Password;
+
+                if (list[i].Status == "正在进行")
+                {
+                    dataGridView1.Rows[i].Cells["checkbox"].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[i].Cells["MeetingName"].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[i].Cells["StartTime"].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[i].Cells["EndTime"].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[i].Cells["MeetingStatus"].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[i].Cells["MeetingType"].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[i].Cells["MainMeetingRoom"].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[i].Cells["ServiceKey"].Style.ForeColor = Color.Red;
+                }
             }
         }
 
@@ -188,6 +204,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            lblMessage.Text = "正在同步...";
+            lblMessage.ForeColor = Color.Red;
+
             MeetingListQuery query = new MeetingListQuery();
             query.StartTime = this.dateTimePickerStart.Value;
             query.EndTime = this.dateTimePickerEnd.Value;
@@ -220,15 +239,34 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             query.Alias = this.txtAlias.Text;
             query.ServiceKey = this.txtServiceKey.Text;
 
+            Func<MeetingListQuery,List<SVCMMeeting>> func = this.SearchMeetingList;
+
+            Task.Factory.FromAsync<MeetingListQuery, List<SVCMMeeting>>(func.BeginInvoke, func.EndInvoke, query, null).ContinueWith((result) =>
+            {
+                lblMessage.Text = string.Empty;
+                List<SVCMMeeting> list = result.Result;
+
+                if (list != null)
+                {
+                    this.SetDataSource(list);
+                }
+                else
+                {
+                    MessageBox.Show("获取会议列表失败！");
+                }
+
+            });
+        }
+
+        private List<SVCMMeeting> SearchMeetingList(MeetingListQuery query)
+        {
             List<SVCMMeeting> list;
-            if (ClientServiceFactory.Create().TryGetMeetingList(query, OutlookFacade.Instance().Session, out list))
+            if (!ClientServiceFactory.Create().TryGetMeetingList(query, OutlookFacade.Instance().Session, out list))
             {
-                this.SetDataSource(list);
+                list = null;
             }
-            else
-            {
-                MessageBox.Show("获取会议列表失败！");
-            }
+
+            return list;
         }
     }
 }

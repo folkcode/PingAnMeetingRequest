@@ -102,8 +102,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void _activeExplorer_FolderSwitch()
         {
-            if (this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
-                this.CalendarFolder.CalendarDataManager.SyncMeetingList();
+            try
+            {
+                if (this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
+                    this.CalendarFolder.CalendarDataManager.SyncMeetingList();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("切换到日历同步数据错误！" + ex.Message + "\n" + ex.StackTrace);
+            }
         }
 
         private void InitializeSession()
@@ -159,8 +166,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 //set SVCM ribbon
                 this.MyRibbon.RibbonType = MyRibbonType.SVCM;
 
+                Outlook.CalendarView calView = currentFolder.CurrentView as Outlook.CalendarView;
+
                 //Create a holiday appointmet and set properties
                 Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+                //设置选中日期时间
+                if (calView.SelectedStartTime.Date != DateTime.Today)
+                    apptItem.Start = calView.SelectedStartTime.AddHours(8);
 
                 //display the appointment
                 Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);

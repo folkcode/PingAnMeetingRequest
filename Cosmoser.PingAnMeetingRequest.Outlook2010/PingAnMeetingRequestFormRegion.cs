@@ -10,6 +10,8 @@ using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
 using System.Windows.Forms;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -46,6 +48,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         private AppointmentManager _apptMgr = new AppointmentManager();
         SVCMMeetingDetail meeting;
+        static ILog logger = IosLogManager.GetLogger(typeof(PingAnMeetingRequestFormRegion));
 
         // Occurs before the form region is displayed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
@@ -180,6 +183,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void InitializeUI()
         {
+            logger.Debug("InitializeUI");
+            logger.Debug("Begin getting MeetingId");
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
             if ( meetingId != null)
             {
@@ -244,17 +249,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             else
             {
                 this.meeting = new SVCMMeetingDetail();
+                //默认语音激励
+                this.obtxsms0.Value = true;
                 this.SaveMeetingToAppointment();
             }
         }
 
         void olkTxtLocation_Click()
         {
-            //if (meeting.ConfMideaType == MideaType.Local)
-            //{
-            //    MessageBox.Show("你选的是本地会议，不需要会议室！");
-            //    return;
-            //}
+            if (meeting.ConfMideaType == MideaType.Local)
+            {
+                MessageBox.Show("你选的是本地会议，可以选择一个会议室参会！");
+            }
 
             IMeetingRoomView view = new Views.MeetingRoomSelection();
             view.MeetingRoomList = new List<MeetingRoom>();

@@ -37,6 +37,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         public string IPDesc { get; set; }
         //召集人姓名
         public string AccountName { get; set; }
+        /// <summary>
+        /// 会议状态 0：正在申请；1：预定成功；2：MCU正在处理中；3：正在进行；4：会议结束；6：待审批；7：会议被删除，详情显示
+        /// </summary>
         public string Status { get; set; }
         //点对点会议是否上MCU，0：不上MCU，1：上MCU，平安业务新增字段, 保留，默认0
         public int InMCU { get; set; }
@@ -66,6 +69,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
                     sb.Append(this.MainRoom.Name + "(主会场)");
                     foreach (var item in this.Rooms)
                     {
+                        if (item.Name == this.MainRoom.Name)
+                            continue;
                         sb.Append("," + item.Name);
                     }
                 }
@@ -100,7 +105,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
                     sb.Append("," + item.RoomId);
                 }
 
-                return sb.Remove(0, 1).ToString();
+                if (sb.Length > 0)
+                    sb.Remove(0, 1);
+                return sb.ToString();
             }
         }
         //周期性会议类型，1，日例会，2，周例会，3，月例会

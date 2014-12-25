@@ -83,32 +83,35 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         public void SyncMeetingList()
         {
-            Task<MeetingData> task = GetMeetingListSyncTask();
+            //Task<MeetingData> task = GetMeetingListSyncTask();
 
-            //task.Start();
+            ////task.Start();
 
-            task.Wait();
+            //task.Wait();
+            Func<MeetingData> func = LoadMeetingdataFromServer;
 
-            this._meetingListServer = task.Result;
-
-            //TODO:
-            foreach (var item in this._meetingListServer.Values)
+            Task.Factory.FromAsync<MeetingData>(func.BeginInvoke, func.EndInvoke, null).ContinueWith((result) =>
             {
-                if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                this._meetingListServer = result.Result;
+
+                foreach (var item in this._meetingListServer.Values)
                 {
-                    SVCMMeetingDetail detail = this.ConvertDetail(item);
+                    if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                    {
+                        SVCMMeetingDetail detail = this.ConvertDetail(item);
 
-                    var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
+                        var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
 
-                    if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
-                        this.MeetingDetailDataLocal.Add(detail.Id, detail);
+                        if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
+                            this.MeetingDetailDataLocal.Add(detail.Id, detail);
 
-                   if (!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id))
-                   {
-                       this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
-                   }
+                        if (!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id))
+                        {
+                            this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
+                        }
+                    }
                 }
-            }
+            });
 
         }
 
@@ -158,6 +161,39 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                 return meetingData;
             });
+        }
+
+        /// <summary>
+        /// 获取默认会议列表
+        /// </summary>
+        /// <returns></returns>
+        public MeetingData LoadMeetingdataFromServer()
+        {
+            MeetingListQuery query = new MeetingListQuery();
+
+            query.Alias = string.Empty;
+            query.ConferenceProperty = string.Empty;
+            query.ConfType = "-1";
+            query.MeetingName = string.Empty;
+            query.RoomName = string.Empty;
+            query.ServiceKey = string.Empty;
+            query.StartTime = DateTime.Now;
+            query.EndTime = DateTime.Now.AddMonths(2);
+            query.StatVideoType = -1;
+
+            List<SVCMMeeting> list;
+            MeetingData meetingData = new MeetingData();
+            bool succeed = ClientServiceFactory.Create().TryGetMeetingList(query, OutlookFacade.Instance().Session, out list);
+
+            if (succeed)
+            {
+                foreach (var item in list)
+                {
+                    meetingData.Add(item.Id, item);
+                }
+            }
+
+            return meetingData;
         }
             
     }

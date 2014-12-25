@@ -8,11 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
     public partial class MeetingDateSearchForm : Form
     {
+        private static ILog logger = IosLogManager.GetLogger(typeof(MeetingDateSearchForm));
         public MeetingDateSearchForm()
         {
             InitializeComponent();
@@ -20,90 +23,97 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void MeetingDateSearchForm_Load(object sender, EventArgs e)
         {
-            this.dateTimePickerSearchDate.Value = DateTime.Today;
-
-            DateTime start = DateTime.Today;
-            DateTime endTime = DateTime.Today.AddDays(1);
-
-            while (start < endTime)
+            try
             {
-                this.comboBoxStartTime.Items.Add(start.ToString("HH:mm"));
-                this.comboBoxEndTime.Items.Add(start.ToString("HH:mm"));
+                this.dateTimePickerSearchDate.Value = DateTime.Today;
 
-                start = start.AddMinutes(30);
-            }
+                DateTime start = DateTime.Today;
+                DateTime endTime = DateTime.Today.AddDays(1);
 
-            this.comboBoxStartTime.SelectedItem = "08:00";
-            this.comboBoxEndTime.SelectedItem = "20:00";
-
-            List<MeetingSeries> seriesList;
-
-            if (ClientServiceFactory.Create().TryGetSeriesList(OutlookFacade.Instance().Session, out seriesList))
-            {
-                foreach (var item in seriesList)
+                while (start < endTime)
                 {
-                    this.comboBoxSeries.Items.Add(item);
+                    this.comboBoxStartTime.Items.Add(start.ToString("HH:mm"));
+                    this.comboBoxEndTime.Items.Add(start.ToString("HH:mm"));
+
+                    start = start.AddMinutes(30);
                 }
 
-                this.comboBoxSeries.SelectedIndex = 0;
+                this.comboBoxStartTime.SelectedItem = "08:00";
+                this.comboBoxEndTime.SelectedItem = "20:00";
+
+                List<MeetingSeries> seriesList;
+
+                if (ClientServiceFactory.Create().TryGetSeriesList(OutlookFacade.Instance().Session, out seriesList))
+                {
+                    foreach (var item in seriesList)
+                    {
+                        this.comboBoxSeries.Items.Add(item);
+                    }
+
+                    this.comboBoxSeries.SelectedIndex = 0;
+                }
+                else
+                {
+                    MessageBox.Show("获取系列信息失败，请重试！");
+                }
+
+                this.comboBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "总部级",
+                    LevelId = "1,1"
+                });
+
+                this.comboBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "二级机构",
+                    LevelId = "1,2"
+                });
+
+                this.comboBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "三级机构",
+                    LevelId = "1,3"
+                });
+
+                this.comboBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "四级机构",
+                    LevelId = "1,4"
+                });
+
+                this.comboBoxLevel.SelectedIndex = 0;
+
+                this.rbStatusAll.Checked = true;
+                this.rbTypeAll.Checked = true;
+
+                this.comboBoxCapacity.Items.Add(new CapacityInfo() { Label = "--全部--", Value = string.Empty });
+                this.comboBoxCapacity.Items.Add(new CapacityInfo()
+                {
+                    Label = "0< 人数 <=10",
+                    Value = "0,10"
+                });
+                this.comboBoxCapacity.Items.Add(new CapacityInfo()
+                {
+                    Label = "10< 人数 <=25",
+                    Value = "10,25"
+                });
+                this.comboBoxCapacity.Items.Add(new CapacityInfo()
+                {
+                    Label = "25< 人数 <=40",
+                    Value = "25,40"
+                });
+                this.comboBoxCapacity.Items.Add(new CapacityInfo()
+                {
+                    Label = "40< 人数",
+                    Value = "40,0"
+                });
+
+                this.comboBoxCapacity.SelectedIndex = 0;
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("获取系列信息失败，请重试！");
+                logger.Error("初始化查询条件错误！", ex);
             }
-
-            this.comboBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "总部级",
-                LevelId = "1,1"
-            });
-
-            this.comboBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "二级机构",
-                LevelId = "1,2"
-            });
-
-            this.comboBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "三级机构",
-                LevelId = "1,3"
-            });
-
-            this.comboBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "四级机构",
-                LevelId = "1,4"
-            });
-
-            this.comboBoxLevel.SelectedIndex = 0;
-
-            this.rbStatusAll.Checked = true;
-            this.rbTypeAll.Checked = true;
-
-            this.comboBoxCapacity.Items.Add(new CapacityInfo() { Label = "--全部--", Value = string.Empty });
-            this.comboBoxCapacity.Items.Add(new CapacityInfo()
-            {
-                Label = "0< 人数 <=10",
-                Value = "0,10"
-            });
-            this.comboBoxCapacity.Items.Add(new CapacityInfo()
-            {
-                Label = "10< 人数 <=25",
-                Value = "10,25"
-            });
-            this.comboBoxCapacity.Items.Add(new CapacityInfo()
-            {
-                Label = "25< 人数 <=40",
-                Value = "25,40"
-            });
-            this.comboBoxCapacity.Items.Add(new CapacityInfo()
-            {
-                Label = "40< 人数",
-                Value = "40,0"
-            });
-
-            this.comboBoxCapacity.SelectedIndex = 0;
         }
 
         private void comboBoxSeries_SelectedIndexChanged(object sender, EventArgs e)

@@ -160,7 +160,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                     this.listBoxSelectedRooms.DataSource = null;
                     this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
                 }
-                
+
+                this.listBoxAvailableRoom.SelectedItems.Clear();
             }
             else
             {
@@ -178,6 +179,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                     this.MeetingRoomList.Remove(room);
                 }
 
+                this.listBoxSelectedRooms.SelectedItems.Clear();
                 this.listBoxSelectedRooms.DataSource = null;
                 this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
             }

@@ -29,10 +29,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
     public enum VideoSet
     {
         Audio = 1,
-        MainRoom,
-        EqualScreen,
-        OneNScreen,
-        TwoNScreen
+        MainRoom = 0,
+        EqualScreen = 3,
+        OneNScreen = 4,
+        TwoNScreen = 5
     }
 
 }

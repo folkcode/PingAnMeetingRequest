@@ -79,12 +79,12 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             this.AddChildrenNode(xmlDoc, root, "startTime", detail.StartTime.ToString("yyyy-MM-dd HH:mm:ss"));
             this.AddChildrenNode(xmlDoc, root, "durationHour", detail.DurantionHours.ToString());
             this.AddChildrenNode(xmlDoc, root, "durationMinute", detail.DurantionMinutes.ToString());
-            this.AddChildrenNode(xmlDoc, root, "confPassword", detail.Password.Trim());
+            this.AddChildrenNode(xmlDoc, root, "confPassword", detail.Password??string.Empty);
             this.AddChildrenNode(xmlDoc, root, "conferMemo", detail.Memo);
-            this.AddChildrenNode(xmlDoc, root, "meetingRoom", detail.MainRoom.RoomId);
+            this.AddChildrenNode(xmlDoc, root, "meetingRoom", detail.MainRoom == null ? string.Empty : detail.MainRoom.RoomId);
             this.AddChildrenNode(xmlDoc, root, "termIds", detail.RoomIds);
             this.AddChildrenNode(xmlDoc, root, "videoSet", ((int)detail.VideoSet).ToString());
-            this.AddChildrenNode(xmlDoc, root, "participatorNumber", detail.ParticipatorNumber.ToString());
+            this.AddChildrenNode(xmlDoc, root, "participatorNumber", detail.ParticipatorNumber == null ? string.Empty : detail.ParticipatorNumber.ToString());
             this.AddChildrenNode(xmlDoc, root, "phone", detail.Phone);
             this.AddChildrenNode(xmlDoc, root, "ipdesc", detail.IPDesc);
             //点对点会议是否上MCU，0：不上MCU，1：上MCU，快乐平安新增字段，保留，默认填0
