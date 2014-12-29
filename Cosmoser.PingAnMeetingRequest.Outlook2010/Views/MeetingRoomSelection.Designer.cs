@@ -117,6 +117,7 @@
             this.listBoxSelectedRooms.ItemHeight = 12;
             this.listBoxSelectedRooms.Location = new System.Drawing.Point(468, 60);
             this.listBoxSelectedRooms.Name = "listBoxSelectedRooms";
+            this.listBoxSelectedRooms.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.listBoxSelectedRooms.Size = new System.Drawing.Size(219, 268);
             this.listBoxSelectedRooms.TabIndex = 6;
             // 

@@ -15,7 +15,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         public Dictionary<int, Color> TimeSheduler = new Dictionary<int, Color>();
 
-        public static List<RoomScheduler> PopulateFromMeetingScheduler(List<MeetingScheduler> meetingSchedulerList, DateTime startTime, DateTime endTime)
+        public static List<RoomScheduler> PopulateFromMeetingScheduler(List<MeetingScheduler> meetingSchedulerList, DateTime startTime, DateTime endTime, bool isAll)
         {
             var list = new List<RoomScheduler>();
 
@@ -29,40 +29,62 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 rScheduler.SeriesName = roomList[0].SeriesName;
                 rScheduler.Type = roomList[0].IfTerminal == 1 ? "视频" : "非视频";
 
-                foreach (var room in roomList)
+                if (roomList.Count == 1 && string.IsNullOrEmpty(roomList[0].ConferId))
                 {
-                    int start = (room.StartTime - startTime).Minutes / 30;
-                    int end = (room.EndTime - startTime).Minutes / 30 + 1;
+                    int e = (int)(endTime - startTime).TotalMinutes / 30;
 
-                    for (int i = start; i <= end; i++)
+                    for (int i = 0; i < e; i++)
                     {
-                        Color c = Color.Blue;
+                        if (!rScheduler.TimeSheduler.ContainsKey(i))
+                            rScheduler.TimeSheduler.Add(i, Color.FromArgb(0xae, 0xbb, 0x66));
+                    }
 
-                        switch(room.Status)
+                    list.Add(rScheduler);
+                }
+                else
+                {
+                    if (isAll)
+                    {
+                        foreach (var room in roomList)
                         {
-                            case 1:
-                            case 2:
-                            case 3:
-                                c = Color.Red;
-                                    break;
-                            case 6:
-                                c = Color.Yellow;
-                                break;
+                            int start = (int)(room.StartTime - startTime).TotalMinutes / 30;
+                            int end = (int)(room.EndTime - startTime).TotalMinutes / 30;
+
+                            for (int i = start; i < end; i++)
+                            {
+                                Color c = Color.Blue;
+
+                                switch (room.Status)
+                                {
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                        c = Color.FromArgb(0xff, 0x79, 0x00);
+                                        break;
+                                    case 6:
+                                        c = Color.FromArgb(0xff, 0xff, 0x00);
+                                        break;
+                                }
+
+                                if (!rScheduler.TimeSheduler.ContainsKey(i))
+                                    rScheduler.TimeSheduler.Add(i, c);
+                            }
                         }
 
-                        if (!rScheduler.TimeSheduler.ContainsKey(i))
-                            rScheduler.TimeSheduler.Add(i, c);
+                        //int s = (startTime - startTime.Date).Minutes / 30;
+                        int e = (int)(endTime - startTime).TotalMinutes / 30;
+
+                        for (int i = 0; i < e; i++)
+                        {
+                            if (!rScheduler.TimeSheduler.ContainsKey(i))
+                                rScheduler.TimeSheduler.Add(i, Color.FromArgb(0xae, 0xbb, 0x66));
+                        }
+
+                        list.Add(rScheduler);
                     }
                 }
 
-                //int s = (startTime - startTime.Date).Minutes / 30;
-                int e = (endTime - startTime).Minutes / 30 + 1;
-
-                for (int i = 0; i < e; i++)
-                {
-                    if (!rScheduler.TimeSheduler.ContainsKey(i))
-                        rScheduler.TimeSheduler.Add(i, Color.Blue);
-                }
+                
 
             }
 

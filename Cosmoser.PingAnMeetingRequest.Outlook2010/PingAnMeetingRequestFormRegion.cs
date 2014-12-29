@@ -42,6 +42,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             // Use e.OutlookItem to get a reference to the current Outlook item.
             private void PingAnMeetingRequestFormRegionFactory_FormRegionInitializing(object sender, Microsoft.Office.Tools.Outlook.FormRegionInitializingEventArgs e)
             {
+                
             }
         }
 
@@ -56,17 +57,29 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         // Use this.OutlookFormRegion to get a reference to the form region.
         private void PingAnMeetingRequestFormRegion_FormRegionShowing(object sender, System.EventArgs e)
         {
-            this.btnCanhuilingdao.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(btnCanhuilingdao_Click);
-            this.olkTxtLocation.Click += new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
-            this.olkbtnMobileTerm.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(olkbtnMobileTerm_Click);
+            try
+            {
+                Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
 
-            OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
+                this.btnCanhuilingdao.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(btnCanhuilingdao_Click);
+                this.olkTxtLocation.Click += new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
+                this.olkbtnMobileTerm.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(olkbtnMobileTerm_Click);
 
-            this.InitializeUI();
-            Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
-            item.Write += new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
+                this.obtliji.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtliji_Click);
+                this.obtyuyue.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtyuyue_Click);
 
-            this.RegisterControlValueChangeEvents();
+                OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
+
+                this.InitializeUI();
+
+                item.Write += new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
+
+                this.RegisterControlValueChangeEvents();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("PingAnMeetingRequestFormRegion_FormRegionShowing", ex);
+            }
         }
 
         void olkbtnMobileTerm_Click()
@@ -86,12 +99,21 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         // Use this.OutlookFormRegion to get a reference to the form region.
         private void PingAnMeetingRequestFormRegion_FormRegionClosed(object sender, System.EventArgs e)
         {
-            OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
-
-            Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
-            if (!this._apptMgr.IsAppointmentStatusDeleted(item) && item.Saved)
+            try
             {
-                this.SaveMeetingToAppointment();
+                OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+
+                Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
+
+                
+                //if (!this._apptMgr.IsAppointmentStatusDeleted(item) && item.Saved)
+                //{
+                //    this.SaveMeetingToAppointment();
+                //}
+            }
+            catch (Exception ex)
+            {
+                logger.Error("PingAnMeetingRequestFormRegion_FormRegionClosed", ex);
             }
         }
 
@@ -127,16 +149,22 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void obtliji_Click()
         {
-            this.obtyuyue.Value = false;
-            this.obtliji.Value = true;
+            this.olkStartDateControl.Enabled = false;
+            this.olkStartTimeControl.Enabled = false;
+
+            this.olkStartDateControl.Date = DateTime.Now;
+            this.olkStartTimeControl.Time = DateTime.Now;
+
+            this.olkEndDateControl.Date = DateTime.Now;
+            this.olkEndTimeControl.Time = DateTime.Now.AddMinutes(30);
 
             this.SaveMeetingToAppointment();
         }
 
         void obtyuyue_Click()
         {
-            this.obtyuyue.Value = true;
-            this.obtliji.Value = false;
+            this.olkStartDateControl.Enabled = true;
+            this.olkStartTimeControl.Enabled = true;
 
             this.SaveMeetingToAppointment();
         }
@@ -158,6 +186,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         }
 
         void ValueChanged()
+        {
+            this.SaveMeetingToAppointment();
+        }
+
+        void LijiMeetingChanged()
+        {
+            this.SaveMeetingToAppointment();
+        }
+
+        void YuyueMeetingChanged()
         {
             this.SaveMeetingToAppointment();
         }
@@ -186,13 +224,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             logger.Debug("InitializeUI");
             logger.Debug("Begin getting MeetingId");
+            //hide password
+            Microsoft.Vbe.Interop.Forms.IControl ctrl = this.txtPassword as IControl;
+            ctrl.Visible = false;
+            this.olkLabel7.Caption = string.Empty;
+            this.olkLabel9.Caption = string.Empty;
+
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
             if ( meetingId != null)
             {
-                
+
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
                     meeting = this._apptMgr.GetMeetingFromAppointment(this.OutlookItem as Outlook.AppointmentItem, false);
+                }
+                else
+                {
+                    this._apptMgr.SaveMeetingToAppointment(meeting, this.OutlookItem as Outlook.AppointmentItem, false);
                 }
 
                 this.olkStartDateControl.Date = meeting.StartTime.Date;
@@ -201,23 +249,29 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 this.olkEndTimeControl.Time = meeting.EndTime;
 
                 this.olkTxtSubject.Text = meeting.Name;
+                (this.OutlookItem as Outlook.AppointmentItem).Location = meeting.RoomsStr;
                 this.olkTxtLocation.Text = meeting.RoomsStr;
 
-                //hide password
-                Microsoft.Vbe.Interop.Forms.IControl ctrl = this.txtPassword as IControl;
-                ctrl.Visible = false;
-                this.olkLabel7.Caption = string.Empty;
-                this.olkLabel9.Caption = string.Empty;
+               
 
                 //this.txtPassword.Text = meeting.Password;
                 if (meeting.ConfType == ConferenceType.Immediate)
+                {
                     this.obtliji.Value = true;
+                    //this.obtliji.Enabled = false;
+                    //this.obtbendi.Enabled = false;
+                }
                 else if (meeting.ConfType == ConferenceType.Furture)
+                {
                     this.obtyuyue.Value = true;
+                    //this.obtliji.Enabled = true;
+                    //this.obtbendi.Enabled = true;
+                }
                 else
                 {
                     this.obtliji.Value = false;
                     this.obtyuyue.Value = false;
+
                 }
 
                 if (meeting.ConfMideaType == MideaType.Local)
@@ -249,27 +303,27 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 this.txtIPCount.Text = meeting.IPDesc;
                 (this.OutlookItem as Outlook.AppointmentItem).Body = meeting.Memo;
 
+                //以下不能修改
+                this.olkTxtSubject.Enabled = false;
+
             }
             else
             {
                 this.meeting = new SVCMMeetingDetail();
                 //默认语音激励
                 this.obtxsms0.Value = true;
+                //默认视频会议
+                this.obtshipin.Value = true;
                 this.SaveMeetingToAppointment();
             }
         }
 
         void olkTxtLocation_Click()
         {
-            if (meeting.ConfMideaType == MideaType.Local)
-            {
-                MessageBox.Show("你选的是本地会议，可以选择一个会议室参会！");
-            }
-
             IMeetingRoomView view = new Views.MeetingRoomSelection();
             view.MeetingRoomList = new List<MeetingRoom>();
             view.MeetingRoomList.AddRange(meeting.Rooms);
-            view.MainRoom = new MeetingRoom();
+            view.MainRoom = meeting.MainRoom;
 
             view.ConfType = meeting.ConfMideaType;
             view.StarTime = meeting.StartTime;
@@ -303,10 +357,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
 
             meeting.Name = this.olkTxtSubject.Text;
-            meeting.StartTime = this.olkStartDateControl.Date;
-            meeting.StartTime = this.olkStartTimeControl.Time;
-            meeting.EndTime = this.olkEndDateControl.Date;
-            meeting.EndTime = this.olkEndTimeControl.Time;
+            //meeting.StartTime = this.olkStartDateControl.Date;
+            meeting.StartTime = DateTime.Parse(this.olkStartDateControl.Date.ToString("yyyy-MM-dd ") + this.olkStartTimeControl.Time.ToString("HH:mm:ss"));
+            //meeting.EndTime = this.olkEndDateControl.Date;
+            meeting.EndTime = DateTime.Parse(this.olkEndDateControl.Date.ToString("yyyy-MM-dd ") + this.olkEndTimeControl.Time.ToString("HH:mm:ss"));
 
             if (this.obtliji.Value == true)
             {

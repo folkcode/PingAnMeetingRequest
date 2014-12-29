@@ -65,7 +65,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             return xmlDoc.InnerXml;
         }
 
-        public string GetXmlDataForUpdatingMeeting(SVCMMeetingDetail detail, HandlerSession session)
+        public string GetXmlDataForUpdatingMeeting(SVCMMeetingDetail detail, string operationType, HandlerSession session)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml("<?xml version=\"1.0\" encoding=\"utf-8\" ?><updateConfer></updateConfer>");
@@ -81,10 +81,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             this.AddChildrenNode(xmlDoc, root, "durationMinute", detail.DurantionMinutes.ToString());
             this.AddChildrenNode(xmlDoc, root, "confPassword", detail.Password??string.Empty);
             this.AddChildrenNode(xmlDoc, root, "conferMemo", detail.Memo);
-            this.AddChildrenNode(xmlDoc, root, "meetingRoom", detail.MainRoom == null ? string.Empty : detail.MainRoom.RoomId);
+            this.AddChildrenNode(xmlDoc, root, "meetingRoom", detail.MainRoom == null ? string.Empty : detail.MainRoom.RoomId.Split(",".ToArray())[0]);
             this.AddChildrenNode(xmlDoc, root, "termIds", detail.RoomIds);
             this.AddChildrenNode(xmlDoc, root, "videoSet", ((int)detail.VideoSet).ToString());
-            this.AddChildrenNode(xmlDoc, root, "participatorNumber", detail.ParticipatorNumber == null ? string.Empty : detail.ParticipatorNumber.ToString());
+            this.AddChildrenNode(xmlDoc, root, "participatorNumber", detail.ParticipatorNumber.ToString());
             this.AddChildrenNode(xmlDoc, root, "phone", detail.Phone);
             this.AddChildrenNode(xmlDoc, root, "ipdesc", detail.IPDesc);
             //点对点会议是否上MCU，0：不上MCU，1：上MCU，快乐平安新增字段，保留，默认填0
@@ -93,6 +93,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             this.AddChildrenNode(xmlDoc, root, "leaderRoom", detail.LeaderRoom);
             this.AddChildrenNode(xmlDoc, root, "conferType", ((int)detail.ConfType).ToString());
             this.AddChildrenNode(xmlDoc, root, "conferMideaType", ((int)detail.ConfMideaType).ToString());
+            this.AddChildrenNode(xmlDoc, root, "operateType", operationType);
+
 
             return xmlDoc.InnerXml;
         }

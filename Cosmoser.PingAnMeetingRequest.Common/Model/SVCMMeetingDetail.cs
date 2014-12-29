@@ -143,7 +143,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         {
             VideoSet = Model.VideoSet.Audio;
             this.Status = "";
-            ConfType = ConferenceType.Immediate;
+            ConfType = ConferenceType.Furture;
             ConfMideaType = MideaType.Local;
             Id = string.Empty;
             Series = new MeetingSeries();

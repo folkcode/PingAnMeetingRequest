@@ -30,20 +30,40 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             try
             {
                 this.dataGridView1.AutoGenerateColumns = false;
-
+                this.InitializeUI();
                 lblMessage.Text = "正在同步...";
                 lblMessage.ForeColor = Color.Red;
-                Func<MeetingData> func = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.LoadMeetingdataFromServer;
-                Task.Factory.FromAsync<MeetingData>(func.BeginInvoke, func.EndInvoke, null)
-                    .ContinueWith((result) =>
-                    {
-                        _meetingData = result.Result;
-                        this.SetDataSource(_meetingData.Values.ToList());
-                        this.InitializeUI();
 
-                        lblMessage.Text = string.Empty;
-                    });
+                Task<MeetingData> task = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.GetMeetingListSyncTask();
 
+                //task.Start();
+
+                task.Wait();
+
+                _meetingData = task.Result;
+                this.SetDataSource(_meetingData.Values.ToList());
+
+                //Func<MeetingData,bool> func = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.LoadMeetingdataFromServer;
+                //MeetingData meetingData = new MeetingData();
+                //Task.Factory.FromAsync<MeetingData,bool>(func.BeginInvoke, func.EndInvoke, meetingData, null)
+                //    .ContinueWith((result) =>
+                //    {
+                //        bool succeed = result.Result;
+                //        if (succeed)
+                //        {
+                //            _meetingData = meetingData;
+                //            this.SetDataSource(_meetingData.Values.ToList());
+                //        }
+                //        else
+                //        {
+                //            logger.Error("同步会议列表信息错误！");
+                //        }
+                //    });
+                
+                
+                
+
+                lblMessage.Text = string.Empty;
               
             }
             catch (Exception ex)
@@ -63,16 +83,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             this.comboBoxConfProperty.Items.Add("非执委会议"); //2
             this.comboBoxConfProperty.SelectedIndex = 0;
 
-            this.comboBoxMideaType.Items.Add("全部");//-1
-            this.comboBoxMideaType.Items.Add("本地会议");//4
-            this.comboBoxMideaType.Items.Add("两方视频会议");//1
-            this.comboBoxMideaType.Items.Add("多方视频会议");//2
-            this.comboBoxMideaType.SelectedIndex = 0;
-
             this.comboBoxConfType.Items.Add("全部");//-1
-            this.comboBoxConfType.Items.Add("视频");//1
-            this.comboBoxConfType.Items.Add("本地");//2
+            this.comboBoxConfType.Items.Add("本地会议");//4
+            this.comboBoxConfType.Items.Add("两方视频会议");//1
+            this.comboBoxConfType.Items.Add("多方视频会议");//2
             this.comboBoxConfType.SelectedIndex = 0;
+
+            this.comboBoxMideaType.Items.Add("全部");//-1
+            this.comboBoxMideaType.Items.Add("视频");//1
+            this.comboBoxMideaType.Items.Add("本地");//2
+            this.comboBoxMideaType.SelectedIndex = 0;
 
         }
 
@@ -94,7 +114,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 dataGridView1.Rows[i].Cells["ServiceKey"].Value = list[i].ServiceKey;
                 //dataGridView1.Rows[i].Cells["MeetingPwd"].Value = list[i].Password;
 
-                if (list[i].Status == "正在进行")
+                if (list[i].StatusCode == 3)
                 {
                     dataGridView1.Rows[i].Cells["checkbox"].Style.ForeColor = Color.Red;
                     dataGridView1.Rows[i].Cells["MeetingName"].Style.ForeColor = Color.Red;
@@ -165,9 +185,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (!string.IsNullOrWhiteSpace(currentMeetingId))
             {
-                if (_meetingData[currentMeetingId].Status == "正在进行")
+                if (_meetingData[currentMeetingId].StatusCode == 3)
                 {
                     MessageBox.Show("会议正在进行，不能修改！");
+                    return;
                 }
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Display();
@@ -182,9 +203,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (!string.IsNullOrWhiteSpace(currentMeetingId))
             {
-                if (_meetingData[currentMeetingId].Status == "正在进行")
+                if (_meetingData[currentMeetingId].StatusCode == 3)
                 {
                     MessageBox.Show("会议正在进行，不能删除！");
+                    return;
                 }
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Delete();
@@ -232,30 +254,49 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             query.ConferenceProperty = this.comboBoxConfProperty.SelectedIndex == 0 ? string.Empty : this.comboBoxConfProperty.SelectedIndex.ToString();
 
-            query.ConfType = this.comboBoxConfType.SelectedIndex == 0 ? "-1" : this.comboBoxConfType.SelectedIndex.ToString();
+            query.ConfType = this.comboBoxMideaType.SelectedIndex == 0 ? "-1" : this.comboBoxMideaType.SelectedIndex.ToString();
 
             query.MeetingName = this.txtMeetingName.Text;
             query.RoomName = this.txtRoomName.Text;
             query.Alias = this.txtAlias.Text;
             query.ServiceKey = this.txtServiceKey.Text;
 
-            Func<MeetingListQuery,List<SVCMMeeting>> func = this.SearchMeetingList;
-
-            Task.Factory.FromAsync<MeetingListQuery, List<SVCMMeeting>>(func.BeginInvoke, func.EndInvoke, query, null).ContinueWith((result) =>
+            var task = Task.Factory.StartNew(() =>
             {
-                lblMessage.Text = string.Empty;
-                List<SVCMMeeting> list = result.Result;
-
-                if (list != null)
-                {
-                    this.SetDataSource(list);
-                }
-                else
-                {
-                    MessageBox.Show("获取会议列表失败！");
-                }
-
+                return this.SearchMeetingList(query);
             });
+
+            task.Wait();
+
+            lblMessage.Text = string.Empty;
+            List<SVCMMeeting> list = task.Result;
+
+            if (list != null)
+            {
+                this.SetDataSource(list);
+            }
+            else
+            {
+                MessageBox.Show("获取会议列表失败！");
+            }
+
+            //Func<MeetingListQuery,List<SVCMMeeting>> func = this.SearchMeetingList;
+
+            //Task.Factory.FromAsync<MeetingListQuery, List<SVCMMeeting>>(func.BeginInvoke, func.EndInvoke, query, null).ContinueWith((result) =>
+            //{
+            //    lblMessage.Text = string.Empty;
+            //    List<SVCMMeeting> list = result.Result;
+
+            //    if (list != null)
+            //    {
+            //        this.SetDataSource(list);
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("获取会议列表失败！");
+            //    }
+
+            //});
         }
 
         private List<SVCMMeeting> SearchMeetingList(MeetingListQuery query)
@@ -267,6 +308,26 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             }
 
             return list;
+        }
+
+        private void btnDetail_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(currentMeetingId))
+            {
+                SVCMMeetingDetail detail;
+                if (ClientServiceFactory.Create().TryGetMeetingDetail(currentMeetingId, OutlookFacade.Instance().Session, out detail))
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择一个会议！");
+            }
         }
     }
 }

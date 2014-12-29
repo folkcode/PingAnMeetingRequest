@@ -8,6 +8,7 @@ using Office = Microsoft.Office.Core;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
+using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -66,6 +67,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 {
                     this._mapiFolder = folder;
                     logger.Debug("Calendar Folder catched!");
+                    break;
                 }
             }
 
@@ -97,8 +99,22 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                     {
                         SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(item, false);
                         if (meeting != null)
-                            this._appointmentList.Add(meeting.Id, item);
-                        item.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
+                        {
+                            if (!this._appointmentList.ContainsKey(meeting.Id))
+                            {
+                                this._appointmentList.Add(meeting.Id, item);
+                                item.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
+                            }
+                            else
+                            {
+                                item.Delete();
+                            }
+                        }
+                        else
+                        {
+                            //无效appointment，删除
+                            item.Delete();
+                        }
                     }
                 }
             }
@@ -108,25 +124,41 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             }
         }
 
-        void item_BeforeDelete(object Item, ref bool Cancel)
+        public void item_BeforeDelete(object Item, ref bool Cancel)
         {
-            Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
-            if (IsPingAnMeetingAppointment(appt))
+            try
             {
-                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
-                bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session);
+                logger.Debug("item_BeforeDelete start!");
+                Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+                if (IsPingAnMeetingAppointment(appt))
+                {
+                    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt, false);
+                    if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                    {
+                        bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session);
 
-                if (suceed)
-                {
-                    this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
-                    this._calendarManager.SavaMeetingDataToCalendarFolder();
+                        if (suceed)
+                        {
+                            this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                            this._calendarManager.SavaMeetingDataToCalendarFolder();
+                        }
+                        else
+                        {
+                            System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
+                            this._appointmentManager.RemoveItemDeleteStatus(appt);
+                            Cancel = true;
+                        }
+                    }
+                    else
+                    {
+                        logger.Debug(string.Format("item_BeforeDelete: meeting Id {0}, meetingName {1}. The meeting is not existing in server, no need update to server,only delete from outlook", meeting.Id, meeting.Name));
+                    }
                 }
-                else
-                {
-                    System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
-                    this._appointmentManager.RemoveItemDeleteStatus(appt);
-                    Cancel = true;
-                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("item_BeforeDelete error!", ex);
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -152,50 +184,69 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         void Items_ItemChange(object Item)
         {
-            Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
-            if (IsPingAnMeetingAppointment(appt))
+            try
             {
-                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
-
-                if (meeting != null && !string.IsNullOrEmpty(meeting.Id))
+                Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+                if (IsPingAnMeetingAppointment(appt))
                 {
-                    if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt, false);
+
+                    if (meeting != null && !string.IsNullOrEmpty(meeting.Id))
                     {
-                        this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                        if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                        {
+                            this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                        }
+
+                        this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
+                        this._calendarManager.SavaMeetingDataToCalendarFolder();
+
                     }
-
-                    this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
-                    this._calendarManager.SavaMeetingDataToCalendarFolder();
-
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Items_ItemChange error!", ex);
+                MessageBox.Show(ex.Message);
             }
         }
 
         void Items_ItemAdd(object Item)
         {
-            Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
-            if (IsPingAnMeetingAppointment(appt ))
+            try
             {
-                SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt,false);
-                if (meeting != null && !string.IsNullOrEmpty(meeting.Id))
+                Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+                if (IsPingAnMeetingAppointment(appt))
                 {
-                    if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt, false);
+                    if (meeting != null && !string.IsNullOrEmpty(meeting.Id))
                     {
-                        this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                        if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                        {
+                            this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                        }
+
+                        this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
+                        this._calendarManager.SavaMeetingDataToCalendarFolder();
+
+                        if (!this._appointmentList.ContainsKey(meeting.Id))
+                            this._appointmentList.Add(meeting.Id, appt);
+
+                        appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
                     }
-
-                    this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
-                    this._calendarManager.SavaMeetingDataToCalendarFolder();
-
-                    if (!this._appointmentList.ContainsKey(meeting.Id))
-                        this._appointmentList.Add(meeting.Id, appt);
-
-                    appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
+                    else
+                    {
+                        logger.Error("Item Added, Meeting or MeetingId is null!");
+                        appt.Delete();
+                        MessageBox.Show("会议参数不全，放弃保存！");
+                    }
                 }
-                else
-                {
-                    logger.Error("Item Added, Meeting or MeetingId is null!");
-                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Item Added error!", ex);
+                MessageBox.Show(ex.Message);
+
             }
         }
 

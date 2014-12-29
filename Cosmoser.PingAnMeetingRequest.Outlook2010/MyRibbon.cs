@@ -12,6 +12,7 @@ using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
 using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
+using System.Windows.Forms;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -115,80 +116,149 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             }
         }
 
-        public void DoDelete(Office.IRibbonControl control)
+        public bool GetSaveAndCloseEnabled(Office.IRibbonControl control)
         {
             Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
-            logger.Debug("DoDelete appointment:" + item.Subject);
-            this._apptMgr.SetAppointmentDeleted(item, true);
-            item.Delete();
+
+            var meeting = new AppointmentManager().GetMeetingFromAppointment(item, false);
+
+            
+            if (meeting != null && !string.IsNullOrEmpty(meeting.Status) && meeting.Status == "3")
+                return false;
+            else
+                return true;
+        }
+
+        public bool GetDeleteEnabled(Office.IRibbonControl control)
+        {
+            Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+
+            var meeting = new AppointmentManager().GetMeetingFromAppointment(item, false);
+
+            if (meeting != null && !string.IsNullOrEmpty(meeting.Status) && meeting.Status == "3")
+                return false;
+            else
+                return true;
+        }
+
+        public void DoDelete(Office.IRibbonControl control)
+        {
+            try
+            {
+                Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+                logger.Debug("DoDelete appointment:" + item.Subject);
+                this._apptMgr.SetAppointmentDeleted(item, true);
+                item.Delete();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("DoDelete error", ex);
+                MessageBox.Show(ex.Message);
+            }
         }
 
         public void DoSaveAndClose(Office.IRibbonControl control)
         {
-            logger.Debug("Begin DoSaveAndClose appointment!");
-            Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
-            string message;
-
-            logger.Debug("TryValidateApppointmentUIInput!");
-            if (this._apptMgr.TryValidateApppointmentUIInput(item, out message))
+            try
             {
-                
-                var meeting = this._apptMgr.GetMeetingFromAppointment(item,true);
+                logger.Debug("Begin DoSaveAndClose appointment!");
+                Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+                string message;
 
-                if (string.IsNullOrEmpty(meeting.Id))
+                logger.Debug("TryValidateApppointmentUIInput!");
+                if (this._apptMgr.TryValidateApppointmentUIInput(item, out message))
                 {
-                    logger.Debug("This is a new appointment, booking Meeting to server!");
-                    bool succeed = ClientServiceFactory.Create().BookingMeeting(meeting, OutlookFacade.Instance().Session);
 
-                    if (succeed)
+                    var meeting = this._apptMgr.GetMeetingFromAppointment(item, true);
+                    //set comment
+                    meeting.Memo = item.Body;
+                    string error;
+                    if (string.IsNullOrEmpty(meeting.Id))
                     {
-                        this._apptMgr.SaveMeetingToAppointment(meeting, item,false);
-                        Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                        logger.Debug("This is a new appointment, booking Meeting to server!");
+
+                        bool succeed = ClientServiceFactory.Create().BookingMeeting(meeting, OutlookFacade.Instance().Session, out error);
+
+                        if (succeed)
+                        {
+                            this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                            Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                        }
+                        else
+                        {
+                            System.Windows.Forms.MessageBox.Show(string.Format("向服务端预约会议失败！{0} 请重试。", error));
+                        }
                     }
                     else
                     {
-                        System.Windows.Forms.MessageBox.Show("向服务端预约会议失败！请重试。");
+                        logger.Debug("This is a existing appointment, updating Meeting to server!");
+                        string errorCode;
+                        bool succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "1", OutlookFacade.Instance().Session, out error,out errorCode);
+
+                        if (succeed)
+                        {
+                            this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                            Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                        }
+                        else
+                        {
+                            if (errorCode != "200" && errorCode != "500")
+                            {
+                                if (MessageBox.Show(error, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                {
+                                    succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "2", OutlookFacade.Instance().Session, out error, out errorCode);
+                                    if (succeed)
+                                    {
+                                        this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                        Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                                    }
+                                    else
+                                    {
+                                        System.Windows.Forms.MessageBox.Show(string.Format("向服务端更新会议失败！{0}！ 请重试。", error));
+                                    }
+
+                                }
+                                else
+                                {
+                                    System.Windows.Forms.MessageBox.Show("你已放弃修改会议！");
+                                }
+                            }
+                            else
+                            {
+                                System.Windows.Forms.MessageBox.Show(string.Format("向服务端更新会议失败！{0}！ 请重试。", error));
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    logger.Debug("This is a existing appointment, updating Meeting to server!");
-                    bool succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, OutlookFacade.Instance().Session);
-
-                    if (succeed)
-                    {
-                        this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
-                        Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
-                    }
-                    else
-                    {
-                        System.Windows.Forms.MessageBox.Show("向服务端更新会议失败！请重试。");
-                    }
+                    System.Windows.Forms.MessageBox.Show(message);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(message);
+                logger.Error("DoSaveAndClose error", ex);
+                MessageBox.Show(ex.Message);
             }
         }
 
         public void DoBookingMeeting(Office.IRibbonControl control)
         {
             Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
-            if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
-            {
+            //if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
+            //{
                 //set holiday ribbon
                 this.RibbonType = MyRibbonType.SVCM;
 
                 //Create a holiday appointmet and set properties
-                Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+                Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
 
                 //display the appointment
                 Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
                 inspect.Display(false);
                 //reset the ribbon to normal
                 this.RibbonType = MyRibbonType.Original;
-            }
+            //}
         }
 
         public void DoMeetingList(Office.IRibbonControl control)
@@ -199,8 +269,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         public void DoSchedulerSearch(Office.IRibbonControl control)
         {
-            MeetingDateSearchForm form = new MeetingDateSearchForm();
-            form.Show();
+            try
+            {
+                Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+
+                MeetingDateSearchForm form = new MeetingDateSearchForm();
+                form.SelectedDate = item.Start;
+                form.Show();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("DoSchedulerSearch error", ex);
+            }
         }
 
         #endregion

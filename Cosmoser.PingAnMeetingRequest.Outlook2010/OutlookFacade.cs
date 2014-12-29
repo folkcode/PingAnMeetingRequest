@@ -11,6 +11,7 @@ using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using System.Threading.Tasks;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
+using System.Windows.Forms;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -104,7 +105,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             try
             {
-                if (this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
+                if (this._activeExplorer.CurrentFolder.StoreID == OutlookFacade.Instance().CalendarFolder.MAPIFolder.StoreID 
+                    || this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
                     this.CalendarFolder.CalendarDataManager.SyncMeetingList();
             }
             catch (Exception ex)
@@ -115,16 +117,29 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         private void InitializeSession()
         {
-            Task task = Task.Factory.StartNew(() =>
+            try
             {
-                this._session = new HandlerSession();
-                if (!string.IsNullOrEmpty(this.Application.Session.CurrentUser.Address))
-                    this._session.UserName = this.Application.Session.CurrentUser.Address.Split("@".ToArray())[0];
-                this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
-                this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
-                this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"]; 
-                ClientServiceFactory.Create().Login(ref this._session);
-            });
+                Task task = Task.Factory.StartNew(() =>
+                {
+                    this._session = new HandlerSession();
+                    this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"];
+
+                    //var currentUser = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser();
+                    //if(currentUser != null)
+                    //    this._session.UserName = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser().PrimarySmtpAddress.Split("@".ToArray())[0];
+                    this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
+                    this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+
+                    ClientServiceFactory.Create().Login(ref this._session);
+
+                    //if(currentUser == null)
+                    //MessageBox.Show("找不到Exchange账号！");
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.Error("InitializeSession failed!", ex);
+            }
         }
 
         void Inspectors_NewInspector(Outlook.Inspector Inspector)
@@ -151,7 +166,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             if (View.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
             {
                 var meetingMenu = CommandBar.Controls.Add(Office.MsoControlType.msoControlButton, Type.Missing, Type.Missing, 4, false) as Office.CommandBarButton;
-                meetingMenu.Caption = "SVCM会议预约";
+                meetingMenu.Caption = "电子会议预约";
 
                 meetingMenu.Click += new Office._CommandBarButtonEvents_ClickEventHandler(meetingMenu_Click);
             }
@@ -184,7 +199,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void Application_ItemContextMenuDisplay(Office.CommandBar CommandBar, Outlook.Selection Selection)
         {
+            //if (CurrentExplorer.CurrentFolder.StoreID == this.CalendarFolder.MAPIFolder.StoreID)
+            //{
+            //    var meetingDetailMenu = CommandBar.Controls.Add(Office.MsoControlType.msoControlButton, Type.Missing, Type.Missing, 4, false) as Office.CommandBarButton;
+            //    meetingDetailMenu.Caption = "查看电子会议详情";
 
+            //    meetingDetailMenu.Click += new Office._CommandBarButtonEvents_ClickEventHandler(meetingDetailMenu_Click);
+            //}
+        }
+
+        void meetingDetailMenu_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            
         }
 
         private void Log(object state)

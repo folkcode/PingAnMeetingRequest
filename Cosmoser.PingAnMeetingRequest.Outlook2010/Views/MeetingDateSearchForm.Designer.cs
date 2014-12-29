@@ -93,6 +93,7 @@
             this.comboBoxSeries = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSearchAll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -212,6 +213,7 @@
             this.comboBoxLevel.Name = "comboBoxLevel";
             this.comboBoxLevel.Size = new System.Drawing.Size(165, 20);
             this.comboBoxLevel.TabIndex = 13;
+            this.comboBoxLevel.SelectedIndexChanged += new System.EventHandler(this.comboBoxLevel_SelectedIndexChanged);
             // 
             // comboBoxProvince
             // 
@@ -312,7 +314,7 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(75, 23);
             this.btnSearch.TabIndex = 43;
-            this.btnSearch.Text = "查询";
+            this.btnSearch.Text = "查询前50条";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
@@ -365,7 +367,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(24, 250);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(1173, 287);
+            this.dataGridView1.Size = new System.Drawing.Size(1173, 483);
             this.dataGridView1.TabIndex = 45;
             // 
             // SeriesName
@@ -626,12 +628,23 @@
             this.panel2.Size = new System.Drawing.Size(188, 23);
             this.panel2.TabIndex = 52;
             // 
+            // btnSearchAll
+            // 
+            this.btnSearchAll.Location = new System.Drawing.Point(554, 206);
+            this.btnSearchAll.Name = "btnSearchAll";
+            this.btnSearchAll.Size = new System.Drawing.Size(75, 23);
+            this.btnSearchAll.TabIndex = 53;
+            this.btnSearchAll.Text = "查询全部";
+            this.btnSearchAll.UseVisualStyleBackColor = true;
+            this.btnSearchAll.Click += new System.EventHandler(this.btnSearchAll_Click);
+            // 
             // MeetingDateSearchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ClientSize = new System.Drawing.Size(1209, 549);
+            this.ClientSize = new System.Drawing.Size(1209, 745);
+            this.Controls.Add(this.btnSearchAll);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.comboBoxSeries);
@@ -659,6 +672,8 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MeetingDateSearchForm";
             this.Text = "会议日程查询页面";
             this.Load += new System.EventHandler(this.MeetingDateSearchForm_Load);
@@ -739,5 +754,6 @@
         private System.Windows.Forms.ComboBox comboBoxSeries;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnSearchAll;
     }
 }

@@ -37,5 +37,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
 
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+
+        public int DataAll { get; set; }
     }
 }

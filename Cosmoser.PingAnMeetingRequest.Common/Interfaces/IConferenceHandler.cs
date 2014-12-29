@@ -9,9 +9,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Interfaces
     public interface IConferenceHandler
     {
         bool Login(ref HandlerSession session);
-        bool BookingMeeting(SVCMMeetingDetail meetingDetail, HandlerSession session);
+        bool BookingMeeting(SVCMMeetingDetail meetingDetail, HandlerSession session, out string error);
         bool DeleteMeeting(string conferId, HandlerSession session);
-        bool UpdateMeeting(SVCMMeetingDetail meetingDetail, HandlerSession session);
+        bool UpdateMeeting(SVCMMeetingDetail meetingDetail, string operateType, HandlerSession session, out string error, out string errorCode);
         bool TryGetMeetingDetail(string meetingId, HandlerSession session, out SVCMMeetingDetail meetingDetail);
         bool TryGetMeetingList(MeetingListQuery query, HandlerSession session, out List<SVCMMeeting> meetingList);
         bool TryGetSeriesList(HandlerSession session, out List<MeetingSeries> seriesList);

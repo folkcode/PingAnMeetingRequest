@@ -66,6 +66,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.lblMessage = new System.Windows.Forms.Label();
+            this.btnDetail = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,6 +89,7 @@
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.Size = new System.Drawing.Size(852, 221);
             this.dataGridView1.TabIndex = 12;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
@@ -171,7 +173,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(469, 626);
+            this.btnCancel.Location = new System.Drawing.Point(579, 625);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 21);
             this.btnCancel.TabIndex = 15;
@@ -400,12 +402,23 @@
             this.lblMessage.Size = new System.Drawing.Size(0, 12);
             this.lblMessage.TabIndex = 46;
             // 
+            // btnDetail
+            // 
+            this.btnDetail.Location = new System.Drawing.Point(475, 625);
+            this.btnDetail.Name = "btnDetail";
+            this.btnDetail.Size = new System.Drawing.Size(75, 23);
+            this.btnDetail.TabIndex = 47;
+            this.btnDetail.Text = "查看详情";
+            this.btnDetail.UseVisualStyleBackColor = true;
+            this.btnDetail.Click += new System.EventHandler(this.btnDetail_Click);
+            // 
             // MeetingCenterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(876, 654);
+            this.Controls.Add(this.btnDetail);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.label13);
@@ -484,5 +497,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn MainMeetingRoom;
         private System.Windows.Forms.DataGridViewTextBoxColumn ServiceKey;
         private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.Button btnDetail;
     }
 }

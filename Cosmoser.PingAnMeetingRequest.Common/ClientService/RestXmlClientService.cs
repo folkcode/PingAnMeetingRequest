@@ -19,7 +19,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
         private RestXMLApiClient _client = new RestXMLApiClient();
 
         private static ILog logger = IosLogManager.GetLogger(typeof(RestXmlClientService));
-        
+
         public bool Login(ref Model.HandlerSession session)
         {
             try
@@ -34,7 +34,11 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 {
                     session.Token = response.SelectSingleNode("login").SelectSingleNode("token").InnerText;
                     string confType = response.SelectSingleNode("login").SelectSingleNode("confType").InnerText;
-                    session.ConfType = (ConferenceType)int.Parse(confType);
+                    session.ConfTypeList = new List<ConferenceType>();
+                    foreach (var item in confType.Split(",".ToArray()))
+                    {
+                        session.ConfTypeList.Add((ConferenceType)int.Parse(item));
+                    }
                     session.IfBookMobileTerm = response.SelectSingleNode("login").SelectSingleNode("confType").InnerText == "1" ? true : false;
                     session.IsActive = true;
                     //每次登陆都需要重设messageId
@@ -55,8 +59,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             return false;
         }
 
-        public bool BookingMeeting(Model.SVCMMeetingDetail meetingDetail, Model.HandlerSession session)
+        public bool BookingMeeting(Model.SVCMMeetingDetail meetingDetail, Model.HandlerSession session, out string error)
         {
+            error = string.Empty;
             try
             {
                 session.AddMessageId();
@@ -73,6 +78,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    error = response.SelectSingleNode("startConfer").SelectSingleNode("result").Attributes["property"].Value;
                     logger.Error(string.Format("BookingMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
                     this.ReLogin(session, response.SelectSingleNode("startConfer").SelectSingleNode("result"));
                     return false;
@@ -132,24 +138,28 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             return false;
         }
 
-        public bool UpdateMeeting(Model.SVCMMeetingDetail meetingDetail, Model.HandlerSession session)
+        public bool UpdateMeeting(Model.SVCMMeetingDetail meetingDetail, string operateType, Model.HandlerSession session, out string error, out string errorCode)
         {
+            error = string.Empty;
+            errorCode = string.Empty;
             try
             {
                 session.AddMessageId();
-                string xmlData = this._dataTransform.GetXmlDataForUpdatingMeeting(meetingDetail, session);
+                string xmlData = this._dataTransform.GetXmlDataForUpdatingMeeting(meetingDetail, operateType, session);
                 logger.Debug(string.Format("UpdateMeeting, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "updateConfer", xmlData);
                 logger.Debug(string.Format("UpdateMeeting response, xmldata: {0}", response.OuterXml));
                 string status = response.SelectSingleNode("updateConfer").SelectSingleNode("result").InnerText;
-
+                errorCode = status;
                 if (status == "200")
                 {
                     return true;
                 }
                 else
                 {
+                    error = response.SelectSingleNode("updateConfer").SelectSingleNode("result").Attributes["property"].Value;
                     logger.Error(string.Format("UpdateMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
+                    if(errorCode == "500" || errorCode == "502" || errorCode == "501")
                     this.ReLogin(session, response.SelectSingleNode("updateConfer").SelectSingleNode("result"));
                     return false;
                 }
@@ -157,6 +167,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             catch(Exception ex)
             {
                 logger.Error("UpdateMeeting failed, error:" + ex.Message + "\n" + ex.StackTrace);
+                error = ex.Message;
                 this.Login(ref session);
             }
 
@@ -365,7 +376,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             try
             {
                 session.AddMessageId();
-                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><searchCity><messageId>{0}</messageId><token>{1}</token><seriesId>{2}</seriesId ><provinceCode>{3}</provinceCode ><cityCode>{4}</cityCode ><boroughCode>{5}</boroughCode></searchCity>",
+                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><searchCity><messageId>{0}</messageId><token>{1}</token><seriesId>{2}</seriesId><provinceCode>{3}</provinceCode><cityCode>{4}</cityCode><boroughCode>{5}</boroughCode></searchCity>",
                                                 session.MessageId,
                                                 session.Token,
                                                 query.SeriesId,
@@ -376,22 +387,24 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "searchcity", xmlData);
                 logger.Debug(string.Format("TryGetRegionCatagory response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("searchCity");
-                string status = "200";// root.SelectSingleNode("result").InnerText;
+                string status = root.SelectSingleNode("result").InnerText;
 
                 if (status == "200")
                 {
-                    //regionCatagory.SeriesList = new List<MeetingSeries>();
-                    //foreach (var item in root.SelectSingleNode("seriesList").SelectNodes("seriesInfo"))
-                    //{
-                    //    var node = item as XmlNode;
-                    //    var series = new MeetingSeries();
-                    //    series.Id = node.SelectSingleNode("seriesId").InnerText;
-                    //    series.Name = node.SelectSingleNode("seriesName").InnerText;
+                    regionCatagory.SeriesList = new List<MeetingSeries>();
+                    if(root.SelectSingleNode("seriesList") != null)
+                        foreach (var item in root.SelectSingleNode("seriesList").SelectNodes("series"))
+                    {
+                        var node = item as XmlNode;
+                        var series = new MeetingSeries();
+                        series.Id = node.SelectSingleNode("seriesId").InnerText;
+                        series.Name = node.SelectSingleNode("seriesName").InnerText;
 
-                    //    regionCatagory.SeriesList.Add(series);
-                    //}
+                        regionCatagory.SeriesList.Add(series);
+                    }
 
                     regionCatagory.ProvinceList = new List<RegionInfo>();
+                    if(root.SelectSingleNode("provinceList") != null)
                     foreach (var item in root.SelectSingleNode("provinceList").SelectNodes("provinceInfo"))
                     {
                         var node = item as XmlNode;
@@ -403,6 +416,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     }
 
                     regionCatagory.CityList = new List<RegionInfo>();
+                    if (root.SelectSingleNode("cityList") != null)
                     foreach (var item in root.SelectSingleNode("cityList").SelectNodes("cityInfo"))
                     {
                         var node = item as XmlNode;
@@ -414,6 +428,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     }
 
                     regionCatagory.BoroughList = new List<RegionInfo>();
+                    if (root.SelectSingleNode("boroughList") != null)
                     foreach (var item in root.SelectSingleNode("boroughList").SelectNodes("boroughInfo"))
                     {
                         var node = item as XmlNode;
@@ -495,6 +510,21 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    detail.VideoSet = (VideoSet)int.Parse(root.SelectSingleNode("videoSet").InnerText);
 
                    detail.IPDesc = root.SelectSingleNode("ipdesc").InnerText.Replace("null","");
+                   XmlNode mobileTermlistNode = root.SelectSingleNode("mobileTermList");
+                   if (mobileTermlistNode != null)
+                   {
+                       foreach (var item in root.SelectSingleNode("mobileTermList").SelectNodes("roomInfo"))
+                       {
+                           var node = item as XmlNode;
+
+                           detail.MobileTermList.Add(new MobileTerm()
+                           {
+                               RoomId = node.SelectSingleNode("roomId").InnerText,
+                               RoomName = node.SelectSingleNode("roomName").InnerText
+                           });
+                       }
+                   }
+
                    XmlNode roomlistNode = root.SelectSingleNode("roomList");
                    if (roomlistNode != null)
                    {
@@ -575,7 +605,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                         meeting.AccountName = node.SelectSingleNode("accountName").InnerText;
                         meeting.StartTime = DateTime.Parse(node.SelectSingleNode("startTime").InnerText);
                         meeting.EndTime = DateTime.Parse(node.SelectSingleNode("endTime").InnerText);
-                        meeting.Status = node.SelectSingleNode("status").InnerText;
+                        meeting.StatusCode = int.Parse(node.SelectSingleNode("status").InnerText);
                         meeting.Type = int.Parse(node.SelectSingleNode("mediaType").InnerText);
                         meeting.MainRoom = node.SelectSingleNode("mettingRoom").InnerText;
                         meeting.ServiceKey = node.SelectSingleNode("servicegk").InnerText;
@@ -610,7 +640,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             try
             {
                 session.AddMessageId();
-                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><termConferList><messageId>{0}</messageId><token>{1}</token><roomName>{2}</roomName><levelId>{3}</levelId><seriesId>{4}</seriesId><provinceCode>{5}</provinceCode><cityCode>{6}</cityCode><boroughCode>{7}</boroughCode ><boardroomState>{8}</boardroomState><roomIfTerminal>{9}</roomIfTerminal><capacity>{10}</capacity><startTime>{11}</startTime><endTime>{12}</endTime></termConferList>",
+                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><termConferList><messageId>{0}</messageId><token>{1}</token><roomName>{2}</roomName><levelId>{3}</levelId><seriesId>{4}</seriesId><provinceCode>{5}</provinceCode><cityCode>{6}</cityCode><boroughCode>{7}</boroughCode><boardroomState>{8}</boardroomState><roomIfTerminal>{9}</roomIfTerminal><capacity>{10}</capacity><startTime>{11}</startTime><endTime>{12}</endTime><dataAll>{13}</dataAll></termConferList>",
                                                session.MessageId,
                                                session.Token,
                                                query.RoomName,
@@ -623,7 +653,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                query.RoomIfTerminal,
                                                query.Capacity,
                                                query.StartTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                                               query.EndTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                                               query.EndTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                               query.DataAll);
                 logger.Debug(string.Format("TryGetMeetingScheduler, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "termConferList", xmlData);
                 logger.Debug(string.Format("TryGetMeetingScheduler response, xmldata: {0}", response.OuterXml));
@@ -639,11 +670,26 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                         meeting.RoomId = node.SelectSingleNode("roomId").InnerText;
                         meeting.RoomName = node.SelectSingleNode("roomName").InnerText;
                         meeting.IfTerminal = int.Parse(node.SelectSingleNode("IfTerminal").InnerText);
-                        meeting.StartTime = DateTime.Parse(node.SelectSingleNode("startTime").InnerText);
+                        XmlNode startNode = node.SelectSingleNode("startTime");
+                        if (startNode != null)
+                        {
+                            meeting.StartTime = DateTime.Parse(node.SelectSingleNode("startTime").InnerText);
+                        }
+                        else
+                        {
+                            meeting.StartTime = DateTime.MinValue;
+                        }
+                        XmlNode endNode = node.SelectSingleNode("endTime");
+                        if(endNode != null)
                         meeting.EndTime = DateTime.Parse(node.SelectSingleNode("endTime").InnerText);
+                        XmlNode conferIdNode = node.SelectSingleNode("conferId");
+                        if(conferIdNode != null)
                         meeting.ConferId = node.SelectSingleNode("conferId").InnerText;
                         meeting.Property = node.SelectSingleNode("property").InnerText;
                         meeting.Address = node.SelectSingleNode("address").InnerText;
+                        meeting.SeriesName = node.SelectSingleNode("seriesName").InnerText;
+                        XmlNode  statusNode = node.SelectSingleNode("status");
+                        if(startNode != null)
                         meeting.Status = int.Parse(node.SelectSingleNode("status").InnerText);
                         schedulerList.Add(meeting);
                     }

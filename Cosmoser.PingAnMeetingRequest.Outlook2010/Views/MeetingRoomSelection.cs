@@ -8,11 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
     public partial class MeetingRoomSelection : Form, IMeetingRoomView
     {
+        private static ILog logger = IosLogManager.GetLogger(typeof( MeetingRoomSelection));
         public MeetingRoomSelection()
         {
             InitializeComponent();
@@ -41,6 +44,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             set;
         }
 
+        public VideoSet VideoSet
+        {
+            get;
+            set;
+        }
+
         public DateTime StarTime { get; set; }
         public DateTime EndTime { get; set; }
 
@@ -51,50 +60,61 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void MeetingRoomSelection_Load(object sender, EventArgs e)
         {
-            List<MeetingSeries> seriesList;
-
-            if (ClientServiceFactory.Create().TryGetSeriesList(OutlookFacade.Instance().Session, out seriesList))
+            try
             {
-                foreach (var item in seriesList)
+                List<MeetingSeries> seriesList;
+
+                if (ClientServiceFactory.Create().TryGetSeriesList(OutlookFacade.Instance().Session, out seriesList))
                 {
-                    this.listBoxMeetingRoom.Items.Add(item);
+                    foreach (var item in seriesList)
+                    {
+                        this.listBoxMeetingRoom.Items.Add(item);
+                    }
                 }
+                else
+                {
+                    MessageBox.Show("获取会议室分组信息失败，请重试！");
+                }
+
+                this.listBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "总部级",
+                    LevelId = "1,1"
+                });
+
+                this.listBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "二级机构",
+                    LevelId = "1,2"
+                });
+
+                this.listBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "三级机构",
+                    LevelId = "1,3"
+                });
+
+                this.listBoxLevel.Items.Add(new RoomLevel()
+                {
+                    LevelName = "四级机构",
+                    LevelId = "1,4"
+                });
+
+                this.listBoxLevel.SelectedIndex = 0;
+                this.listBoxMeetingRoom.SelectedIndex = 0;
+
+                this.listBoxSelectedRooms.DataSource = null;
+                this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+
+                //本地会议不需要设置主会场
+                if (this.ConfType == MideaType.Local)
+                    this.btnMainRoomSetting.Enabled = false;
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("获取会议室分组信息失败，请重试！");
+                logger.Error("MeetingRoomSelection_Load", ex);
+                MessageBox.Show("");
             }
-
-            this.listBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "总部级",
-                LevelId = "1,1"
-            });
-
-            this.listBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "二级机构",
-                LevelId = "1,2"
-            });
-
-            this.listBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "三级机构",
-                LevelId = "1,3"
-            });
-
-            this.listBoxLevel.Items.Add(new RoomLevel()
-            {
-                LevelName = "四级机构",
-                LevelId = "1,4"
-            });
-
-            this.listBoxLevel.SelectedIndex = 0;
-            this.listBoxMeetingRoom.SelectedIndex = 0;
-
-            this.listBoxSelectedRooms.DataSource = null;
-            this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
-
         }
 
         private void listBoxMeetingRoom_SelectedIndexChanged(object sender, EventArgs e)
@@ -150,6 +170,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (this.listBoxAvailableRoom.SelectedIndex > -1)
             {
+                if (this.listBoxSelectedRooms.Items.Count > 0 && this.ConfType == MideaType.Local)
+                {
+                    MessageBox.Show("本地会议只能选一个会议室！");
+                    return;
+                }
+
                 foreach (var item in this.listBoxAvailableRoom.SelectedItems)
                 {
                     MeetingRoom room = item as MeetingRoom;
@@ -219,6 +245,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (this.listBoxSelectedRooms.SelectedIndex > -1)
             {
+                if (this.ConfType == MideaType.Local)
+                {
+                    MessageBox.Show("本地会议不需要设置主会场！");
+                    return;
+                }
+
                 this.MainRoom = this.listBoxSelectedRooms.SelectedItem as MeetingRoom;
             }
         }

@@ -15,6 +15,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
     public partial class MeetingDateSearchForm : Form
     {
+        public DateTime SelectedDate
+        {
+            get;
+            set;
+        }
         private static ILog logger = IosLogManager.GetLogger(typeof(MeetingDateSearchForm));
         public MeetingDateSearchForm()
         {
@@ -25,7 +30,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             try
             {
-                this.dateTimePickerSearchDate.Value = DateTime.Today;
+                this.dateTimePickerSearchDate.Value = this.SelectedDate.Date;
 
                 DateTime start = DateTime.Today;
                 DateTime endTime = DateTime.Today.AddDays(1);
@@ -59,26 +64,32 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
                 this.comboBoxLevel.Items.Add(new RoomLevel()
                 {
+                    LevelName = "--全部--",
+                    LevelId = "0"
+                });
+
+                this.comboBoxLevel.Items.Add(new RoomLevel()
+                {
                     LevelName = "总部级",
-                    LevelId = "1,1"
+                    LevelId = "1"
                 });
 
                 this.comboBoxLevel.Items.Add(new RoomLevel()
                 {
                     LevelName = "二级机构",
-                    LevelId = "1,2"
+                    LevelId = "2"
                 });
 
                 this.comboBoxLevel.Items.Add(new RoomLevel()
                 {
                     LevelName = "三级机构",
-                    LevelId = "1,3"
+                    LevelId = "3"
                 });
 
                 this.comboBoxLevel.Items.Add(new RoomLevel()
                 {
                     LevelName = "四级机构",
-                    LevelId = "1,4"
+                    LevelId = "4"
                 });
 
                 this.comboBoxLevel.SelectedIndex = 0;
@@ -154,7 +165,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             if (ClientServiceFactory.Create().TryGetRegionCatagory(query, OutlookFacade.Instance().Session, out rc))
             {
                 this.comboBoxCity.Items.Clear();
-                foreach (var item in rc.ProvinceList)
+                foreach (var item in rc.CityList)
                 {
                     this.comboBoxCity.Items.Add(item);
                 }
@@ -192,7 +203,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             if (ClientServiceFactory.Create().TryGetRegionCatagory(query, OutlookFacade.Instance().Session, out rc))
             {
                 this.comboBoxBobough.Items.Clear();
-                foreach (var item in rc.ProvinceList)
+                foreach (var item in rc.BoroughList)
                 {
                     this.comboBoxBobough.Items.Add(item);
                 }
@@ -207,12 +218,17 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            this.DoSearch(false);
+        }
+
+        private void DoSearch(bool isAll)
+        {
             MeetingSchedulerQuery query = new MeetingSchedulerQuery();
 
             query.RoomName = this.txtRoomName.Text;
             query.LevelId = (this.comboBoxLevel.SelectedItem as RoomLevel).LevelId;
             query.SeriesId = (this.comboBoxSeries.SelectedItem as MeetingSeries).Id;
-            query.BoardRoomState = this.rbStatusAll.Checked ? 1 : 0;
+            query.BoardRoomState = this.rbStatusAll.Checked ? 0 : 1;
             if (this.rbTypeAll.Checked)
                 query.RoomIfTerminal = 2;
             else if (this.rbTypeVideo.Checked)
@@ -223,7 +239,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             query.ProvinceCode = (this.comboBoxProvince.SelectedItem as RegionInfo).Code;
             query.CityCode = (this.comboBoxCity.SelectedItem as RegionInfo).Code;
             query.BoroughCode = (this.comboBoxBobough.SelectedItem as RegionInfo).Code;
-
+            query.DataAll = isAll ? 1 : 0;
             query.StartTime = DateTime.Parse(this.dateTimePickerSearchDate.Value.ToString("yyyy-MM-dd ") + this.comboBoxStartTime.SelectedItem.ToString());
             query.EndTime = DateTime.Parse(this.dateTimePickerSearchDate.Value.ToString("yyyy-MM-dd ") + this.comboBoxEndTime.SelectedItem.ToString());
 
@@ -231,9 +247,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             if (ClientServiceFactory.Create().TryGetMeetingScheduler(query, OutlookFacade.Instance().Session, out list))
             {
-                List<RoomScheduler> rlist = RoomScheduler.PopulateFromMeetingScheduler(list, query.StartTime, query.EndTime);
+                List<RoomScheduler> rlist = RoomScheduler.PopulateFromMeetingScheduler(list, query.StartTime, query.EndTime, query.BoardRoomState == 0 ? true : false);
 
-                this.SetDataSource(rlist,query.StartTime,query.EndTime);
+                this.SetDataSource(rlist, query.StartTime, query.EndTime);
             }
             else
             {
@@ -251,7 +267,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             dataGridView1.Columns.Add("SeriesName", "系列");
             dataGridView1.Columns.Add("RoomName", "会议室");
             dataGridView1.Columns.Add("Type", "类型");
-            int n = (startTime - endTime).Minutes / 30;
+            int n = (int)(endTime - startTime).TotalMinutes / 30;
             if (list.Count > 0)
             {
                 for (int i = 0; i < n; i++)
@@ -263,6 +279,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             for (int i = 0; i < list.Count; i++)
             {
+
                 dataGridView1.Rows[i].Cells["SeriesName"].Value = list[i].SeriesName;
                 dataGridView1.Rows[i].Cells["RoomName"].Value = list[i].RoomName;
                 dataGridView1.Rows[i].Cells["Type"].Value = list[i].Type;
@@ -271,6 +288,43 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 {
                     dataGridView1.Rows[i].Cells["c" + j].Style.BackColor = list[i].TimeSheduler[j];
                 }
+            }
+        }
+
+        private void btnSearchAll_Click(object sender, EventArgs e)
+        {
+            this.DoSearch(true);
+        }
+
+        private void comboBoxLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                RegionCatagory rc;
+                MeetingSeries s = this.comboBoxSeries.SelectedItem as MeetingSeries;
+                RegionCatagoryQuery query = new RegionCatagoryQuery();
+                query.SeriesId = "0";
+                query.ProvinceCode = "0";
+                query.CityCode = "0";
+                query.BoroughCode = "0";
+                if (ClientServiceFactory.Create().TryGetRegionCatagory(query, OutlookFacade.Instance().Session, out rc))
+                {
+                    this.comboBoxSeries.Items.Clear();
+                    foreach (var item in rc.SeriesList)
+                    {
+                        this.comboBoxSeries.Items.Add(item);
+                    }
+
+                    this.comboBoxSeries.SelectedIndex = 0;
+                }
+                else
+                {
+                    MessageBox.Show("获取机构变更信息失败！");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("comboBoxLevel_SelectedIndexChanged error", ex);
             }
         }
     }

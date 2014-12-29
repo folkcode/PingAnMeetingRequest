@@ -8,6 +8,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Threading.Tasks;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using log4net;
+using System.Runtime.InteropServices;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -15,6 +16,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
     {
         private CalendarFolder _calendarFolder;
         private static string path = "http://schemas.microsoft.com/mapi/string/{71227b02-8acf-4f1f-9a89-40fb98cfaa1c}/";
+        private static string propertyKey = "PingAnMeeting";
         private MeetingDetailData _meetingDataLocal = new MeetingDetailData();
         private MeetingData _meetingListServer = new MeetingData();
         private AppointmentManager _appointmentManager;
@@ -53,8 +55,20 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             {
                 try
                 {
-                    string caledarDataString = (string)this._calendarFolder.MAPIFolder.PropertyAccessor.GetProperty(path + "PingAnMeeting");
-                    meetingData = Toolbox.Deserialize<MeetingDetailData>(caledarDataString);
+                    //string caledarDataString = (string)this._calendarFolder.MAPIFolder.PropertyAccessor.GetProperty(path + "PingAnMeeting");
+                    Microsoft.Office.Interop.Outlook.StorageItem storage = this._calendarFolder.MAPIFolder.GetStorage(propertyKey, Microsoft.Office.Interop.Outlook.OlStorageIdentifierType.olIdentifyBySubject);
+                    Microsoft.Office.Interop.Outlook.UserProperty pop = storage.UserProperties[propertyKey];
+                    if (pop != null)
+                    {
+                        string caledarDataString = pop.Value;
+                        meetingData = Toolbox.Deserialize<MeetingDetailData>(caledarDataString);
+
+                    }
+                    else
+                    {
+                        pop = storage.UserProperties.Add(propertyKey, Outlook.OlUserPropertyType.olText);
+                        meetingData = new MeetingDetailData();
+                    }
                 }
                 catch
                 {
@@ -77,8 +91,24 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
         /// <param name="meetingData"></param>
         public void SavaMeetingDataToCalendarFolder()
         {
-            string dataString = Toolbox.Serialize(this._meetingDataLocal);
-            this._calendarFolder.MAPIFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", dataString);
+            try
+            {
+                string dataString = Toolbox.Serialize(this._meetingDataLocal);
+                //this._calendarFolder.MAPIFolder.PropertyAccessor.DeleteProperty(path + "PingAnMeeting");
+                //this._calendarFolder.MAPIFolder.PropertyAccessor.SetProperty(path + "PingAnMeeting", dataString);
+
+                Microsoft.Office.Interop.Outlook.StorageItem storage = this._calendarFolder.MAPIFolder.GetStorage(propertyKey, Microsoft.Office.Interop.Outlook.OlStorageIdentifierType.olIdentifyBySubject);
+                Microsoft.Office.Interop.Outlook.UserProperty pop = storage.UserProperties[propertyKey];
+                if (pop == null)
+                    pop = storage.UserProperties.Add(propertyKey, Outlook.OlUserPropertyType.olText);
+                pop.Value = dataString;
+                storage.Save();
+                Marshal.ReleaseComObject(storage);
+            }
+            catch (System.Exception ex)
+            {
+                logger.Error("SavaMeetingDataToCalendarFolder error!", ex);
+            }
         }
 
         public void SyncMeetingList()
@@ -88,30 +118,73 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             ////task.Start();
 
             //task.Wait();
-            Func<MeetingData> func = LoadMeetingdataFromServer;
-
-            Task.Factory.FromAsync<MeetingData>(func.BeginInvoke, func.EndInvoke, null).ContinueWith((result) =>
+            try
             {
-                this._meetingListServer = result.Result;
-
-                foreach (var item in this._meetingListServer.Values)
+                Func<MeetingData, bool> func = LoadMeetingdataFromServer;
+                MeetingData meetingData = new MeetingData();
+                Task.Factory.FromAsync<MeetingData, bool>(func.BeginInvoke, func.EndInvoke, meetingData, null).ContinueWith((result) =>
                 {
-                    if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                    bool succed = result.Result;
+                    if (succed)
                     {
-                        SVCMMeetingDetail detail = this.ConvertDetail(item);
+                        this._meetingListServer = meetingData;
 
-                        var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
-
-                        if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
-                            this.MeetingDetailDataLocal.Add(detail.Id, detail);
-
-                        if (!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id))
+                        foreach (var item in this._meetingListServer.Values)
                         {
-                            this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
+                            if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                            {
+                                SVCMMeetingDetail detail = this.ConvertDetail(item);
+
+                                var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
+
+                                this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
+                                
+                            }
+
+                            if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
+                            {
+                                SVCMMeetingDetail detail = this.ConvertDetail(item);
+                                this.MeetingDetailDataLocal.Add(detail.Id, detail);
+                            }
                         }
+                        List<string> removeList = new List<string>();
+                        foreach (var item in _calendarFolder.AppointmentCollection.Keys)
+                        {
+                            if (!this._meetingListServer.ContainsKey(item))
+                            {
+                                logger.Debug(string.Format("MeetingId {0} is deleted from server, remove it from outlook.", item));
+                                var appt = this._calendarFolder.AppointmentCollection[item];
+
+                                if (appt.End > DateTime.Now)
+                                {
+                                    appt.BeforeDelete -= new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
+                                    appt.Delete();
+                                    this._meetingDataLocal.Remove(item);
+                                    removeList.Add(item);
+                                }
+                            }
+                        }
+
+                        foreach (var item in removeList)
+                        {
+                            _calendarFolder.AppointmentCollection.Remove(item);
+                        }
+
+                        this.SavaMeetingDataToCalendarFolder();
                     }
-                }
-            });
+                    else
+                    {
+                        logger.Error("同步会议列表信息错误！");
+                    }
+                });
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error("同步失败！", ex);
+            }
+
+                
 
         }
 
@@ -167,7 +240,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
         /// 获取默认会议列表
         /// </summary>
         /// <returns></returns>
-        public MeetingData LoadMeetingdataFromServer()
+        public bool LoadMeetingdataFromServer(MeetingData meetingData)
         {
             MeetingListQuery query = new MeetingListQuery();
 
@@ -182,7 +255,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             query.StatVideoType = -1;
 
             List<SVCMMeeting> list;
-            MeetingData meetingData = new MeetingData();
+            
             bool succeed = ClientServiceFactory.Create().TryGetMeetingList(query, OutlookFacade.Instance().Session, out list);
 
             if (succeed)
@@ -191,9 +264,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 {
                     meetingData.Add(item.Id, item);
                 }
+
+                return true;
             }
 
-            return meetingData;
+            return false;
         }
             
     }
