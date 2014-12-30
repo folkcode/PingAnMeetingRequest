@@ -173,9 +173,9 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(579, 625);
+            this.btnCancel.Location = new System.Drawing.Point(468, 625);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 21);
+            this.btnCancel.Size = new System.Drawing.Size(75, 24);
             this.btnCancel.TabIndex = 15;
             this.btnCancel.Text = "取消";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -183,7 +183,7 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(364, 624);
+            this.btnUpdate.Location = new System.Drawing.Point(359, 626);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(75, 23);
             this.btnUpdate.TabIndex = 16;
@@ -404,12 +404,13 @@
             // 
             // btnDetail
             // 
-            this.btnDetail.Location = new System.Drawing.Point(475, 625);
+            this.btnDetail.Location = new System.Drawing.Point(581, 626);
             this.btnDetail.Name = "btnDetail";
             this.btnDetail.Size = new System.Drawing.Size(75, 23);
             this.btnDetail.TabIndex = 47;
             this.btnDetail.Text = "查看详情";
             this.btnDetail.UseVisualStyleBackColor = true;
+            this.btnDetail.Visible = false;
             this.btnDetail.Click += new System.EventHandler(this.btnDetail_Click);
             // 
             // MeetingCenterForm
@@ -447,6 +448,8 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.dataGridView1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MeetingCenterForm";
             this.Text = "个人会议中心";
             this.Activated += new System.EventHandler(this.MeetingCenterForm_Activated);

@@ -325,7 +325,7 @@
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(245, 12);
             this.label22.TabIndex = 44;
-            this.label22.Text = "（可部分匹配，多个会议室名称以逗号分隔）";
+            this.label22.Text = "（可部分匹配，多个会议室名称以空格分隔）";
             // 
             // dataGridView1
             // 
@@ -367,7 +367,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(24, 250);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(1173, 483);
+            this.dataGridView1.Size = new System.Drawing.Size(1173, 402);
             this.dataGridView1.TabIndex = 45;
             // 
             // SeriesName
@@ -598,6 +598,7 @@
             this.comboBoxEndTime.Name = "comboBoxEndTime";
             this.comboBoxEndTime.Size = new System.Drawing.Size(64, 20);
             this.comboBoxEndTime.TabIndex = 49;
+            this.comboBoxEndTime.SelectedIndexChanged += new System.EventHandler(this.comboBoxEndTime_SelectedIndexChanged);
             // 
             // comboBoxSeries
             // 
@@ -643,7 +644,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ClientSize = new System.Drawing.Size(1209, 745);
+            this.ClientSize = new System.Drawing.Size(1209, 669);
             this.Controls.Add(this.btnSearchAll);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);

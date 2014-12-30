@@ -223,6 +223,26 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void DoSearch(bool isAll)
         {
+            if (this.comboBoxLevel.SelectedItem == null
+                || this.comboBoxSeries.SelectedItem == null
+                || this.comboBoxCapacity.SelectedItem == null
+                || this.comboBoxProvince.SelectedItem == null
+                || this.comboBoxCity.SelectedItem == null
+                || this.comboBoxBobough.SelectedItem == null)
+            {
+                MessageBox.Show("参数不全，不能查询！");
+                return;
+            }
+
+            // add by robin start
+            if (this.comboBoxStartTime.SelectedIndex >= this.comboBoxEndTime.SelectedIndex)
+            {
+                MessageBox.Show("结束时间必须晚于开始时间，请重新选择！");
+                this.comboBoxEndTime.SelectedIndex = this.comboBoxStartTime.SelectedIndex < this.comboBoxEndTime.Items.Count ? this.comboBoxStartTime.SelectedIndex + 1 : this.comboBoxStartTime.SelectedIndex;
+                return;
+            }
+            // add by robin end
+
             MeetingSchedulerQuery query = new MeetingSchedulerQuery();
 
             query.RoomName = this.txtRoomName.Text;
@@ -326,6 +346,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             {
                 logger.Error("comboBoxLevel_SelectedIndexChanged error", ex);
             }
+        }
+
+        private void comboBoxEndTime_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // add by robin start
+            if (this.comboBoxStartTime.SelectedIndex >= this.comboBoxEndTime.SelectedIndex)
+            {
+                MessageBox.Show("结束时间必须晚于开始时间，请重新选择！");
+                this.comboBoxEndTime.SelectedIndex = this.comboBoxStartTime.SelectedIndex < this.comboBoxEndTime.Items.Count ? this.comboBoxStartTime.SelectedIndex + 1 : this.comboBoxStartTime.SelectedIndex;
+                return;
+            }
+            // add by robin end
         }
     }
 }

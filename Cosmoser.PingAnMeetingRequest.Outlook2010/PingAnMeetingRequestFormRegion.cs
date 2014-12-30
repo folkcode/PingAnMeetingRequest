@@ -5,6 +5,7 @@ using System.Resources;
 using System.Text;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
+
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Manager;
 using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
@@ -42,7 +43,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             // Use e.OutlookItem to get a reference to the current Outlook item.
             private void PingAnMeetingRequestFormRegionFactory_FormRegionInitializing(object sender, Microsoft.Office.Tools.Outlook.FormRegionInitializingEventArgs e)
             {
-                
             }
         }
 
@@ -51,6 +51,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         private AppointmentManager _apptMgr = new AppointmentManager();
         SVCMMeetingDetail meeting;
         static ILog logger = IosLogManager.GetLogger(typeof(PingAnMeetingRequestFormRegion));
+        static DateTime startTime;
+        static DateTime endTime;
+
+        private Outlook.AppointmentItem item;
 
         // Occurs before the form region is displayed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
@@ -59,27 +63,101 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             try
             {
-                Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
-
-                this.btnCanhuilingdao.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(btnCanhuilingdao_Click);
-                this.olkTxtLocation.Click += new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
-                this.olkbtnMobileTerm.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(olkbtnMobileTerm_Click);
-
-                this.obtliji.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtliji_Click);
-                this.obtyuyue.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtyuyue_Click);
-
                 OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
 
-                this.InitializeUI();
+                item = (Outlook.AppointmentItem)this.OutlookFormRegion.Item;
 
-                item.Write += new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
+                startTime = DateTime.Now;
+
+                if ((startTime - endTime).TotalSeconds < 1)
+                    return;
+
+                this.InitializeUI();
 
                 this.RegisterControlValueChangeEvents();
             }
             catch (Exception ex)
             {
-                logger.Error("PingAnMeetingRequestFormRegion_FormRegionShowing", ex);
+                logger.Error("PingAnMeetingRequestFormRegion_FormRegionShowing error", ex);
             }
+        }
+
+        // Occurs when the form region is closed.
+        // Use this.OutlookItem to get a reference to the current Outlook item.
+        // Use this.OutlookFormRegion to get a reference to the form region.
+        private void PingAnMeetingRequestFormRegion_FormRegionClosed(object sender, System.EventArgs e)
+        {
+            this.UnRegisterControlValueChangeEvents();
+            OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+            endTime = DateTime.Now;
+        }
+
+        private void RegisterControlValueChangeEvents()
+        {
+            this.btnCanhuilingdao.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(btnCanhuilingdao_Click);
+            this.olkTxtLocation.Click += new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
+            this.olkbtnMobileTerm.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(olkbtnMobileTerm_Click);
+
+            this.obtliji.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtliji_Click);
+            this.obtyuyue.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtyuyue_Click);
+            this.obtbendi.Click +=new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtbendi_Click);
+            this.obtshipin.Click +=new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtshipin_Click);
+
+            this.olkTxtSubject.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+            this.olkTxtLocation.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+            this.olkStartDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
+            this.olkStartTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
+            this.olkEndDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
+            this.olkEndTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
+
+            this.txtPeopleCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(txtPeopleCount_ValueChanged);
+            this.txtPhone.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+
+            this.obtxsms0.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms1.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms2.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms3.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms4.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+
+
+            this.txtIPCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+
+        }
+
+        private void UnRegisterControlValueChangeEvents()
+        {
+            this.olkTxtSubject.Change -= new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+            this.olkTxtLocation.Change -= new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+            this.olkStartDateControl.Change -= new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
+            this.olkStartTimeControl.Change -= new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
+            this.olkEndDateControl.Change -= new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
+            this.olkEndTimeControl.Change -= new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
+            this.obtbendi.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtliji.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtshipin.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtyuyue.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+
+            this.txtPeopleCount.Change -= new Outlook.OlkTextBoxEvents_ChangeEventHandler(txtPeopleCount_ValueChanged);
+            this.txtPhone.Change -= new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+           
+
+            this.obtxsms0.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms1.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms2.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms3.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+            this.obtxsms4.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
+
+
+            this.txtIPCount.Change -= new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+
+            this.btnCanhuilingdao.Click -= new Outlook.OlkCommandButtonEvents_ClickEventHandler(btnCanhuilingdao_Click);
+            this.olkTxtLocation.Click -= new Outlook.OlkTextBoxEvents_ClickEventHandler(olkTxtLocation_Click);
+            this.olkbtnMobileTerm.Click -= new Outlook.OlkCommandButtonEvents_ClickEventHandler(olkbtnMobileTerm_Click);
+
+            this.obtliji.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtliji_Click);
+            this.obtyuyue.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtyuyue_Click);
+            this.obtbendi.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtbendi_Click);
+            this.obtshipin.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtshipin_Click);
         }
 
         void olkbtnMobileTerm_Click()
@@ -92,59 +170,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 meeting.MobileTermList = view.MobileTermList;
                 this.SaveMeetingToAppointment();
             }
-        }
-
-        // Occurs when the form region is closed.
-        // Use this.OutlookItem to get a reference to the current Outlook item.
-        // Use this.OutlookFormRegion to get a reference to the form region.
-        private void PingAnMeetingRequestFormRegion_FormRegionClosed(object sender, System.EventArgs e)
-        {
-            try
-            {
-                OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
-
-                Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
-
-                
-                //if (!this._apptMgr.IsAppointmentStatusDeleted(item) && item.Saved)
-                //{
-                //    this.SaveMeetingToAppointment();
-                //}
-            }
-            catch (Exception ex)
-            {
-                logger.Error("PingAnMeetingRequestFormRegion_FormRegionClosed", ex);
-            }
-        }
-
-        private void RegisterControlValueChangeEvents()
-        {
-            this.olkTxtSubject.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
-            this.olkTxtLocation.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
-            this.olkStartDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
-            this.olkStartTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
-            this.olkEndDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
-            this.olkEndTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
-            this.obtbendi.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.obtliji.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.obtshipin.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.obtyuyue.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-
-            this.txtPeopleCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(txtPeopleCount_ValueChanged);
-            this.txtPhone.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
-
-            this.obtxsms0.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.obtxsms1.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.obtxsms2.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.obtxsms3.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            this.obtxsms4.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-
-
-            this.txtPassword.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
-            this.txtIPCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
-
-            //this.optOtherBooking.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
-            //this.optselfbooking.Change += new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
         }
 
         void obtliji_Click()
@@ -171,16 +196,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void obtshipin_Click()
         {
-            this.obtshipin.Value = true;
-            this.obtbendi.Value = false;
+            this.EnableVideoSet(true);
 
             this.SaveMeetingToAppointment();
         }
 
+        private void EnableVideoSet(bool p)
+        {
+            this.obtxsms0.Enabled = p;
+            this.obtxsms1.Enabled = p;
+            this.obtxsms2.Enabled = p;
+            this.obtxsms3.Enabled = p;
+            this.obtxsms4.Enabled = p;
+        }
+
         void obtbendi_Click()
         {
-            this.obtshipin.Value = true;
-            this.obtbendi.Value = false;
+            this.EnableVideoSet(false);
 
             this.SaveMeetingToAppointment();
         }
@@ -224,23 +256,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             logger.Debug("InitializeUI");
             logger.Debug("Begin getting MeetingId");
-            //hide password
-            Microsoft.Vbe.Interop.Forms.IControl ctrl = this.txtPassword as IControl;
-            ctrl.Visible = false;
-            this.olkLabel7.Caption = string.Empty;
-            this.olkLabel9.Caption = string.Empty;
 
-            string meetingId = this._apptMgr.GetMeetingIdFromAppointment(this.OutlookItem as Outlook.AppointmentItem);
-            if ( meetingId != null)
+            string meetingId = this._apptMgr.GetMeetingIdFromAppointment(item);
+            if (meetingId != null)
             {
 
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
-                    meeting = this._apptMgr.GetMeetingFromAppointment(this.OutlookItem as Outlook.AppointmentItem, false);
+                    meeting = this._apptMgr.GetMeetingFromAppointment(item, false);
                 }
                 else
                 {
-                    this._apptMgr.SaveMeetingToAppointment(meeting, this.OutlookItem as Outlook.AppointmentItem, false);
+                    this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
                 }
 
                 this.olkStartDateControl.Date = meeting.StartTime.Date;
@@ -249,12 +276,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 this.olkEndTimeControl.Time = meeting.EndTime;
 
                 this.olkTxtSubject.Text = meeting.Name;
-                (this.OutlookItem as Outlook.AppointmentItem).Location = meeting.RoomsStr;
+                item.Location = meeting.RoomsStr;
                 this.olkTxtLocation.Text = meeting.RoomsStr;
 
-               
-
-                //this.txtPassword.Text = meeting.Password;
                 if (meeting.ConfType == ConferenceType.Immediate)
                 {
                     this.obtliji.Value = true;
@@ -301,7 +325,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 }
 
                 this.txtIPCount.Text = meeting.IPDesc;
-                (this.OutlookItem as Outlook.AppointmentItem).Body = meeting.Memo;
+                item.Body = meeting.Memo;
 
                 //以下不能修改
                 this.olkTxtSubject.Enabled = false;
@@ -354,62 +378,66 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         private void SaveMeetingToAppointment()
         {
-            Outlook.AppointmentItem item = this.OutlookItem as Outlook.AppointmentItem;
+            try
+            {
+                logger.Debug("SaveMeetingToAppointment");
+                meeting.Name = this.olkTxtSubject.Text;
+                //meeting.StartTime = this.olkStartDateControl.Date;
+                meeting.StartTime = DateTime.Parse(this.olkStartDateControl.Date.ToString("yyyy-MM-dd ") + this.olkStartTimeControl.Time.ToString("HH:mm:ss"));
+                //meeting.EndTime = this.olkEndDateControl.Date;
+                meeting.EndTime = DateTime.Parse(this.olkEndDateControl.Date.ToString("yyyy-MM-dd ") + this.olkEndTimeControl.Time.ToString("HH:mm:ss"));
 
-            meeting.Name = this.olkTxtSubject.Text;
-            //meeting.StartTime = this.olkStartDateControl.Date;
-            meeting.StartTime = DateTime.Parse(this.olkStartDateControl.Date.ToString("yyyy-MM-dd ") + this.olkStartTimeControl.Time.ToString("HH:mm:ss"));
-            //meeting.EndTime = this.olkEndDateControl.Date;
-            meeting.EndTime = DateTime.Parse(this.olkEndDateControl.Date.ToString("yyyy-MM-dd ") + this.olkEndTimeControl.Time.ToString("HH:mm:ss"));
+                if (this.obtliji.Value == true)
+                {
+                    meeting.ConfType = ConferenceType.Immediate;
+                }
+                else if (this.obtyuyue.Value == true)
+                {
+                    meeting.ConfType = ConferenceType.Furture;
+                }
+                else
+                {
+                    meeting.ConfType = ConferenceType.Recurring;
+                }
 
-            if (this.obtliji.Value == true)
-            {
-                meeting.ConfType = ConferenceType.Immediate;
-            }
-            else if (this.obtyuyue.Value == true)
-            {
-                meeting.ConfType = ConferenceType.Furture;
-            }
-            else
-            {
-                meeting.ConfType = ConferenceType.Recurring;
-            }
+                if (this.obtbendi.Value == true)
+                    meeting.ConfMideaType = MideaType.Local;
+                else
+                    meeting.ConfMideaType = MideaType.Video;
 
-            if (this.obtbendi.Value == true)
-                meeting.ConfMideaType = MideaType.Local;
-            else
-                meeting.ConfMideaType = MideaType.Video;
+                if (!string.IsNullOrEmpty(this.txtPeopleCount.Text))
+                    meeting.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text);
+                meeting.IPDesc = this.txtIPCount.Text;
+                meeting.Phone = this.txtPhone.Text;
+                meeting.Memo = item.Body;
 
-            if (!string.IsNullOrEmpty(this.txtPeopleCount.Text))
-                meeting.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text);
-            meeting.Password = this.txtPassword.Text;
-            meeting.IPDesc = this.txtIPCount.Text;
-            meeting.Phone = this.txtPhone.Text;
-            meeting.Memo = item.Body;
+                if (this.obtxsms0.Value)
+                {
+                    meeting.VideoSet = VideoSet.Audio;
+                }
+                else if (this.obtxsms1.Value)
+                {
+                    meeting.VideoSet = VideoSet.MainRoom;
+                }
+                else if (this.obtxsms2.Value)
+                {
+                    meeting.VideoSet = VideoSet.EqualScreen;
+                }
+                else if (this.obtxsms3.Value)
+                {
+                    meeting.VideoSet = VideoSet.OneNScreen;
+                }
+                else if (this.obtxsms4.Value)
+                {
+                    meeting.VideoSet = VideoSet.TwoNScreen;
+                }
 
-            if (this.obtxsms0.Value)
-            {
-                meeting.VideoSet = VideoSet.Audio;
+                this._apptMgr.SaveMeetingToAppointment(meeting, item, true);
             }
-            else if (this.obtxsms1.Value)
+            catch (Exception ex)
             {
-                meeting.VideoSet = VideoSet.MainRoom;
+                logger.Error("SaveMeetingToAppointment error", ex);
             }
-            else if (this.obtxsms2.Value)
-            {
-                meeting.VideoSet = VideoSet.EqualScreen;
-            }
-            else if (this.obtxsms3.Value)
-            {
-                meeting.VideoSet = VideoSet.OneNScreen;
-            }
-            else if (this.obtxsms4.Value)
-            {
-                meeting.VideoSet = VideoSet.TwoNScreen;
-            }
-
-            this._apptMgr.SaveMeetingToAppointment(meeting, item,true);
-
         }
     }
 }

@@ -105,7 +105,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             try
             {
-                if (this._activeExplorer.CurrentFolder.StoreID == OutlookFacade.Instance().CalendarFolder.MAPIFolder.StoreID 
+                if (this._activeExplorer.CurrentFolder.EntryID == OutlookFacade.Instance().CalendarFolder.MAPIFolder.EntryID 
                     || this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
                     this.CalendarFolder.CalendarDataManager.SyncMeetingList();
             }
