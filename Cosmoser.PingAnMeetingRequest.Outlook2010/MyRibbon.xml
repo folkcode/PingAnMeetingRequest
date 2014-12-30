@@ -24,7 +24,7 @@
         <group idMso="GroupZoom" />
         <group idMso="GroupEditing" />
       </tab>
-      <tab id ="SVCMMeeting" label="SVCM会议"  getVisible="GetSVCMCustomGroupVisible" insertAfterMso="TabAppointment">
+      <tab id ="SVCMMeeting" label="电子会议"  getVisible="GetSVCMCustomGroupVisible" insertAfterMso="TabAppointment">
         <group id="CustomGroupActions" label="动作">
           <button id="mySaveAndClose" imageMso="SaveAndClose" label="保存并关闭" getEnabled="GetSaveAndCloseEnabled" onAction="DoSaveAndClose" size="large"/>
           <button  id="myDelete" imageMso="Delete" label="删除" onAction="DoDelete" size="large" getEnabled="GetDeleteEnabled" />
