@@ -25,8 +25,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         private WrapTask _task = null;
         Menus.MenuManager _menuMgr = null;
         private CalendarFolder _calendarFolder;
-        private HandlerSession _session;
-        
+        private HandlerSession _session = new HandlerSession();
+
         public HandlerSession Session
         {
             get
@@ -92,6 +92,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 Globals.ThisAddIn.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
                 this._activeExplorer.FolderSwitch += new Outlook.ExplorerEvents_10_FolderSwitchEventHandler(_activeExplorer_FolderSwitch);
 
+                if (this._session.OutlookVersion.StartsWith("12.0"))
+                {
+
+                    _menuMgr = new Menus.MenuManager(Globals.ThisAddIn.Application);
+                    _menuMgr.mRibbon = this.MyRibbon;
+                    _menuMgr.RemoveMenubar();
+                    _menuMgr.AddMenuBar();
+                }
+
                 this._calendarFolder = new CalendarFolder();
                 this._calendarFolder.Initialize();
             }
@@ -105,7 +114,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             try
             {
-                if (this._activeExplorer.CurrentFolder.EntryID == OutlookFacade.Instance().CalendarFolder.MAPIFolder.EntryID 
+                if (this._activeExplorer.CurrentFolder.EntryID == OutlookFacade.Instance().CalendarFolder.MAPIFolder.EntryID
                     || this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
                     this.CalendarFolder.CalendarDataManager.SyncMeetingList();
             }
@@ -119,22 +128,32 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             try
             {
-                Task task = Task.Factory.StartNew(() =>
-                {
-                    this._session = new HandlerSession();
-                    this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"];
+                //this._session = new HandlerSession();
+                this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"];
 
-                    //var currentUser = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser();
-                    //if(currentUser != null)
-                    //    this._session.UserName = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser().PrimarySmtpAddress.Split("@".ToArray())[0];
-                    this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
-                    this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+                var currentUser = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser();
+                if (currentUser != null)
+                    this._session.UserName = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser().PrimarySmtpAddress.Split("@".ToArray())[0];
+                this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
+                this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+                this._session.OutlookVersion = this.Application.Version;
 
-                    ClientServiceFactory.Create().Login(ref this._session);
+                //Task task = Task.Factory.StartNew(() =>
+                //{
+                //    this._session = new HandlerSession();
+                //    this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"];
 
-                    //if(currentUser == null)
-                    //MessageBox.Show("找不到Exchange账号！");
-                });
+                //    //var currentUser = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser();
+                //    //if(currentUser != null)
+                //    //    this._session.UserName = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser().PrimarySmtpAddress.Split("@".ToArray())[0];
+                //    this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
+                //    this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+
+                //    ClientServiceFactory.Create().Login(ref this._session);
+
+                //    //if(currentUser == null)
+                //    //MessageBox.Show("找不到Exchange账号！");
+                //});
             }
             catch (Exception ex)
             {
@@ -210,7 +229,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void meetingDetailMenu_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            
+
         }
 
         private void Log(object state)
@@ -220,10 +239,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 name = Application.Session.Accounts[0].DisplayName;
             logger.Info(string.Format("Current time: {0} , current user: {1}", DateTime.Now, name));
         }
-
-
-        
-        
 
     }
 }

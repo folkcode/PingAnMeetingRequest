@@ -16,7 +16,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         static ILog logger = IosLogManager.GetLogger(typeof(ThisAddIn));
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            //IosLogManager.InitializeLog4Net();
             OutlookFacade.Instance().StartupOutlook();
         }
 
@@ -49,6 +48,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 try
                 {
+                    if (string.IsNullOrEmpty(OutlookFacade.Instance().Session.OutlookVersion))
+                        OutlookFacade.Instance().Session.OutlookVersion = this.Application.Version;
+
                     if (OutlookFacade.Instance().MyRibbon == null)
                     {
                         OutlookFacade.Instance().MyRibbon = new MyRibbon(Application);

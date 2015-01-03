@@ -244,9 +244,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         public void DoBookingMeeting(Office.IRibbonControl control)
         {
-            Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
-            //if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
-            //{
+            //Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
+            bool login = false;
+            if (!OutlookFacade.Instance().Session.IsActive)
+            {
+                var session = OutlookFacade.Instance().Session;
+                login = ClientServiceFactory.Create().Login(ref session);
+                if (login)
+                    OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
+            }
+
+            if (login)
+            {
                 //set holiday ribbon
                 this.RibbonType = MyRibbonType.SVCM;
 
@@ -258,13 +267,33 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 inspect.Display(false);
                 //reset the ribbon to normal
                 this.RibbonType = MyRibbonType.Original;
-            //}
+            }
+            else
+            {
+                MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+            }
         }
 
         public void DoMeetingList(Office.IRibbonControl control)
         {
-            MeetingCenterForm form = new MeetingCenterForm();
-            form.Show();
+            bool login = false;
+            if (!OutlookFacade.Instance().Session.IsActive)
+            {
+                var session = OutlookFacade.Instance().Session;
+                login = ClientServiceFactory.Create().Login(ref session);
+                if (login)
+                    OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
+            }
+
+            if (login)
+            {
+                MeetingCenterForm form = new MeetingCenterForm();
+                form.Show();
+            }
+            else
+            {
+                MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+            }
         }
 
         public void DoSchedulerSearch(Office.IRibbonControl control)

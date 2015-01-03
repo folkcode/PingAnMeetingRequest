@@ -25,7 +25,7 @@
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <RootNamespace>Cosmoser.PingAnMeetingRequest.Outlook2010</RootNamespace>
-    <AssemblyName>PingAnMeeting.Outlook2010</AssemblyName>
+    <AssemblyName>PingAnMeeting.OutlookAddin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

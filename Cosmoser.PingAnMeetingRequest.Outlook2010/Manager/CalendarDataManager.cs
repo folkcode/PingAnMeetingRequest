@@ -113,70 +113,73 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         public void SyncMeetingList()
         {
-            //Task<MeetingData> task = GetMeetingListSyncTask();
-
-            ////task.Start();
-
-            //task.Wait();
+           
             try
             {
-                Func<MeetingData, bool> func = LoadMeetingdataFromServer;
-                MeetingData meetingData = new MeetingData();
-                Task.Factory.FromAsync<MeetingData, bool>(func.BeginInvoke, func.EndInvoke, meetingData, null).ContinueWith((result) =>
+                if (OutlookFacade.Instance().Session.IsActive)
                 {
-                    bool succed = result.Result;
-                    if (succed)
+                    Func<MeetingData, bool> func = LoadMeetingdataFromServer;
+                    MeetingData meetingData = new MeetingData();
+                    Task.Factory.FromAsync<MeetingData, bool>(func.BeginInvoke, func.EndInvoke, meetingData, null).ContinueWith((result) =>
                     {
-                        this._meetingListServer = meetingData;
-
-                        foreach (var item in this._meetingListServer.Values)
+                        bool succed = result.Result;
+                        if (succed)
                         {
-                            if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                            this._meetingListServer = meetingData;
+
+                            foreach (var item in this._meetingListServer.Values)
                             {
-                                SVCMMeetingDetail detail = this.ConvertDetail(item);
-
-                                var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
-
-                                this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
-                                
-                            }
-
-                            if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
-                            {
-                                SVCMMeetingDetail detail = this.ConvertDetail(item);
-                                this.MeetingDetailDataLocal.Add(detail.Id, detail);
-                            }
-                        }
-                        List<string> removeList = new List<string>();
-                        foreach (var item in _calendarFolder.AppointmentCollection.Keys)
-                        {
-                            if (!this._meetingListServer.ContainsKey(item))
-                            {
-                                logger.Debug(string.Format("MeetingId {0} is deleted from server, remove it from outlook.", item));
-                                var appt = this._calendarFolder.AppointmentCollection[item];
-
-                                if (appt.End > DateTime.Now)
+                                if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
                                 {
-                                    appt.BeforeDelete -= new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
-                                    appt.Delete();
-                                    this._meetingDataLocal.Remove(item);
-                                    removeList.Add(item);
+                                    SVCMMeetingDetail detail = this.ConvertDetail(item);
+
+                                    var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
+
+                                    this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
+
+                                }
+
+                                if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
+                                {
+                                    SVCMMeetingDetail detail = this.ConvertDetail(item);
+                                    this.MeetingDetailDataLocal.Add(detail.Id, detail);
                                 }
                             }
-                        }
+                            List<string> removeList = new List<string>();
+                            foreach (var item in _calendarFolder.AppointmentCollection.Keys)
+                            {
+                                if (!this._meetingListServer.ContainsKey(item))
+                                {
+                                    logger.Debug(string.Format("MeetingId {0} is deleted from server, remove it from outlook.", item));
+                                    var appt = this._calendarFolder.AppointmentCollection[item];
 
-                        foreach (var item in removeList)
+                                    if (appt.End > DateTime.Now)
+                                    {
+                                        appt.BeforeDelete -= new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
+                                        appt.Delete();
+                                        this._meetingDataLocal.Remove(item);
+                                        removeList.Add(item);
+                                    }
+                                }
+                            }
+
+                            foreach (var item in removeList)
+                            {
+                                _calendarFolder.AppointmentCollection.Remove(item);
+                            }
+
+                            this.SavaMeetingDataToCalendarFolder();
+                        }
+                        else
                         {
-                            _calendarFolder.AppointmentCollection.Remove(item);
+                            logger.Error("同步会议列表信息错误！");
                         }
-
-                        this.SavaMeetingDataToCalendarFolder();
-                    }
-                    else
-                    {
-                        logger.Error("同步会议列表信息错误！");
-                    }
-                });
+                    });
+                }
+                else
+                {
+                    logger.Debug("未登陆或session错误，没有执行同步！");
+                }
 
             }
             catch (Exception ex)
