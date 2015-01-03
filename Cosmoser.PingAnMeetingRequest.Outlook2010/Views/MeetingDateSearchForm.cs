@@ -245,7 +245,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             MeetingSchedulerQuery query = new MeetingSchedulerQuery();
 
-            query.RoomName = this.txtRoomName.Text;
+            query.RoomName = this.txtRoomName.Text.ToString().Trim();
             query.LevelId = (this.comboBoxLevel.SelectedItem as RoomLevel).LevelId;
             query.SeriesId = (this.comboBoxSeries.SelectedItem as MeetingSeries).Id;
             query.BoardRoomState = this.rbStatusAll.Checked ? 0 : 1;

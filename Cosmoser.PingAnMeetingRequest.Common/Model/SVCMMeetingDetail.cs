@@ -66,7 +66,13 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
                 StringBuilder sb = new StringBuilder();
                 if (this.MainRoom != null)
                 {
+                    // modify by robin at 20150102 start
                     sb.Append(this.MainRoom.Name + "(主会场)");
+                    if (this.VideoSet == VideoSet.MainRoom)
+                    {
+                        sb.Append(this.MainRoom.Name + "(主会场)");
+                    }
+                    // modify by robin at 20150102 start
                     foreach (var item in this.Rooms)
                     {
                         if (item.Name == this.MainRoom.Name)

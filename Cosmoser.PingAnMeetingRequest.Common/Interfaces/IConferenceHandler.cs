@@ -10,7 +10,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Interfaces
     {
         bool Login(ref HandlerSession session);
         bool BookingMeeting(SVCMMeetingDetail meetingDetail, HandlerSession session, out string error);
-        bool DeleteMeeting(string conferId, HandlerSession session);
+        bool DeleteMeeting(string conferId, HandlerSession session, out string error);
         bool UpdateMeeting(SVCMMeetingDetail meetingDetail, string operateType, HandlerSession session, out string error, out string errorCode);
         bool TryGetMeetingDetail(string meetingId, HandlerSession session, out SVCMMeetingDetail meetingDetail);
         bool TryGetMeetingList(MeetingListQuery query, HandlerSession session, out List<SVCMMeeting> meetingList);

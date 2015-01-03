@@ -39,6 +39,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void AttendedBossForm_Load(object sender, EventArgs e)
         {
+            this.textBox1.Text = this.LeaderRoom;
             if (ClientServiceFactory.Create().TryGetLeaderList(OutlookFacade.Instance().Session, out this._allLeaders))
             {
                 var list1 = this._allLeaders.FindAll(x => x.LeaderPRI.StartsWith("1"));

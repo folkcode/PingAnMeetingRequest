@@ -208,6 +208,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 this.listBoxSelectedRooms.SelectedItems.Clear();
                 this.listBoxSelectedRooms.DataSource = null;
                 this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+                
+                
             }
             else
             {
@@ -252,6 +254,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 }
 
                 this.MainRoom = this.listBoxSelectedRooms.SelectedItem as MeetingRoom;
+                //this.listBoxSelectedRooms.DrawMode
+                //Graphics g = e.Graphics;//获取Graphics对象。
+                //Rectangle bound = e.Bounds;//获取当前要绘制的行的一个矩形范围。
+
             }
         }
 

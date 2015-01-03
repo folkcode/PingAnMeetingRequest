@@ -106,8 +106,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             }
         }
 
-        public bool DeleteMeeting(string conferId, Model.HandlerSession session)
+        public bool DeleteMeeting(string conferId, Model.HandlerSession session, out string error)
         {
+            error = string.Empty;
             try
             {
                 session.AddMessageId();
@@ -124,8 +125,12 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 }
                 else
                 {
+                    //logger.Error(string.Format("DeleteMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
+                    //this.ReLogin(session, root.SelectSingleNode("result"));
+                    //return false;
+                    error = response.SelectSingleNode("deleteConfer").SelectSingleNode("result").Attributes["property"].Value;
                     logger.Error(string.Format("DeleteMeeting failed, status: {0}, error:{1}", status, response.InnerXml));
-                    this.ReLogin(session, root.SelectSingleNode("result"));
+                    this.ReLogin(session, response.SelectSingleNode("deleteConfer").SelectSingleNode("result"));
                     return false;
                 }
             }

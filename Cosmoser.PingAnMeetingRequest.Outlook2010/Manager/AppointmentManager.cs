@@ -125,13 +125,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 sb.AppendLine("请设定一个主会场！");
 
             if (string.IsNullOrEmpty(meeting.Name))
-                sb.AppendLine("请填写会议名称！");
+                sb.AppendLine("请填写主题（会议名称）！");
 
             if (string.IsNullOrEmpty(meeting.Phone))
-                sb.AppendLine("电话号码不能为空！");
+                sb.AppendLine("联系电话不能为空！");
 
             if (meeting.ParticipatorNumber < 1)
-                sb.AppendLine("请填写参会人数，并且大于1！");
+                sb.AppendLine("请填写参会人数，并且大于0！");
 
             message = sb.ToString();
 

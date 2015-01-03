@@ -22,5 +22,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             
 
         }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

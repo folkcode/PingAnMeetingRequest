@@ -132,10 +132,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
                 if (IsPingAnMeetingAppointment(appt))
                 {
+                    // add by robin at 20141231 start 
+                    if ( MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    {
+                        this._appointmentManager.RemoveItemDeleteStatus(appt);
+                        Cancel = true;
+                        return;
+                    }
+                    // add by robin at 20141231 end 
+                    string  error;
                     SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt, false);
                     if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
                     {
-                        bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session);
+                        bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session, out error);
 
                         if (suceed)
                         {
@@ -144,9 +153,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         }
                         else
                         {
-                            System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
+                            // modify by robin at 20141231 start 
+                            //System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
+                            //this._appointmentManager.RemoveItemDeleteStatus(appt);
+                            //Cancel = true;
+                            //System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
+                             System.Windows.Forms.MessageBox.Show(string.Format("向服务端删除会议失败！{0}！ 请重试。", error));
                             this._appointmentManager.RemoveItemDeleteStatus(appt);
                             Cancel = true;
+                            // modify by robin at 20141231 end 
                         }
                     }
                     else

@@ -368,6 +368,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             view.LeaderRoom = meeting.LeaderRoom;
             view.LeaderList = new List<MeetingLeader>();
             view.LeaderList.AddRange(meeting.LeaderList);
+            
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {
                 meeting.LeaderList = view.LeaderList;

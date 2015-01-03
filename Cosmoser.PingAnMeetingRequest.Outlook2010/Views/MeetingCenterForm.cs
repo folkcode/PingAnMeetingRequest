@@ -203,6 +203,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (!string.IsNullOrWhiteSpace(currentMeetingId))
             {
+                // add by robin at 20141231 start 
+                if (MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    return;
+                }
+                // add by robin at 20141231 end 
+
                 if (_meetingData[currentMeetingId].StatusCode == 3)
                 {
                     MessageBox.Show("会议正在进行，不能删除！");
