@@ -282,81 +282,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         public void DoBookingMeeting(Office.IRibbonControl control)
         {
-            //Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
-            bool login = false;
-            if (!OutlookFacade.Instance().Session.IsActive)
-            {
-                var session = OutlookFacade.Instance().Session;
-                login = ClientServiceFactory.Create().Login(ref session);
-                if (login)
-                    OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
-
-                if (login)
-                {
-                    //set holiday ribbon
-                    this.RibbonType = MyRibbonType.SVCM;
-
-                    //Create a holiday appointmet and set properties
-                    Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
-
-                    //display the appointment
-                    Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
-                    inspect.Display(false);
-                    //reset the ribbon to normal
-                    this.RibbonType = MyRibbonType.Original;
-                }
-                else
-                {
-                    MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
-                }
-            }
-            else
-            {
-                //set holiday ribbon
-                this.RibbonType = MyRibbonType.SVCM;
-
-                //Create a holiday appointmet and set properties
-                Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
-
-                //display the appointment
-                Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
-                inspect.Display(false);
-                //reset the ribbon to normal
-                this.RibbonType = MyRibbonType.Original;
-            }
+            OutlookFacade.Instance().CalendarFolder.DoBookingMeeting();
         }
 
         public void DoMeetingList(Office.IRibbonControl control)
         {
-            bool login = false;
-            MeetingCenterForm form = null;
-
-            if (!OutlookFacade.Instance().Session.IsActive)
-            {
-                var session = OutlookFacade.Instance().Session;
-                login = ClientServiceFactory.Create().Login(ref session);
-                if (login)
-                    OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
-
-                if (login)
-                {
-                    form = new MeetingCenterForm();
-                    
-                }
-                else
-                {
-                    MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
-                    return;
-                }
-            }
-            else
-            {
-                form = new MeetingCenterForm();
-            }
-
-            if (form != null)
-                form.Show();
-            
+            OutlookFacade.Instance().CalendarFolder.DoMeetingList();
         }
 
         public void DoSchedulerSearch(Office.IRibbonControl control)

@@ -29,19 +29,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
         {
             try
             {
-                //menuBar = this._application.ActiveExplorer().CommandBars.ActiveMenuBar;
-                //newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(Office.MsoControlType.msoControlPopup);
-                //if (newMenuBar != null)
-                //{
-                //    newMenuBar.Caption = "定制会议";
-                //    newMenuBar.Tag = menuTag;
-                //    buttonOne = this.CreateMenu(newMenuBar, "预约会议", "booking");
-                //    buttonOne.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonOne_Click);
+                menuBar = this._application.ActiveExplorer().CommandBars.ActiveMenuBar;
+                newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(Office.MsoControlType.msoControlPopup);
+                if (newMenuBar != null)
+                {
+                    newMenuBar.Caption = "定制会议";
+                    newMenuBar.Tag = menuTag;
+                    buttonOne = this.CreateMenu(newMenuBar, "预约会议", "booking");
+                    buttonOne.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonOne_Click);
 
-                //    buttonTwo = this.CreateMenu(newMenuBar, "个人会议中心", "MeetingCenter");
-                //    buttonTwo.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonTwo_Click);
+                    buttonTwo = this.CreateMenu(newMenuBar, "个人会议中心", "MeetingCenter");
+                    buttonTwo.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonTwo_Click);
 
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -51,6 +51,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
 
         void buttonTwo_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            OutlookFacade.Instance().CalendarFolder.DoMeetingList();
         }
 
         public void RemoveMenubar()
@@ -74,21 +75,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
 
         void buttonOne_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
-            if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
-            {
-                //set holiday ribbon
-                this.mRibbon.RibbonType = MyRibbonType.SVCM;
-
-                //Create a holiday appointmet and set properties
-                Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
-
-                //display the appointment
-                Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
-                inspect.Display(false);
-                //reset the ribbon to normal
-                this.mRibbon.RibbonType = MyRibbonType.Original;
-            }
+            OutlookFacade.Instance().CalendarFolder.DoBookingMeeting();
         }
 
         private Office.CommandBarButton CreateMenu(Office.CommandBarPopup newMenuBar, string caption, string tag)

@@ -9,6 +9,7 @@ using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 using System.Windows.Forms;
+using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -269,5 +270,95 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             }
         }
 
+        public void DoBookingMeeting()
+        {
+            try
+            {
+                bool login = false;
+                if (!OutlookFacade.Instance().Session.IsActive)
+                {
+                    var session = OutlookFacade.Instance().Session;
+                    login = ClientServiceFactory.Create().Login(ref session);
+                    if (login)
+                        OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
+
+                    if (login)
+                    {
+                        //set holiday ribbon
+                        OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
+
+                        //Create a holiday appointmet and set properties
+                        Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+
+                        //display the appointment
+                        Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
+                        inspect.Display(false);
+                        //reset the ribbon to normal
+                        OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+                    }
+                    else
+                    {
+                        MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+                    }
+                }
+                else
+                {
+                    //set holiday ribbon
+                    OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
+
+                    //Create a holiday appointmet and set properties
+                    Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+
+                    //display the appointment
+                    Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
+                    inspect.Display(false);
+                    //reset the ribbon to normal
+                    OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("DoBookingMeeting failed.", ex);
+            }
+        }
+
+        public void DoMeetingList()
+        {
+            try
+            {
+                bool login = false;
+                MeetingCenterForm form = null;
+
+                if (!OutlookFacade.Instance().Session.IsActive)
+                {
+                    var session = OutlookFacade.Instance().Session;
+                    login = ClientServiceFactory.Create().Login(ref session);
+                    if (login)
+                        OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
+
+                    if (login)
+                    {
+                        form = new MeetingCenterForm();
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+                        return;
+                    }
+                }
+                else
+                {
+                    form = new MeetingCenterForm();
+                }
+
+                if (form != null)
+                    form.Show();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("DoMeetingList failed!", ex);
+            }
+        }
     }
 }
