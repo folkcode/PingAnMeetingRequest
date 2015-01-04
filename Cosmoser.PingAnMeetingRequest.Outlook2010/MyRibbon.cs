@@ -149,37 +149,44 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
                 logger.Debug("DoDelete appointment:" + item.Subject);
 
-                if (MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
-                {
-                    return;
-                }
-
                 string error;
                 SVCMMeetingDetail meeting = this._apptMgr.GetMeetingFromAppointment(item, false);
-                var calendarManager = OutlookFacade.Instance().CalendarFolder.CalendarDataManager;
-
-                if (calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                if (meeting != null)
                 {
-                    bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session, out error);
-
-                    if (suceed)
+                    if (MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
                     {
-                        calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
-                        calendarManager.SavaMeetingDataToCalendarFolder();
+                        return;
+                    }
+
+                    var calendarManager = OutlookFacade.Instance().CalendarFolder.CalendarDataManager;
+
+                    if (calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                    {
+                        bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session, out error);
+
+                        if (suceed)
+                        {
+                            calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                            calendarManager.SavaMeetingDataToCalendarFolder();
+                        }
+                        else
+                        {
+                            System.Windows.Forms.MessageBox.Show(string.Format("向服务端删除会议失败！{0}！ 请重试。", error));
+                            return;
+                        }
                     }
                     else
                     {
-                        System.Windows.Forms.MessageBox.Show(string.Format("向服务端删除会议失败！{0}！ 请重试。", error));
-                        return;
+                        logger.Debug(string.Format("item_BeforeDelete: meeting Id {0}, meetingName {1}. The meeting is not existing in server, no need update to server,only delete from outlook", meeting.Id, meeting.Name));
                     }
+
+                    this._apptMgr.SetAppointmentDeleted(item, true);
+                    item.Delete();
                 }
                 else
                 {
-                    logger.Debug(string.Format("item_BeforeDelete: meeting Id {0}, meetingName {1}. The meeting is not existing in server, no need update to server,only delete from outlook", meeting.Id, meeting.Name));
+                    item.Delete();
                 }
-
-                this._apptMgr.SetAppointmentDeleted(item, true);
-                item.Delete();
             }
             catch (Exception ex)
             {
