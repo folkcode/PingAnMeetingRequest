@@ -498,7 +498,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    detail.AccountName = root.SelectSingleNode("accountName").InnerText;
                    detail.Phone = root.SelectSingleNode("telephone").InnerText.Replace("null", "");
 
-                   var leaders = root.SelectSingleNode("leader").InnerText.Split(",".ToArray());
+                   var leaders = root.SelectSingleNode("leader").InnerText.Replace("null", "").Split(",".ToArray());
                    foreach (var item in leaders)
                    {
                        detail.LeaderList.Add(new MeetingLeader()
@@ -513,8 +513,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    
                    detail.Memo = root.SelectSingleNode("confMemo").InnerText.Replace("null", "");
                    detail.Password = root.SelectSingleNode("confPassword").InnerText.Replace("null", "");
-                   
-                   detail.VideoSet = (VideoSet)int.Parse(root.SelectSingleNode("videoSet").InnerText);
+
+                   if (root.SelectSingleNode("videoSet") != null)
+                       detail.VideoSet = (VideoSet)int.Parse(root.SelectSingleNode("videoSet").InnerText);
 
                    detail.IPDesc = root.SelectSingleNode("ipdesc").InnerText.Replace("null","");
                    XmlNode mobileTermlistNode = root.SelectSingleNode("mobileTermList");

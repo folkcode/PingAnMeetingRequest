@@ -49,6 +49,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             this.lblMemo.Content = this.MeetingDetail.Memo;
 
             this.dataGridRoomList.DataContext = this.MeetingDetail.Rooms;
+            
         }
     }
 }

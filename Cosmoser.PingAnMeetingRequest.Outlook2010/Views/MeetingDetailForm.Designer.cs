@@ -35,7 +35,7 @@
             // 
             this.elementHost1.Location = new System.Drawing.Point(12, 12);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(851, 456);
+            this.elementHost1.Size = new System.Drawing.Size(851, 571);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = null;
@@ -44,8 +44,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(875, 480);
+            this.ClientSize = new System.Drawing.Size(875, 595);
             this.Controls.Add(this.elementHost1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MeetingDetailForm";
             this.Text = " 我的预订表";
             this.Load += new System.EventHandler(this.MeetingDetailForm_Load);

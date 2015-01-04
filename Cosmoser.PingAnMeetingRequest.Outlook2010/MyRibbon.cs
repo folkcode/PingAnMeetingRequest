@@ -13,6 +13,7 @@ using Cosmoser.PingAnMeetingRequest.Outlook2010.Views;
 using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 using System.Windows.Forms;
+using Cosmoser.PingAnMeetingRequest.Common.Model;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -147,6 +148,36 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
                 logger.Debug("DoDelete appointment:" + item.Subject);
+
+                if (MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                string error;
+                SVCMMeetingDetail meeting = this._apptMgr.GetMeetingFromAppointment(item, false);
+                var calendarManager = OutlookFacade.Instance().CalendarFolder.CalendarDataManager;
+
+                if (calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                {
+                    bool suceed = ClientServiceFactory.Create().DeleteMeeting(meeting.Id, OutlookFacade.Instance().Session, out error);
+
+                    if (suceed)
+                    {
+                        calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                        calendarManager.SavaMeetingDataToCalendarFolder();
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show(string.Format("向服务端删除会议失败！{0}！ 请重试。", error));
+                        return;
+                    }
+                }
+                else
+                {
+                    logger.Debug(string.Format("item_BeforeDelete: meeting Id {0}, meetingName {1}. The meeting is not existing in server, no need update to server,only delete from outlook", meeting.Id, meeting.Name));
+                }
+
                 this._apptMgr.SetAppointmentDeleted(item, true);
                 item.Delete();
             }
@@ -252,9 +283,27 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 login = ClientServiceFactory.Create().Login(ref session);
                 if (login)
                     OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
-            }
 
-            if (login)
+                if (login)
+                {
+                    //set holiday ribbon
+                    this.RibbonType = MyRibbonType.SVCM;
+
+                    //Create a holiday appointmet and set properties
+                    Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+
+                    //display the appointment
+                    Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
+                    inspect.Display(false);
+                    //reset the ribbon to normal
+                    this.RibbonType = MyRibbonType.Original;
+                }
+                else
+                {
+                    MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+                }
+            }
+            else
             {
                 //set holiday ribbon
                 this.RibbonType = MyRibbonType.SVCM;
@@ -268,32 +317,39 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 //reset the ribbon to normal
                 this.RibbonType = MyRibbonType.Original;
             }
-            else
-            {
-                MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
-            }
         }
 
         public void DoMeetingList(Office.IRibbonControl control)
         {
             bool login = false;
+            MeetingCenterForm form = null;
+
             if (!OutlookFacade.Instance().Session.IsActive)
             {
                 var session = OutlookFacade.Instance().Session;
                 login = ClientServiceFactory.Create().Login(ref session);
                 if (login)
                     OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
-            }
 
-            if (login)
-            {
-                MeetingCenterForm form = new MeetingCenterForm();
-                form.Show();
+                if (login)
+                {
+                    form = new MeetingCenterForm();
+                    
+                }
+                else
+                {
+                    MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+                    return;
+                }
             }
             else
             {
-                MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+                form = new MeetingCenterForm();
             }
+
+            if (form != null)
+                form.Show();
+            
         }
 
         public void DoSchedulerSearch(Office.IRibbonControl control)

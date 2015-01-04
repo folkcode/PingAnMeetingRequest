@@ -27,7 +27,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             var userControl = new MeetingDetailUserControl();
             userControl.MeetingDetail = this.MeetingDetail;
 
-            this.elementHost1.Child = new MeetingDetailUserControl();
+            this.elementHost1.Child = userControl;
         }
+
+
     }
 }

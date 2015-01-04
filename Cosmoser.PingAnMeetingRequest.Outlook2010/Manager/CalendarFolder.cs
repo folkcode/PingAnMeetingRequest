@@ -130,12 +130,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             {
                 logger.Debug("item_BeforeDelete start!");
                 Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+
                 if (IsPingAnMeetingAppointment(appt))
                 {
+                    if (_appointmentManager.IsAppointmentStatusDeleted(appt))
+                        return;
+
                     // add by robin at 20141231 start 
                     if ( MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
                     {
-                        this._appointmentManager.RemoveItemDeleteStatus(appt);
+                        //this._appointmentManager.RemoveItemDeleteStatus(appt);
                         Cancel = true;
                         return;
                     }
@@ -159,7 +163,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                             //Cancel = true;
                             //System.Windows.Forms.MessageBox.Show("删除会议失败，请重试！");
                              System.Windows.Forms.MessageBox.Show(string.Format("向服务端删除会议失败！{0}！ 请重试。", error));
-                            this._appointmentManager.RemoveItemDeleteStatus(appt);
+                            //this._appointmentManager.RemoveItemDeleteStatus(appt);
                             Cancel = true;
                             // modify by robin at 20141231 end 
                         }

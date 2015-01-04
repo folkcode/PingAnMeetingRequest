@@ -324,11 +324,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 SVCMMeetingDetail detail;
                 if (ClientServiceFactory.Create().TryGetMeetingDetail(currentMeetingId, OutlookFacade.Instance().Session, out detail))
                 {
-
+                    MeetingDetailForm form = new MeetingDetailForm();
+                    form.MeetingDetail = detail;
+                    form.ShowDialog();
                 }
                 else
                 {
-
+                    MessageBox.Show("获取会议详情失败！");
                 }
             }
             else
