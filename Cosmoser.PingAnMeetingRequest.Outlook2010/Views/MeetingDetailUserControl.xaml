@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="Cosmoser.PingAnMeetingRequest.Outlook2010.Views.MeetingDetailUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="405"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="5" Height="400" VerticalAlignment="Top" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="14"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Column="0" Grid.Row="12" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="0,0,1,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="14"/>
+
+            <Label Grid.Column="0" Grid.Row="0" Content="会议名称" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="1" Content="召开时间" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="2" Content="结束时间" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="3" Content="会议类型" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="4" Content="会议状态" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="5" Content="参会的总部IP电话个数" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="6" Content="参会人数" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="7" Content="会议所属系列" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="8" Content="申请人" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="9" Content="申请人电话" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="10" Content="申请部门" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="11" Content="参会执委领导" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="12" Content="领导所在会场" HorizontalAlignment="Right"/>
+            <Label Grid.Column="0" Grid.Row="13" Content="会议备注" HorizontalAlignment="Right"/>
+
+            <Label Name="lblMeetingName" Grid.Column="1" Grid.Row="0" Content="会议名称" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblStartTime" Grid.Column="1" Grid.Row="1" Content="召开时间" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblEndTime" Grid.Column="1" Grid.Row="2" Content="结束时间" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblMeetingType" Grid.Column="1" Grid.Row="3" Content="会议类型" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblStatus" Grid.Column="1" Grid.Row="4" Content="会议状态" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblIpCount" Grid.Column="1" Grid.Row="5" Content="参会的总部IP电话个数" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblAttendNum" Grid.Column="1" Grid.Row="6" Content="参会人数" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblSeries" Grid.Column="1" Grid.Row="7" Content="会议所属系列" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblAccount" Grid.Column="1" Grid.Row="8" Content="申请人" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblAccountPhone" Grid.Column="1" Grid.Row="9" Content="申请人电话" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblAccountDepartment" Grid.Column="1" Grid.Row="10" Content="申请部门" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblLeader" Grid.Column="1" Grid.Row="11" Content="参会执委领导" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblLeaderRoom" Grid.Column="1" Grid.Row="12" Content="领导所在会场" HorizontalAlignment="Left" Margin="10,0"/>
+            <Label Name="lblMemo" Grid.Column="1" Grid.Row="13" Content="会议备注" HorizontalAlignment="Left" Margin="10,0"/>
+        </Grid>
+        
+        <DataGrid Name="dataGridRoomList" Grid.Row="2" Margin="5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="会议室名称" Width="*" Binding="{Binding Path=Name}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="会议室地址" Width="*" Binding="{Binding Path=Address}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+            
+        </DataGrid>
+            
+    </Grid>
+</UserControl>

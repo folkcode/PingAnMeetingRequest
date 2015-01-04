@@ -508,7 +508,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    }
 
                    detail.LeaderRoom = root.SelectSingleNode("leaderRoom").InnerText.Replace("null", "");
-                   //detail.Id = root.SelectSingleNode("ipTelephoneNumber").InnerText;
+                   detail.IpTelephoneNumber = root.SelectSingleNode("ipTelephoneNumber").InnerText;
+                   detail.Department = root.SelectSingleNode("department").InnerText;
+                   
                    detail.Memo = root.SelectSingleNode("confMemo").InnerText.Replace("null", "");
                    detail.Password = root.SelectSingleNode("confPassword").InnerText.Replace("null", "");
                    
@@ -539,7 +541,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                            detail.Rooms.Add(new MeetingRoom()
                            {
                                RoomId = node.SelectSingleNode("roomId").InnerText,
-                               Name = node.SelectSingleNode("roomName").InnerText
+                               Name = node.SelectSingleNode("roomName").InnerText,
+                               Address = node.SelectSingleNode("address").InnerText
+
                            });
 
                            if (node.SelectSingleNode("roomType").InnerText == "1")
