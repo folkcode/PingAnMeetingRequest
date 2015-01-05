@@ -7,6 +7,7 @@ using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 using log4net;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -54,6 +55,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         }
 
+        public void RemoveUpdatingMeetingFromAppt(Outlook.AppointmentItem item)
+        {
+            try
+            {
+                item.PropertyAccessor.DeleteProperty(path + "PingAnMeetingUpdating");
+
+            }
+            catch
+            {
+                //it is a new appointment
+            }
+        }
+
         public SVCMMeetingDetail GetMeetingFromAppointment(Outlook.AppointmentItem item, bool isUpdating)
         {
             try
@@ -81,7 +95,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         public void SetAppointmentDeleted(Outlook.AppointmentItem item, bool isDeleted)
         {
-            item.PropertyAccessor.SetProperty(path + "IsDeleted", isDeleted);
+            item.PropertyAccessor.SetProperty(path + "IsDeleted", isDeleted.ToString());
 
         }
 
@@ -89,7 +103,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
         {
             try
             {
-                return (bool)item.PropertyAccessor.GetProperty(path + "IsDeleted");
+                return bool.Parse(item.PropertyAccessor.GetProperty(path + "IsDeleted"));
             }
             catch
             {
@@ -118,20 +132,39 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
             var meeting = this.GetMeetingFromAppointment(item, true);
 
-            if (meeting.Rooms == null || meeting.Rooms.Count == 0)
-                sb.AppendLine("请至少选择一个会议室！");
+            if (meeting != null)
+            {
+                if (meeting.Rooms == null || meeting.Rooms.Count == 0)
+                    sb.AppendLine("请至少选择一个会议室！");
 
-            if (meeting.ConfMideaType == MideaType.Video && meeting.VideoSet == VideoSet.MainRoom && (meeting.MainRoom == null || string.IsNullOrEmpty(meeting.MainRoom.RoomId)))
-                sb.AppendLine("请设定一个主会场！");
+                if ( meeting.VideoSet == VideoSet.MainRoom && (meeting.MainRoom == null || string.IsNullOrEmpty(meeting.MainRoom.RoomId)))
+                    sb.AppendLine("请设定一个主会场！");
 
-            if (string.IsNullOrEmpty(meeting.Name))
-                sb.AppendLine("请填写主题（会议名称）！");
+                if (string.IsNullOrEmpty(meeting.Name))
+                    sb.AppendLine("请填写主题（会议名称）！");
 
-            if (string.IsNullOrEmpty(meeting.Phone))
-                sb.AppendLine("联系电话不能为空！");
+                if (string.IsNullOrEmpty(meeting.Phone))
+                    sb.AppendLine("联系电话不能为空！");
 
-            if (meeting.ParticipatorNumber < 1)
-                sb.AppendLine("请填写参会人数，并且大于0！");
+                Regex regex = new Regex("^[0-9]*[1-9][0-9]*$");
+                if (!string.IsNullOrEmpty(meeting.Phone) && !regex.IsMatch(meeting.Phone))
+                    sb.AppendLine("联系电话只能输入为数字!");
+
+                if (meeting.ParticipatorNumber < 1)
+                    sb.AppendLine("请填写参会人数，并且大于0！");
+
+                if (meeting.ConfMideaType == MideaType.Video && meeting.Rooms != null && meeting.Rooms.Count == 1 && string.IsNullOrEmpty(meeting.IPDesc))
+                    sb.AppendLine("预订视频会议，至少需要两方会场。请增加IP电话，或者增加会议室!");
+            }
+            else
+            {
+                meeting = this.GetMeetingFromAppointment(item, true);
+                if (meeting == null)
+                {
+                    sb.AppendLine("会议参数异常，请重试！");
+                    logger.Error("TryValidateApppointmentUIInput, can find meeting!");
+                }
+            }
 
             message = sb.ToString();
 

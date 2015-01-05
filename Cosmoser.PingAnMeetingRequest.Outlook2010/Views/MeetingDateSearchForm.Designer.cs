@@ -94,6 +94,12 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnSearchAll = new System.Windows.Forms.Button();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -310,7 +316,7 @@
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(447, 206);
+            this.btnSearch.Location = new System.Drawing.Point(383, 206);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(75, 23);
             this.btnSearch.TabIndex = 43;
@@ -631,7 +637,7 @@
             // 
             // btnSearchAll
             // 
-            this.btnSearchAll.Location = new System.Drawing.Point(554, 206);
+            this.btnSearchAll.Location = new System.Drawing.Point(486, 206);
             this.btnSearchAll.Name = "btnSearchAll";
             this.btnSearchAll.Size = new System.Drawing.Size(75, 23);
             this.btnSearchAll.TabIndex = 53;
@@ -639,12 +645,69 @@
             this.btnSearchAll.UseVisualStyleBackColor = true;
             this.btnSearchAll.Click += new System.EventHandler(this.btnSearchAll_Click);
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(606, 211);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(113, 12);
+            this.label13.TabIndex = 54;
+            this.label13.Text = "绿色表示会议室空闲";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(760, 211);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(137, 12);
+            this.label14.TabIndex = 55;
+            this.label14.Text = "红色表示会议室预订成功";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(938, 211);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(137, 12);
+            this.label15.TabIndex = 56;
+            this.label15.Text = "黄色表示会议室预待审批";
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.GreenYellow;
+            this.panel3.Location = new System.Drawing.Point(578, 206);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(20, 23);
+            this.panel3.TabIndex = 57;
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.OrangeRed;
+            this.panel4.Location = new System.Drawing.Point(734, 206);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(20, 23);
+            this.panel4.TabIndex = 58;
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.Color.Yellow;
+            this.panel5.Location = new System.Drawing.Point(912, 206);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(20, 23);
+            this.panel5.TabIndex = 59;
+            // 
             // MeetingDateSearchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(1209, 669);
+            this.Controls.Add(this.panel5);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.btnSearchAll);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -756,5 +819,11 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnSearchAll;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
     }
 }

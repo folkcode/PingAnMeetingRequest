@@ -172,13 +172,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
                 this.comboBoxCity.SelectedIndex = 0;
 
-                this.comboBoxBobough.Items.Clear();
-                this.comboBoxBobough.Items.Add(new RegionInfo()
+                if (this.comboBoxBobough.Items.Count == 0)
                 {
-                    Code = "0",
-                    Name = "--全部--"
-                });
-                this.comboBoxBobough.SelectedIndex = 0;
+                    this.comboBoxBobough.Items.Add(new RegionInfo()
+                    {
+                        Code = "0",
+                        Name = "--全部--"
+                    });
+                    this.comboBoxBobough.SelectedIndex = 0;
+                }
             }
             else
             {
@@ -188,8 +190,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void comboBoxCity_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.comboBoxProvince.SelectedIndex == 0)
-                return;
+            //if (this.comboBoxProvince.SelectedIndex == 0)
+            //    return;
 
             RegionCatagory rc;
             MeetingSeries s = this.comboBoxSeries.SelectedItem as MeetingSeries;

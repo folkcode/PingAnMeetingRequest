@@ -220,6 +220,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                         if (succeed)
                         {
                             this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                            this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+                            //item.Save();
                             Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                         }
                         else
@@ -236,6 +238,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                         if (succeed)
                         {
                             this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                            this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+                            
                             Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                         }
                         else
@@ -248,6 +252,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                                     if (succeed)
                                     {
                                         this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                        this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
                                         Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                                     }
                                     else

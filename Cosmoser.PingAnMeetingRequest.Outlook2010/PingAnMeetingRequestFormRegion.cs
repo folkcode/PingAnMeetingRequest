@@ -53,6 +53,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         static ILog logger = IosLogManager.GetLogger(typeof(PingAnMeetingRequestFormRegion));
         static DateTime startTime;
         static DateTime endTime;
+        static int valueChangeCount = 0;
 
         private Outlook.AppointmentItem item;
 
@@ -105,10 +106,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
             this.olkTxtSubject.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
             this.olkTxtLocation.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
-            this.olkStartDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
-            this.olkStartTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
-            this.olkEndDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(ValueChanged);
-            this.olkEndTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(ValueChanged);
+
+            this.olkStartDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(olkStartDateControl_Change);
+            this.olkStartTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(olkStartTimeControl_Change);
+            this.olkEndDateControl.Change += new Outlook.OlkDateControlEvents_ChangeEventHandler(olkEndDateControl_Change);
+            this.olkEndTimeControl.Change += new Outlook.OlkTimeControlEvents_ChangeEventHandler(olkEndTimeControl_Change);
 
             this.txtPeopleCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(txtPeopleCount_ValueChanged);
             this.txtPhone.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
@@ -121,7 +123,30 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
 
             this.txtIPCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
+            item.Write += new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
 
+        }
+
+        void olkEndDateControl_Change()
+        {
+            this.SaveMeetingToAppointment();
+        }
+
+        void olkStartDateControl_Change()
+        {
+            this.SaveMeetingToAppointment();
+        }
+
+        void olkEndTimeControl_Change()
+        {
+            //item.End = this.olkEndTimeControl.Time;
+            //this.SaveMeetingToAppointment();
+        }
+
+        void olkStartTimeControl_Change()
+        {
+            //item.Start = this.olkStartTimeControl.Time;
+            //this.SaveMeetingToAppointment();
         }
 
         private void UnRegisterControlValueChangeEvents()
@@ -158,6 +183,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.obtyuyue.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtyuyue_Click);
             this.obtbendi.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtbendi_Click);
             this.obtshipin.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtshipin_Click);
+            item.Write -= new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
         }
 
         void olkbtnMobileTerm_Click()
@@ -174,14 +200,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void obtliji_Click()
         {
+            item.Start = DateTime.Now.AddMinutes(3);
+
             this.olkStartDateControl.Enabled = false;
             this.olkStartTimeControl.Enabled = false;
 
-            this.olkStartDateControl.Date = DateTime.Now;
-            this.olkStartTimeControl.Time = DateTime.Now;
-
-            this.olkEndDateControl.Date = DateTime.Now;
-            this.olkEndTimeControl.Time = DateTime.Now.AddMinutes(30);
+            item.End = DateTime.Now.AddMinutes(33);
 
             this.SaveMeetingToAppointment();
         }
@@ -219,7 +243,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void ValueChanged()
         {
+            if (valueChangeCount > 1)
+                return;
+            valueChangeCount++;
             this.SaveMeetingToAppointment();
+            valueChangeCount--;
         }
 
         void LijiMeetingChanged()
@@ -244,12 +272,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     return;
                 }
             }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("请填写参会人数，且参会人数大于0！");
+                meeting.ParticipatorNumber = 0;
+            }
+
             this.SaveMeetingToAppointment();
         }
 
         void item_Write(ref bool Cancel)
         {
-            this.SaveMeetingToAppointment();
+            var updatingMeeting = this._apptMgr.GetMeetingFromAppointment(item, true);
+            if (updatingMeeting != null)
+            {
+                MessageBox.Show("如果想保存修改，请使用保存关闭按钮操作！");
+                Cancel = true;
+            }
         }
 
         void InitializeUI()
@@ -270,10 +309,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
                 }
 
-                this.olkStartDateControl.Date = meeting.StartTime.Date;
-                this.olkStartTimeControl.Time = meeting.StartTime;
-                this.olkEndDateControl.Date = meeting.EndTime.Date;
-                this.olkEndTimeControl.Time = meeting.EndTime;
+                item.Start = meeting.StartTime;
+                item.End = meeting.EndTime;
 
                 this.olkTxtSubject.Text = meeting.Name;
                 item.Location = meeting.RoomsStr;
@@ -330,6 +367,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 //以下不能修改
                 this.olkTxtSubject.Enabled = false;
 
+                this.SaveMeetingToAppointment();
             }
             else
             {
@@ -383,10 +421,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 logger.Debug("SaveMeetingToAppointment");
                 meeting.Name = this.olkTxtSubject.Text;
-                //meeting.StartTime = this.olkStartDateControl.Date;
-                meeting.StartTime = DateTime.Parse(this.olkStartDateControl.Date.ToString("yyyy-MM-dd ") + this.olkStartTimeControl.Time.ToString("HH:mm:ss"));
-                //meeting.EndTime = this.olkEndDateControl.Date;
-                meeting.EndTime = DateTime.Parse(this.olkEndDateControl.Date.ToString("yyyy-MM-dd ") + this.olkEndTimeControl.Time.ToString("HH:mm:ss"));
+
+                meeting.StartTime = item.Start;
+                meeting.EndTime = item.End;
 
                 if (this.obtliji.Value == true)
                 {
@@ -407,9 +444,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     meeting.ConfMideaType = MideaType.Video;
 
                 if (!string.IsNullOrEmpty(this.txtPeopleCount.Text))
-                    meeting.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text);
-                meeting.IPDesc = this.txtIPCount.Text;
-                meeting.Phone = this.txtPhone.Text;
+                    meeting.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text.Trim());
+                meeting.IPDesc = this.txtIPCount.Text.Trim();
+                meeting.Phone = this.txtPhone.Text.Trim();
                 meeting.Memo = item.Body;
 
                 if (this.obtxsms0.Value)

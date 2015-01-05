@@ -203,6 +203,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 {
                     var room = item as MeetingRoom;
                     this.MeetingRoomList.Remove(room);
+                    if (this.MainRoom != null && this.MainRoom.ToString() == room.ToString())
+                        this.MainRoom = null;
                 }
 
                 this.listBoxSelectedRooms.SelectedItems.Clear();
