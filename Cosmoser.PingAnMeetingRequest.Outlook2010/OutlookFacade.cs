@@ -211,8 +211,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             try
             {
                 Outlook.CalendarView calView = OutlookFacade.Instance().CalendarFolder.MAPIFolder.CurrentView as Outlook.CalendarView;
-
-                if (calView.SelectedStartTime.Date != DateTime.Today)
+                
+                if (this.Session.OutlookVersion.StartsWith("14.0") && calView.SelectedStartTime.Date != DateTime.Today)
                 {
                     DateTime start = calView.SelectedStartTime.AddHours(8);
                     OutlookFacade.Instance().CalendarFolder.DoBookingMeeting(start);
