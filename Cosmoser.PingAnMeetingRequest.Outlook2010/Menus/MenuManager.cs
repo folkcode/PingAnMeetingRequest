@@ -29,6 +29,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
         {
             try
             {
+               
                 menuBar = this._application.ActiveExplorer().CommandBars.ActiveMenuBar;
                 newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(Office.MsoControlType.msoControlPopup);
                 if (newMenuBar != null)
@@ -81,7 +82,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
         private Office.CommandBarButton CreateMenu(Office.CommandBarPopup newMenuBar, string caption, string tag)
         {
             Office.CommandBarButton buttonOne = (Office.CommandBarButton)newMenuBar.Controls.
-                    Add(Office.MsoControlType.msoControlButtonPopup);
+                    Add(Office.MsoControlType.msoControlButton);
             buttonOne.Style = Office.MsoButtonStyle.
                 msoButtonIconAndCaption;
             buttonOne.Caption = caption;

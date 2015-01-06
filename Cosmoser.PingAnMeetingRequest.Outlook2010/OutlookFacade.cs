@@ -110,12 +110,27 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             }
         }
 
+        public void Shutdown()
+        {
+            try
+            {
+                foreach (var item in this.CalendarFolder.AppointmentCollection.Values)
+                {
+                    item.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
         void _activeExplorer_FolderSwitch()
         {
             try
             {
-                if (this._activeExplorer.CurrentFolder.EntryID == OutlookFacade.Instance().CalendarFolder.MAPIFolder.EntryID
-                    || this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar")
+                if (OutlookFacade.Instance().CalendarFolder.MAPIFolder != null && (this._activeExplorer.CurrentFolder.EntryID == OutlookFacade.Instance().CalendarFolder.MAPIFolder.EntryID
+                    || this._activeExplorer.CurrentFolder.Name == "日历" || this._activeExplorer.CurrentFolder.Name == "Calendar"))
                     this.CalendarFolder.CalendarDataManager.SyncMeetingList();
             }
             catch (Exception ex)
@@ -193,26 +208,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void meetingMenu_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
-
-            if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
+            try
             {
-                //set SVCM ribbon
-                this.MyRibbon.RibbonType = MyRibbonType.SVCM;
-
-                Outlook.CalendarView calView = currentFolder.CurrentView as Outlook.CalendarView;
-
-                //Create a holiday appointmet and set properties
-                Outlook.AppointmentItem apptItem = (Outlook.AppointmentItem)currentFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
-                //设置选中日期时间
-                if (calView.SelectedStartTime.Date != DateTime.Today)
-                    apptItem.Start = calView.SelectedStartTime.AddHours(8);
-
-                //display the appointment
-                Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
-                inspect.Display(false);
-                //reset the ribbon to normal
-                this.MyRibbon.RibbonType = MyRibbonType.Original;
+                OutlookFacade.Instance().CalendarFolder.DoBookingMeeting();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("meetingMenu_Click 电子会议预约错误！", ex);
             }
         }
 

@@ -90,6 +90,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             this.UnRegisterControlValueChangeEvents();
             OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+            
             endTime = DateTime.Now;
         }
 
@@ -445,8 +446,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                 if (!string.IsNullOrEmpty(this.txtPeopleCount.Text))
                     meeting.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text.Trim());
-                meeting.IPDesc = this.txtIPCount.Text.Trim();
-                meeting.Phone = this.txtPhone.Text.Trim();
+                meeting.IPDesc = this.txtIPCount.Text == null ? string.Empty : this.txtIPCount.Text.Trim();
+                meeting.Phone = this.txtPhone.Text == null ? string.Empty : this.txtPhone.Text.Trim();
                 meeting.Memo = item.Body;
 
                 if (this.obtxsms0.Value)

@@ -21,6 +21,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            OutlookFacade.Instance().Shutdown();
         }
 
         #region VSTO generated code
