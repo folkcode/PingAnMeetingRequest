@@ -158,7 +158,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             }
             else
             {
-                meeting = this.GetMeetingFromAppointment(item, true);
+                meeting = this.GetMeetingFromAppointment(item, false);
                 if (meeting == null)
                 {
                     sb.AppendLine("会议参数异常，请重试！");
