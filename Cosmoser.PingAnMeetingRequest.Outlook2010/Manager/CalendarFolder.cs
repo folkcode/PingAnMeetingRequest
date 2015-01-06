@@ -322,6 +322,58 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             }
         }
 
+        public void DoBookingMeeting(DateTime start)
+        {
+            try
+            {
+                bool login = false;
+                if (!OutlookFacade.Instance().Session.IsActive)
+                {
+                    var session = OutlookFacade.Instance().Session;
+                    login = ClientServiceFactory.Create().Login(ref session);
+                    if (login)
+                        OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SyncMeetingList();
+
+                    if (login)
+                    {
+                        //set holiday ribbon
+                        OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
+
+                        //Create a holiday appointmet and set properties
+                        Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+                        apptItem.Start = start;
+                        //display the appointment
+                        Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
+                        inspect.Display(false);
+                        //reset the ribbon to normal
+                        OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+                    }
+                    else
+                    {
+                        MessageBox.Show("登陆服务器失败，不能进行预约，请重试或联系管理员！");
+                    }
+                }
+                else
+                {
+                    //set holiday ribbon
+                    OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
+
+                    //Create a holiday appointmet and set properties
+                    Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
+
+                    //display the appointment
+                    Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
+                    inspect.Display(false);
+                    //reset the ribbon to normal
+                    OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("DoBookingMeeting failed.", ex);
+            }
+        }
+
         public void DoMeetingList()
         {
             try
