@@ -114,9 +114,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             try
             {
-                foreach (var item in this.CalendarFolder.AppointmentCollection.Values)
+                if (this._session.OutlookVersion.StartsWith("12.0"))
                 {
-                    item.Save();
+                    if (_menuMgr != null)
+                        _menuMgr.RemoveMenubar();
                 }
             }
             catch (Exception ex)
