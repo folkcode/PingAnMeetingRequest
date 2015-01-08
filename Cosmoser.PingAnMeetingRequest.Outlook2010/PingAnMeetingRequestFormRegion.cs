@@ -296,6 +296,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             logger.Debug("InitializeUI");
             logger.Debug("Begin getting MeetingId");
+            this.txtPhone.MaxLength = 20;
+            this.txtPeopleCount.MaxLength = 4;
 
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(item);
             if (meetingId != null)

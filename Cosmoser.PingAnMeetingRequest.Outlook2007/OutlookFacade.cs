@@ -116,6 +116,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2007
         {
             Outlook.MAPIFolder currentFolder = Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder;
 
+            Outlook.CalendarView calView = OutlookFacade.Instance().CalendarFolder.MAPIFolder.CurrentView as Outlook.CalendarView;
+            
             if (currentFolder.CurrentView.ViewType == Microsoft.Office.Interop.Outlook.OlViewType.olCalendarView)
             {
                 //set SVCM ribbon

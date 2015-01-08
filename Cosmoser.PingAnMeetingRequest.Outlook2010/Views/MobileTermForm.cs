@@ -44,7 +44,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             if (ClientServiceFactory.Create().TryGetMobileTermList(OutlookFacade.Instance().Session, out all))
             {
-                this._allTermList = all;
+                this._allTermList = new List<MobileTerm>();
+                foreach (var item in all)
+                {
+                    if (!this.MobileTermList.Exists(x => x.RoomId == item.RoomId))
+                        this._allTermList.Add(item);
+                }
+
                 listBoxAvailable.DataSource = this._allTermList;
                 listBoxSelected.DataSource = this.MobileTermList;
             }
@@ -70,6 +76,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             if (!this.MobileTermList.Contains(term))
             {
                 this.MobileTermList.Add(term);
+                this._allTermList.Remove(term);
             }
 
             listBoxAvailable.DataSource = null;

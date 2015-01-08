@@ -155,10 +155,22 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             listBoxAvailableRoom.Items.Clear();
             if (ClientServiceFactory.Create().TryGetMeetingRoomList(query, OutlookFacade.Instance().Session, out _availableroomList))
             {
+                List<MeetingRoom> removedRooms = new List<MeetingRoom>();
                 foreach (var item in _availableroomList)
                 {
-                    listBoxAvailableRoom.Items.Add(item);
+                    if (this.MeetingRoomList.Exists(x => x.RoomId == item.RoomId))
+                        removedRooms.Add(item);
                 }
+
+                foreach (var item in removedRooms)
+                {
+                    this._availableroomList.Remove(item);
+                }
+
+                this.listBoxSelectedRooms.DataSource = null;
+                this.listBoxAvailableRoom.DataSource = null;
+                this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+                this.listBoxAvailableRoom.DataSource = this._availableroomList;
             }
             else
             {
@@ -181,11 +193,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                     MeetingRoom room = item as MeetingRoom;
 
                     if (room != null && !this.MeetingRoomList.Exists(x => x.RoomId == room.RoomId))
+                    {
                         this.MeetingRoomList.Add(room);
-
-                    this.listBoxSelectedRooms.DataSource = null;
-                    this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+                        this._availableroomList.Remove(room);
+                    }
                 }
+
+                this.listBoxSelectedRooms.DataSource = null;
+                this.listBoxAvailableRoom.DataSource = null;
+                this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+                this.listBoxAvailableRoom.DataSource = this._availableroomList;
 
                 this.listBoxAvailableRoom.SelectedItems.Clear();
             }
@@ -203,13 +220,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 {
                     var room = item as MeetingRoom;
                     this.MeetingRoomList.Remove(room);
-                    if (this.MainRoom != null && this.MainRoom.ToString() == room.ToString())
+                    this._availableroomList.Insert(0,room);
+                    if (this.MainRoom != null && this.MainRoom.RoomId == room.RoomId)
                         this.MainRoom = null;
                 }
 
                 this.listBoxSelectedRooms.SelectedItems.Clear();
                 this.listBoxSelectedRooms.DataSource = null;
+                this.listBoxAvailableRoom.DataSource = null;
                 this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+                this.listBoxAvailableRoom.DataSource = this._availableroomList;
                 
                 
             }
@@ -247,14 +267,21 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void btnMainRoomSetting_Click(object sender, EventArgs e)
         {
+
+            if (this.ConfType == MideaType.Local)
+            {
+                MessageBox.Show("本地会议不需要设置主会场！");
+                return;
+            }
+
+            if (this.listBoxSelectedRooms.SelectedItems != null && this.listBoxMeetingRoom.SelectedItems.Count > 1)
+            {
+                MessageBox.Show("请选择一个会议室作为主会场！");
+                return;
+            }
+
             if (this.listBoxSelectedRooms.SelectedIndex > -1)
             {
-                if (this.ConfType == MideaType.Local)
-                {
-                    MessageBox.Show("本地会议不需要设置主会场！");
-                    return;
-                }
-
                 this.MainRoom = this.listBoxSelectedRooms.SelectedItem as MeetingRoom;
                 //this.listBoxSelectedRooms.DrawMode
                 //Graphics g = e.Graphics;//获取Graphics对象。

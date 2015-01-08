@@ -208,69 +208,79 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 {
 
                     var meeting = this._apptMgr.GetMeetingFromAppointment(item, true);
-                    //set comment
-                    meeting.Memo = item.Body;
-                    string error;
-                    if (string.IsNullOrEmpty(meeting.Id))
+
+                    if (meeting != null)
                     {
-                        logger.Debug("This is a new appointment, booking Meeting to server!");
-
-                        bool succeed = ClientServiceFactory.Create().BookingMeeting(meeting, OutlookFacade.Instance().Session, out error);
-
-                        if (succeed)
+                        //set comment
+                        meeting.Memo = item.Body;
+                        string error;
+                        if (string.IsNullOrEmpty(meeting.Id))
                         {
-                            this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
-                            this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
-                            //item.Save();
-                            Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                            logger.Debug("This is a new appointment, booking Meeting to server!");
+
+                            bool succeed = ClientServiceFactory.Create().BookingMeeting(meeting, OutlookFacade.Instance().Session, out error);
+
+                            if (succeed)
+                            {
+                                this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+                                //item.Save();
+                                Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                            }
+                            else
+                            {
+                                System.Windows.Forms.MessageBox.Show(string.Format("向服务端预约会议失败！{0} 请重试。", error));
+                            }
                         }
                         else
                         {
-                            System.Windows.Forms.MessageBox.Show(string.Format("向服务端预约会议失败！{0} 请重试。", error));
+                            logger.Debug("This is a existing appointment, updating Meeting to server!");
+                            string errorCode;
+                            bool succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "1", OutlookFacade.Instance().Session, out error, out errorCode);
+
+                            if (succeed)
+                            {
+                                this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+
+                                Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                            }
+                            else
+                            {
+                                if (errorCode != "200" && errorCode != "500")
+                                {
+                                    if (MessageBox.Show(error, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                    {
+                                        succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "2", OutlookFacade.Instance().Session, out error, out errorCode);
+                                        if (succeed)
+                                        {
+                                            this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                            this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+                                            Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show(string.Format("向服务端更新会议失败！{0}！ 请重试。", error));
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        System.Windows.Forms.MessageBox.Show("你已放弃修改会议！");
+                                    }
+                                }
+                                else
+                                {
+                                    System.Windows.Forms.MessageBox.Show(string.Format("向服务端更新会议失败！{0}！ 请重试。", error));
+                                }
+                            }
                         }
                     }
                     else
                     {
-                        logger.Debug("This is a existing appointment, updating Meeting to server!");
-                        string errorCode;
-                        bool succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "1", OutlookFacade.Instance().Session, out error,out errorCode);
-
-                        if (succeed)
-                        {
-                            this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
-                            this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
-                            
-                            Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
-                        }
-                        else
-                        {
-                            if (errorCode != "200" && errorCode != "500")
-                            {
-                                if (MessageBox.Show(error, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                                {
-                                    succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "2", OutlookFacade.Instance().Session, out error, out errorCode);
-                                    if (succeed)
-                                    {
-                                        this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
-                                        this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
-                                        Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
-                                    }
-                                    else
-                                    {
-                                        System.Windows.Forms.MessageBox.Show(string.Format("向服务端更新会议失败！{0}！ 请重试。", error));
-                                    }
-
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("你已放弃修改会议！");
-                                }
-                            }
-                            else
-                            {
-                                System.Windows.Forms.MessageBox.Show(string.Format("向服务端更新会议失败！{0}！ 请重试。", error));
-                            }
-                        }
+                        //no updating, just close
+                        logger.Debug("DoSaveAndClose: No updating, just close.");
+                        Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                     }
                 }
                 else
