@@ -49,7 +49,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         #endregion
 
         private AppointmentManager _apptMgr = new AppointmentManager();
-        SVCMMeetingDetail meeting;
         static ILog logger = IosLogManager.GetLogger(typeof(PingAnMeetingRequestFormRegion));
         static DateTime startTime;
         static DateTime endTime;
@@ -191,10 +190,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             IMobileTermView view = new MobileTermForm();
             view.MobileTermList = new List<MobileTerm>();
-            view.MobileTermList.AddRange(meeting.MobileTermList);
+            view.MobileTermList.AddRange(MeetingDetail.MobileTermList);
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {
-                meeting.MobileTermList = view.MobileTermList;
+                MeetingDetail.MobileTermList = view.MobileTermList;
                 this.SaveMeetingToAppointment();
             }
         }
@@ -276,7 +275,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             else
             {
                 System.Windows.Forms.MessageBox.Show("请填写参会人数，且参会人数大于0！");
-                meeting.ParticipatorNumber = 0;
+                MeetingDetail.ParticipatorNumber = 0;
             }
 
             this.SaveMeetingToAppointment();
@@ -284,7 +283,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void item_Write(ref bool Cancel)
         {
-            var updatingMeeting = this._apptMgr.GetMeetingFromAppointment(item, true);
+            var updatingMeeting = OutlookFacade.Instance().MyRibbon.MeetingDetail;//this.MeetingDetail;//this._apptMgr.GetMeetingFromAppointment(item, true);
             if (updatingMeeting != null)
             {
                 MessageBox.Show("如果想保存修改，请使用保存关闭按钮操作！");
@@ -302,30 +301,39 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(item);
             if (meetingId != null)
             {
-
+                SVCMMeetingDetail meeting;
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
-                    meeting = this._apptMgr.GetMeetingFromAppointment(item, false);
+                    OutlookFacade.Instance().MyRibbon.MeetingDetail = this._apptMgr.GetMeetingFromAppointment(item, false);
+                    this.MeetingDetail = OutlookFacade.Instance().MyRibbon.MeetingDetail;
                 }
                 else
                 {
-                    this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                    OutlookFacade.Instance().MyRibbon.MeetingDetail = meeting;
+                    this.MeetingDetail = OutlookFacade.Instance().MyRibbon.MeetingDetail;
+
+                    //update local meetingDetailData
+                    if (OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                        OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                    OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
+                    OutlookFacade.Instance().CalendarFolder.CalendarDataManager.SavaMeetingDataToCalendarFolder();
+                    //this._apptMgr.SaveMeetingToAppointment(MeetingDetail, item, false);
                 }
 
-                item.Start = meeting.StartTime;
-                item.End = meeting.EndTime;
+                item.Start = MeetingDetail.StartTime;
+                item.End = MeetingDetail.EndTime;
 
-                this.olkTxtSubject.Text = meeting.Name;
-                item.Location = meeting.RoomsStr;
-                this.olkTxtLocation.Text = meeting.RoomsStr;
+                this.olkTxtSubject.Text = MeetingDetail.Name;
+                item.Location = MeetingDetail.RoomsStr;
+                this.olkTxtLocation.Text = MeetingDetail.RoomsStr;
 
-                if (meeting.ConfType == ConferenceType.Immediate)
+                if (MeetingDetail.ConfType == ConferenceType.Immediate)
                 {
                     this.obtliji.Value = true;
                     //this.obtliji.Enabled = false;
                     //this.obtbendi.Enabled = false;
                 }
-                else if (meeting.ConfType == ConferenceType.Furture)
+                else if (MeetingDetail.ConfType == ConferenceType.Furture)
                 {
                     this.obtyuyue.Value = true;
                     //this.obtliji.Enabled = true;
@@ -338,14 +346,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                 }
 
-                if (meeting.ConfMideaType == MideaType.Local)
+                if (MeetingDetail.ConfMideaType == MideaType.Local)
                     this.obtbendi.Value = true;
                 else
                     this.obtshipin.Value = true;
-                this.txtPeopleCount.Text = meeting.ParticipatorNumber.ToString();
-                this.txtPhone.Text = meeting.Phone;
+                this.txtPeopleCount.Text = MeetingDetail.ParticipatorNumber.ToString();
+                this.txtPhone.Text = MeetingDetail.Phone;
 
-                switch (meeting.VideoSet)
+                switch (MeetingDetail.VideoSet)
                 {
                     case VideoSet.Audio:
                         this.obtxsms0.Value = true;
@@ -364,22 +372,23 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                         break;
                 }
 
-                this.txtIPCount.Text = meeting.IPDesc;
-                item.Body = meeting.Memo;
+                this.txtIPCount.Text = MeetingDetail.IPDesc;
+                item.Body = MeetingDetail.Memo;
 
                 //以下不能修改
                 this.olkTxtSubject.Enabled = false;
 
-                this.SaveMeetingToAppointment();
+                //this.SaveMeetingToAppointment();
             }
             else
             {
-                this.meeting = new SVCMMeetingDetail();
+                OutlookFacade.Instance().MyRibbon.MeetingDetail = new SVCMMeetingDetail();
+                this.MeetingDetail = OutlookFacade.Instance().MyRibbon.MeetingDetail;
                 //默认语音激励
                 this.obtxsms0.Value = true;
                 //默认视频会议
                 this.obtshipin.Value = true;
-                this.SaveMeetingToAppointment();
+                //this.SaveMeetingToAppointment();
             }
         }
 
@@ -387,18 +396,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             IMeetingRoomView view = new Views.MeetingRoomSelection();
             view.MeetingRoomList = new List<MeetingRoom>();
-            view.MeetingRoomList.AddRange(meeting.Rooms);
-            view.MainRoom = meeting.MainRoom;
+            view.MeetingRoomList.AddRange(MeetingDetail.Rooms);
+            view.MainRoom = MeetingDetail.MainRoom;
 
-            view.ConfType = meeting.ConfMideaType;
-            view.StarTime = meeting.StartTime;
-            view.EndTime = meeting.EndTime;
+            view.ConfType = MeetingDetail.ConfMideaType;
+            view.StarTime = MeetingDetail.StartTime;
+            view.EndTime = MeetingDetail.EndTime;
 
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {
-                meeting.Rooms = view.MeetingRoomList;
-                meeting.MainRoom = view.MainRoom;
-                this.olkTxtLocation.Text = meeting.RoomsStr;
+                MeetingDetail.Rooms = view.MeetingRoomList;
+                MeetingDetail.MainRoom = view.MainRoom;
+                this.olkTxtLocation.Text = MeetingDetail.RoomsStr;
                 this.SaveMeetingToAppointment();
             }
         }
@@ -406,14 +415,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void btnCanhuilingdao_Click()
         {
             IAttendedLeadersView view = new Views.AttendedBossForm();
-            view.LeaderRoom = meeting.LeaderRoom;
+            view.LeaderRoom = MeetingDetail.LeaderRoom;
             view.LeaderList = new List<MeetingLeader>();
-            view.LeaderList.AddRange(meeting.LeaderList);
+            view.LeaderList.AddRange(MeetingDetail.LeaderList);
             
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {
-                meeting.LeaderList = view.LeaderList;
-                meeting.LeaderRoom = view.LeaderRoom;
+                MeetingDetail.LeaderList = view.LeaderList;
+                MeetingDetail.LeaderRoom = view.LeaderRoom;
                 this.SaveMeetingToAppointment();
             }
         }
@@ -423,62 +432,68 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             try
             {
                 logger.Debug("SaveMeetingToAppointment");
-                meeting.Name = this.olkTxtSubject.Text;
+                MeetingDetail.Name = this.olkTxtSubject.Text;
 
-                meeting.StartTime = item.Start;
-                meeting.EndTime = item.End;
+                MeetingDetail.StartTime = item.Start;
+                MeetingDetail.EndTime = item.End;
 
                 if (this.obtliji.Value == true)
                 {
-                    meeting.ConfType = ConferenceType.Immediate;
+                    MeetingDetail.ConfType = ConferenceType.Immediate;
                 }
                 else if (this.obtyuyue.Value == true)
                 {
-                    meeting.ConfType = ConferenceType.Furture;
+                    MeetingDetail.ConfType = ConferenceType.Furture;
                 }
                 else
                 {
-                    meeting.ConfType = ConferenceType.Recurring;
+                    MeetingDetail.ConfType = ConferenceType.Recurring;
                 }
 
                 if (this.obtbendi.Value == true)
-                    meeting.ConfMideaType = MideaType.Local;
+                    MeetingDetail.ConfMideaType = MideaType.Local;
                 else
-                    meeting.ConfMideaType = MideaType.Video;
+                    MeetingDetail.ConfMideaType = MideaType.Video;
 
                 if (!string.IsNullOrEmpty(this.txtPeopleCount.Text))
-                    meeting.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text.Trim());
-                meeting.IPDesc = this.txtIPCount.Text == null ? string.Empty : this.txtIPCount.Text.Trim();
-                meeting.Phone = this.txtPhone.Text == null ? string.Empty : this.txtPhone.Text.Trim();
-                meeting.Memo = item.Body;
+                    MeetingDetail.ParticipatorNumber = int.Parse(this.txtPeopleCount.Text.Trim());
+                MeetingDetail.IPDesc = this.txtIPCount.Text == null ? string.Empty : this.txtIPCount.Text.Trim();
+                MeetingDetail.Phone = this.txtPhone.Text == null ? string.Empty : this.txtPhone.Text.Trim();
+                MeetingDetail.Memo = item.Body;
 
                 if (this.obtxsms0.Value)
                 {
-                    meeting.VideoSet = VideoSet.Audio;
+                    MeetingDetail.VideoSet = VideoSet.Audio;
                 }
                 else if (this.obtxsms1.Value)
                 {
-                    meeting.VideoSet = VideoSet.MainRoom;
+                    MeetingDetail.VideoSet = VideoSet.MainRoom;
                 }
                 else if (this.obtxsms2.Value)
                 {
-                    meeting.VideoSet = VideoSet.EqualScreen;
+                    MeetingDetail.VideoSet = VideoSet.EqualScreen;
                 }
                 else if (this.obtxsms3.Value)
                 {
-                    meeting.VideoSet = VideoSet.OneNScreen;
+                    MeetingDetail.VideoSet = VideoSet.OneNScreen;
                 }
                 else if (this.obtxsms4.Value)
                 {
-                    meeting.VideoSet = VideoSet.TwoNScreen;
+                    MeetingDetail.VideoSet = VideoSet.TwoNScreen;
                 }
 
-                this._apptMgr.SaveMeetingToAppointment(meeting, item, true);
+                //this._apptMgr.SaveMeetingToAppointment(meeting, item, true);
             }
             catch (Exception ex)
             {
                 logger.Error("SaveMeetingToAppointment error", ex);
             }
+        }
+
+        public SVCMMeetingDetail MeetingDetail 
+        {
+            get;
+            set;
         }
     }
 }

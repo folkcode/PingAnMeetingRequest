@@ -101,6 +101,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(item, false);
                         if (meeting != null)
                         {
+                            if (!string.IsNullOrWhiteSpace(meeting.Id) && this.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                            {
+                                this._appointmentManager.SaveMeetingToAppointment(this.CalendarDataManager.MeetingDetailDataLocal[meeting.Id],item, false);
+                            }
+
                             if (!this._appointmentList.ContainsKey(meeting.Id))
                             {
                                 this._appointmentList.Add(meeting.Id, item);
@@ -360,7 +365,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                     //Create a holiday appointmet and set properties
                     Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
-
+                    apptItem.Start = start;
                     //display the appointment
                     Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
                     inspect.Display(false);

@@ -54,7 +54,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             get;
             set;
-        }   
+        }
+
+        public SVCMMeetingDetail MeetingDetail { get; set; }
 
         public MyRibbon(Outlook.Application application)
         {
@@ -202,12 +204,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 logger.Debug("Begin DoSaveAndClose appointment!");
                 Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
                 string message;
-
+                
                 logger.Debug("TryValidateApppointmentUIInput!");
-                if (this._apptMgr.TryValidateApppointmentUIInput(item, out message))
+                if (this._apptMgr.TryValidateApppointmentUIInput(this.MeetingDetail, out message))
                 {
 
-                    var meeting = this._apptMgr.GetMeetingFromAppointment(item, true);
+                    var meeting = this.MeetingDetail;//this._apptMgr.GetMeetingFromAppointment(item, true);
 
                     if (meeting != null)
                     {
@@ -223,7 +225,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                             if (succeed)
                             {
                                 this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
-                                this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+                                this.MeetingDetail = null;
+                                //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
                                 //item.Save();
                                 Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                             }
@@ -241,7 +244,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                             if (succeed)
                             {
                                 this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
-                                this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+                                this.MeetingDetail = null;
+                                //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
 
                                 Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                             }
@@ -255,7 +259,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                                         if (succeed)
                                         {
                                             this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
-                                            this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
+                                            this.MeetingDetail = null;
+                                            //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
                                             Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                                         }
                                         else

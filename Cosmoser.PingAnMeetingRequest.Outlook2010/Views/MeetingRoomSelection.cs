@@ -274,7 +274,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 return;
             }
 
-            if (this.listBoxSelectedRooms.SelectedItems != null && this.listBoxMeetingRoom.SelectedItems.Count > 1)
+            if (this.listBoxSelectedRooms.SelectedItems != null && this.listBoxSelectedRooms.SelectedItems.Count > 1)
             {
                 MessageBox.Show("请选择一个会议室作为主会场！");
                 return;

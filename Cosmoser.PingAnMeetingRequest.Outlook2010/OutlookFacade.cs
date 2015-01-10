@@ -114,6 +114,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             try
             {
+                this.CalendarFolder.CalendarDataManager.SavaMeetingDataToCalendarFolder();
+
                 if (this._session.OutlookVersion.StartsWith("12.0"))
                 {
                     if (_menuMgr != null)

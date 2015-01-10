@@ -126,13 +126,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             }
         }
 
-        internal bool TryValidateApppointmentUIInput(Outlook.AppointmentItem item, out string message)
+        internal bool TryValidateApppointmentUIInput(SVCMMeetingDetail meeting, out string message)
         {
             StringBuilder sb = new StringBuilder();
 
             try
             {
-                var meeting = this.GetMeetingFromAppointment(item, true);
+                //var meeting = this.GetMeetingFromAppointment(item, true);
 
                 if (meeting != null)
                 {
@@ -165,7 +165,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 }
                 else
                 {
-                    meeting = this.GetMeetingFromAppointment(item, false);
+                    //meeting = //this.GetMeetingFromAppointment(item, false);
                     if (meeting == null)
                     {
                         sb.AppendLine("会议参数异常，请重试！");
