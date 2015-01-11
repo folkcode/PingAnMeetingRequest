@@ -204,10 +204,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             if (!string.IsNullOrWhiteSpace(currentMeetingId))
             {
                 // add by robin at 20141231 start 
-                if (MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
-                {
-                    return;
-                }
+                //if (MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                //{
+                //    return;
+                //}
                 // add by robin at 20141231 end 
 
                 if (_meetingData[currentMeetingId].StatusCode == 3)
@@ -217,8 +217,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 }
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Delete();
-                _meetingData.Remove(currentMeetingId);
+
+                if (!OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(currentMeetingId))
+                {
+                    _meetingData.Remove(currentMeetingId);
+                    currentMeetingId = null;
+                }
                 this.SetDataSource(_meetingData.Values.ToList());
+                
             }
             else
             {

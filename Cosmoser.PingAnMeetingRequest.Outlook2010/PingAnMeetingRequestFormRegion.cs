@@ -66,7 +66,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.SVCM;
 
                 item = (Outlook.AppointmentItem)this.OutlookFormRegion.Item;
-
                 startTime = DateTime.Now;
 
                 if ((startTime - endTime).TotalSeconds < 1)
@@ -304,13 +303,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 SVCMMeetingDetail meeting;
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
-                    OutlookFacade.Instance().MyRibbon.MeetingDetail = this._apptMgr.GetMeetingFromAppointment(item, false);
-                    this.MeetingDetail = OutlookFacade.Instance().MyRibbon.MeetingDetail;
+                    this.MeetingDetail = this._apptMgr.GetMeetingFromAppointment(item, false);
+                    OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(item.GetHashCode(), this.MeetingDetail);
                 }
                 else
                 {
-                    OutlookFacade.Instance().MyRibbon.MeetingDetail = meeting;
-                    this.MeetingDetail = OutlookFacade.Instance().MyRibbon.MeetingDetail;
+                    this.MeetingDetail = meeting;
+                    OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(item.GetHashCode(), this.MeetingDetail);
 
                     //update local meetingDetailData
                     if (OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
@@ -325,7 +324,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                 this.olkTxtSubject.Text = MeetingDetail.Name;
                 item.Location = MeetingDetail.RoomsStr;
-                this.olkTxtLocation.Text = MeetingDetail.RoomsStr;
+                //this.olkTxtLocation.Text = MeetingDetail.RoomsStr;
 
                 if (MeetingDetail.ConfType == ConferenceType.Immediate)
                 {
@@ -407,7 +406,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 MeetingDetail.Rooms = view.MeetingRoomList;
                 MeetingDetail.MainRoom = view.MainRoom;
-                this.olkTxtLocation.Text = MeetingDetail.RoomsStr;
+                item.Location = MeetingDetail.RoomsStr;
+                //this.olkTxtLocation.Text = MeetingDetail.RoomsStr;
                 this.SaveMeetingToAppointment();
             }
         }

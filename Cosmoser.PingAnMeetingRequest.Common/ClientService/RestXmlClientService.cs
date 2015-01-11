@@ -493,6 +493,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    else
                        detail.ConfMideaType = MideaType.Video;
 
+
+
                    detail.ParticipatorNumber = int.Parse(root.SelectSingleNode("participatorNumber").InnerText);
                    detail.Series.Name = root.SelectSingleNode("seriesName").InnerText;
                    detail.AccountName = root.SelectSingleNode("accountName").InnerText;

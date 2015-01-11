@@ -58,6 +58,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         public SVCMMeetingDetail MeetingDetail { get; set; }
 
+        private Dictionary<int, SVCMMeetingDetail> _updatingQueueCollection = new Dictionary<int, SVCMMeetingDetail>();
+        public Dictionary<int, SVCMMeetingDetail> UpdatingQueueCollection
+        {
+            get
+            {
+                return this._updatingQueueCollection;
+            }
+        }
+
+        public int HashCode { get; set; }
         public MyRibbon(Outlook.Application application)
         {
             this._application = application;
@@ -204,28 +214,32 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 logger.Debug("Begin DoSaveAndClose appointment!");
                 Outlook.AppointmentItem item = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
                 string message;
-                
+                int hashCode = item.GetHashCode();
+
+
+                if (this._updatingQueueCollection.ContainsKey(hashCode))
+                    this.MeetingDetail = this._updatingQueueCollection[hashCode];
+
                 logger.Debug("TryValidateApppointmentUIInput!");
                 if (this._apptMgr.TryValidateApppointmentUIInput(this.MeetingDetail, out message))
                 {
 
-                    var meeting = this.MeetingDetail;//this._apptMgr.GetMeetingFromAppointment(item, true);
-
-                    if (meeting != null)
+                    if (this.MeetingDetail != null)
                     {
                         //set comment
-                        meeting.Memo = item.Body;
+                        this.MeetingDetail.Memo = item.Body;
                         string error;
-                        if (string.IsNullOrEmpty(meeting.Id))
+                        if (string.IsNullOrEmpty(this.MeetingDetail.Id))
                         {
                             logger.Debug("This is a new appointment, booking Meeting to server!");
 
-                            bool succeed = ClientServiceFactory.Create().BookingMeeting(meeting, OutlookFacade.Instance().Session, out error);
+                            bool succeed = ClientServiceFactory.Create().BookingMeeting(this.MeetingDetail, OutlookFacade.Instance().Session, out error);
 
                             if (succeed)
                             {
-                                this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
                                 this.MeetingDetail = null;
+                                this._updatingQueueCollection.Remove(hashCode);
                                 //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
                                 //item.Save();
                                 Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
@@ -239,12 +253,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                         {
                             logger.Debug("This is a existing appointment, updating Meeting to server!");
                             string errorCode;
-                            bool succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "1", OutlookFacade.Instance().Session, out error, out errorCode);
+                            bool succeed = ClientServiceFactory.Create().UpdateMeeting(this.MeetingDetail, "1", OutlookFacade.Instance().Session, out error, out errorCode);
 
                             if (succeed)
                             {
-                                this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
                                 this.MeetingDetail = null;
+                                this._updatingQueueCollection.Remove(hashCode);
                                 //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
 
                                 Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
@@ -255,11 +270,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                                 {
                                     if (MessageBox.Show(error, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                                     {
-                                        succeed = ClientServiceFactory.Create().UpdateMeeting(meeting, "2", OutlookFacade.Instance().Session, out error, out errorCode);
+                                        succeed = ClientServiceFactory.Create().UpdateMeeting(this.MeetingDetail, "2", OutlookFacade.Instance().Session, out error, out errorCode);
                                         if (succeed)
                                         {
-                                            this._apptMgr.SaveMeetingToAppointment(meeting, item, false);
+                                            this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
                                             this.MeetingDetail = null;
+                                            this._updatingQueueCollection.Remove(hashCode);
                                             //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
                                             Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                                         }
