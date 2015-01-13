@@ -160,6 +160,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         {
                             this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
                             this._calendarManager.SavaMeetingDataToCalendarFolder();
+                            if (this._appointmentList.ContainsKey(meeting.Id))
+                                this._appointmentList.Remove(meeting.Id);
                         }
                         else
                         {
@@ -257,6 +259,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         if (!this._appointmentList.ContainsKey(meeting.Id))
                             this._appointmentList.Add(meeting.Id, appt);
 
+                        appt.BeforeDelete -= new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
                         appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
                     }
                     else

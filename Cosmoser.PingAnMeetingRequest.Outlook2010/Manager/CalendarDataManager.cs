@@ -134,7 +134,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                                     SVCMMeetingDetail detail = this.ConvertDetail(item);
 
                                     var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
-
+                                    appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
                                     this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
 
                                 }
