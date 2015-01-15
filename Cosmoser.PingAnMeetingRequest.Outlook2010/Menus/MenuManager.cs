@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
 {
@@ -17,6 +19,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
         private string menuTag = "PingAnMeetingRequestMenu";
 
         private Outlook.Application _application;
+        private static ILog logger = IosLogManager.GetLogger(typeof(MenuManager));
 
         public MyRibbon mRibbon { get; set; }
 
@@ -61,7 +64,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
             try
             {
                 Office.CommandBarPopup foundMenu = (Office.CommandBarPopup)
-                    this._application.ActiveExplorer().CommandBars.ActiveMenuBar.
+                    OutlookFacade.Instance().CurrentExplorer.CommandBars.ActiveMenuBar.
                     FindControl(Office.MsoControlType.msoControlPopup,Type.Missing,menuTag,true,true);
                 if (foundMenu != null)
                 {
@@ -70,7 +73,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message);
+                logger.Error("RemoveMenubar", ex);
+                //System.Windows.Forms.MessageBox.Show(ex.Message);
             }
         }
 
