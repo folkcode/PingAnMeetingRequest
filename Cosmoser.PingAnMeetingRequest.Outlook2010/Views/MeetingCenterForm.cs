@@ -234,7 +234,59 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void MeetingCenterForm_Activated(object sender, EventArgs e)
         {
-            //this.SetDataSource(_meetingData.Values.ToList());
+            lblMessage.Text = "正在同步...";
+            lblMessage.ForeColor = Color.Red;
+
+            MeetingListQuery query = new MeetingListQuery();
+            query.StartTime = this.dateTimePickerStart.Value;
+            query.EndTime = this.dateTimePickerEnd.Value;
+
+            int index = this.comboBoxConfType.SelectedIndex;
+
+            switch (index)
+            {
+                case 0:
+                    query.StatVideoType = -1;
+                    break;
+                case 1:
+                    query.StatVideoType = 4;
+                    break;
+                case 2:
+                    query.StatVideoType = 1;
+                    break;
+                case 3:
+                    query.StatVideoType = 2;
+                    break;
+
+            }
+
+            query.ConferenceProperty = this.comboBoxConfProperty.SelectedIndex == 0 ? string.Empty : this.comboBoxConfProperty.SelectedIndex.ToString();
+
+            query.ConfType = this.comboBoxMideaType.SelectedIndex == 0 ? "-1" : this.comboBoxMideaType.SelectedIndex.ToString();
+
+            query.MeetingName = this.txtMeetingName.Text;
+            query.RoomName = this.txtRoomName.Text;
+            query.Alias = this.txtAlias.Text;
+            query.ServiceKey = this.txtServiceKey.Text;
+
+            var task = Task.Factory.StartNew(() =>
+            {
+                return this.SearchMeetingList(query);
+            });
+
+            task.Wait();
+
+            lblMessage.Text = string.Empty;
+            List<SVCMMeeting> list = task.Result;
+
+            if (list != null)
+            {
+                this.SetDataSource(list);
+            }
+            else
+            {
+                MessageBox.Show("获取会议列表失败！");
+            }
         }
 
         private void btnSearch_Click(object sender, EventArgs e)

@@ -301,15 +301,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             if (meetingId != null)
             {
                 SVCMMeetingDetail meeting;
+                int hashCode = item.GetHashCode();
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
                     this.MeetingDetail = this._apptMgr.GetMeetingFromAppointment(item, false);
-                    OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(item.GetHashCode(), this.MeetingDetail);
+                    
+                    if (!OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
+                        OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(hashCode, this.MeetingDetail);
                 }
                 else
                 {
                     this.MeetingDetail = meeting;
-                    OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(item.GetHashCode(), this.MeetingDetail);
+                    if (!OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
+                        OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(item.GetHashCode(), this.MeetingDetail);
 
                     //update local meetingDetailData
                     if (OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
@@ -434,8 +438,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 logger.Debug("SaveMeetingToAppointment");
                 MeetingDetail.Name = this.olkTxtSubject.Text;
 
-                MeetingDetail.StartTime = item.Start;
-                MeetingDetail.EndTime = item.End;
+                MeetingDetail.StartTime = DateTime.Parse(this.olkStartDateControl.Date.ToString("yyyy-MM-dd ") + this.olkStartTimeControl.Time.ToString("HH:mm:ss")); //item.Start;
+                MeetingDetail.EndTime = DateTime.Parse(this.olkEndDateControl.Date.ToString("yyyy-MM-dd ") + this.olkEndTimeControl.Time.ToString("HH:mm:ss")); //item.End;
 
                 if (this.obtliji.Value == true)
                 {
