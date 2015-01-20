@@ -228,6 +228,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     {
                         //set comment
                         this.MeetingDetail.Memo = item.Body;
+                        this.MeetingDetail.StartTime = item.Start;
+                        this.MeetingDetail.EndTime = item.End;
+
                         string error;
                         if (string.IsNullOrEmpty(this.MeetingDetail.Id))
                         {
