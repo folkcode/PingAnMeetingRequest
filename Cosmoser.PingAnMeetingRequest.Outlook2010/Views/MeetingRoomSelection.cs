@@ -152,7 +152,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             query.EndTime = this.EndTime;
 
             this._availableroomList = null;
-            listBoxAvailableRoom.Items.Clear();
+            if (listBoxAvailableRoom.Items != null)
+                listBoxAvailableRoom.Items.Clear();
             if (ClientServiceFactory.Create().TryGetMeetingRoomList(query, OutlookFacade.Instance().Session, out _availableroomList))
             {
                 List<MeetingRoom> removedRooms = new List<MeetingRoom>();
@@ -204,7 +205,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
                 this.listBoxAvailableRoom.DataSource = this._availableroomList;
 
-                this.listBoxAvailableRoom.SelectedItems.Clear();
+                if (this.listBoxAvailableRoom.SelectedItems != null)
+                    this.listBoxAvailableRoom.SelectedItems.Clear();
             }
             else
             {
@@ -225,7 +227,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                         this.MainRoom = null;
                 }
 
-                this.listBoxSelectedRooms.SelectedItems.Clear();
+                if (this.listBoxSelectedRooms.SelectedItems != null)
+                    this.listBoxSelectedRooms.SelectedItems.Clear();
                 this.listBoxSelectedRooms.DataSource = null;
                 this.listBoxAvailableRoom.DataSource = null;
                 this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
