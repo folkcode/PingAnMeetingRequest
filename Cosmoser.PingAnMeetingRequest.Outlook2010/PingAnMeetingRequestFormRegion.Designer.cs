@@ -43,6 +43,11 @@
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel19;
         private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel20;
         private Microsoft.Office.Interop.Outlook.OlkCommandButton olkbtnMobileTerm;
+        private Microsoft.Office.Interop.Outlook._DRecipientControl _RecipientControl1;
+        private Microsoft.Office.Interop.Outlook.OlkCommandButton olkCommandButton1;
+        private Microsoft.Office.Interop.Outlook.OlkTextBox olkTextBox1;
+        private Microsoft.Office.Interop.Outlook.OlkLabel olkLabel21;
+        private Microsoft.Office.Interop.Outlook.OlkCommandButton commandButton1;
 
         public PingAnMeetingRequestFormRegion(Microsoft.Office.Interop.Outlook.FormRegion formRegion)
             : base(Globals.Factory, formRegion)
@@ -94,6 +99,11 @@
             this.olkLabel19 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel19");
             this.olkLabel20 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel20");
             this.olkbtnMobileTerm = (Microsoft.Office.Interop.Outlook.OlkCommandButton)GetFormRegionControl("OlkbtnMobileTerm");
+            this._RecipientControl1 = (Microsoft.Office.Interop.Outlook._DRecipientControl)GetFormRegionControl("_RecipientControl1");
+            this.olkCommandButton1 = (Microsoft.Office.Interop.Outlook.OlkCommandButton)GetFormRegionControl("OlkCommandButton1");
+            this.olkTextBox1 = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("OlkTextBox1");
+            this.olkLabel21 = (Microsoft.Office.Interop.Outlook.OlkLabel)GetFormRegionControl("OlkLabel21");
+            this.commandButton1 = (Microsoft.Office.Interop.Outlook.OlkCommandButton)GetFormRegionControl("cbSend");
 
         }
 

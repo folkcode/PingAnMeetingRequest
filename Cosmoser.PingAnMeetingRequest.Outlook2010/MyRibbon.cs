@@ -216,7 +216,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 string message;
                 int hashCode = item.GetHashCode();
 
-
                 if (this._updatingQueueCollection.ContainsKey(hashCode))
                     this.MeetingDetail = this._updatingQueueCollection[hashCode];
 
@@ -240,11 +239,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                             if (succeed)
                             {
-                                this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
+                                //this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
                                 this.MeetingDetail = null;
                                 this._updatingQueueCollection.Remove(hashCode);
                                 //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
-                                //item.Save();
                                 Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                             }
                             else
@@ -260,11 +258,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                             if (succeed)
                             {
-                                this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
+                                //this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
                                 this.MeetingDetail = null;
                                 this._updatingQueueCollection.Remove(hashCode);
                                 //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
-
                                 Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                             }
                             else
@@ -276,7 +273,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                                         succeed = ClientServiceFactory.Create().UpdateMeeting(this.MeetingDetail, "2", OutlookFacade.Instance().Session, out error, out errorCode);
                                         if (succeed)
                                         {
-                                            this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
+                                            //this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
                                             this.MeetingDetail = null;
                                             this._updatingQueueCollection.Remove(hashCode);
                                             //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);

@@ -213,23 +213,24 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
         {
             try
             {
-                Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
-                if (IsPingAnMeetingAppointment(appt))
-                {
-                    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt, false);
+                this._calendarManager.SavaMeetingDataToCalendarFolder();
+                //Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
+                //if (IsPingAnMeetingAppointment(appt))
+                //{
+                //    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt, false);
 
-                    if (meeting != null && !string.IsNullOrEmpty(meeting.Id))
-                    {
-                        if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
-                        {
-                            this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
-                        }
+                //    if (meeting != null && !string.IsNullOrEmpty(meeting.Id))
+                //    {
+                //        if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                //        {
+                //            this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
+                //        }
 
-                        this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
-                        this._calendarManager.SavaMeetingDataToCalendarFolder();
+                //        this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
+                //        this._calendarManager.SavaMeetingDataToCalendarFolder();
 
-                    }
-                }
+                //    }
+                //}
             }
             catch (Exception ex)
             {

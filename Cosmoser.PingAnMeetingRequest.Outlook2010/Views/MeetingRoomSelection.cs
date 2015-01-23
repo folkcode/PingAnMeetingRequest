@@ -152,8 +152,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             query.EndTime = this.EndTime;
 
             this._availableroomList = null;
-            if (listBoxAvailableRoom.Items != null)
-                listBoxAvailableRoom.Items.Clear();
+
             if (ClientServiceFactory.Create().TryGetMeetingRoomList(query, OutlookFacade.Instance().Session, out _availableroomList))
             {
                 List<MeetingRoom> removedRooms = new List<MeetingRoom>();

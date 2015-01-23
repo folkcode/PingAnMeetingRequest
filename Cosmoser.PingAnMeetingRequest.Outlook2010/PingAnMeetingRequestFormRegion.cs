@@ -14,6 +14,7 @@ using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using log4net;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 using Microsoft.Vbe.Interop.Forms;
+using System.Runtime.InteropServices;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -28,7 +29,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             private void InitializeManifest()
             {
                 ResourceManager resources = new ResourceManager(typeof(PingAnMeetingRequestFormRegion));
-                this.Manifest.FormRegionType = Microsoft.Office.Tools.Outlook.FormRegionType.ReplaceAll;
+                this.Manifest.FormRegionType = Microsoft.Office.Tools.Outlook.FormRegionType.Replacement;
                 this.Manifest.Title = resources.GetString("Title");
                 this.Manifest.FormRegionName = resources.GetString("FormRegionName");
                 this.Manifest.Description = resources.GetString("Description");
@@ -88,7 +89,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             this.UnRegisterControlValueChangeEvents();
             OutlookFacade.Instance().MyRibbon.RibbonType = MyRibbonType.Original;
-            
+
             endTime = DateTime.Now;
         }
 
@@ -100,8 +101,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
             this.obtliji.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtliji_Click);
             this.obtyuyue.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtyuyue_Click);
-            this.obtbendi.Click +=new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtbendi_Click);
-            this.obtshipin.Click +=new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtshipin_Click);
+            this.obtbendi.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtbendi_Click);
+            this.obtshipin.Click += new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtshipin_Click);
 
             this.olkTxtSubject.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
             this.olkTxtLocation.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
@@ -124,6 +125,48 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.txtIPCount.Change += new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
             item.Write += new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
 
+            this.commandButton1.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(commandButton1_Click);
+
+        }
+
+        void commandButton1_Click()
+        {
+            Outlook._AppointmentItem appt = (Outlook._AppointmentItem)item;
+            Outlook.Recipient recipient = null;
+
+            try
+            {
+                if (appt.Recipients.Count == 0)
+                {
+                    MessageBox.Show(string.Format("没有收件人，请设置收件人！"));
+                    return;
+                }
+
+                foreach (var r in appt.Recipients)
+                {
+                    recipient = (Outlook.Recipient)r;
+                    recipient.Resolve();
+                    string email = recipient.Address;
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        MessageBox.Show(string.Format("收件人{0}不能识别，请修正！", recipient.Name));
+                        return;
+                    }
+
+                    Marshal.ReleaseComObject(recipient);
+                }
+
+                appt.Send();
+                appt.Save();
+                MessageBox.Show("邮件发送成功！");
+                this.commandButton1.Caption = "发送更新";
+            }
+            catch (Exception ex)
+            {
+                logger.Error("send meeting failed.", ex);
+                if (recipient != null)
+                    Marshal.ReleaseComObject(recipient);
+            }
         }
 
         void olkEndDateControl_Change()
@@ -163,7 +206,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
             this.txtPeopleCount.Change -= new Outlook.OlkTextBoxEvents_ChangeEventHandler(txtPeopleCount_ValueChanged);
             this.txtPhone.Change -= new Outlook.OlkTextBoxEvents_ChangeEventHandler(ValueChanged);
-           
+
 
             this.obtxsms0.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
             this.obtxsms1.Change -= new Outlook.OlkOptionButtonEvents_ChangeEventHandler(ValueChanged);
@@ -297,6 +340,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.txtPhone.MaxLength = 20;
             this.txtPeopleCount.MaxLength = 4;
 
+            if (item.Recipients.Count > 0)
+                this.commandButton1.Caption = "发送更新";
+            else
+                this.commandButton1.Caption = "发送";
+
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(item);
             if (meetingId != null)
             {
@@ -304,8 +352,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 int hashCode = item.GetHashCode();
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
-                    this.MeetingDetail = this._apptMgr.GetMeetingFromAppointment(item, false);
-                    
+                    if (OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meetingId))
+                        this.MeetingDetail = OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal[meetingId];
+                    else
+                        this.MeetingDetail = this._apptMgr.GetMeetingFromAppointment(item, false);
+
                     if (!OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
                         OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(hashCode, this.MeetingDetail);
                 }
@@ -323,8 +374,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     //this._apptMgr.SaveMeetingToAppointment(MeetingDetail, item, false);
                 }
 
-                item.Start = MeetingDetail.StartTime;
-                item.End = MeetingDetail.EndTime;
+                //item.Start = MeetingDetail.StartTime;
+                //item.End = MeetingDetail.EndTime;
 
                 this.olkTxtSubject.Text = MeetingDetail.Name;
                 item.Location = MeetingDetail.RoomsStr;
@@ -422,7 +473,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             view.LeaderRoom = MeetingDetail.LeaderRoom;
             view.LeaderList = new List<MeetingLeader>();
             view.LeaderList.AddRange(MeetingDetail.LeaderList);
-            
+
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {
                 MeetingDetail.LeaderList = view.LeaderList;
@@ -438,8 +489,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 logger.Debug("SaveMeetingToAppointment");
                 MeetingDetail.Name = this.olkTxtSubject.Text;
 
-                MeetingDetail.StartTime = DateTime.Parse(this.olkStartDateControl.Date.ToString("yyyy-MM-dd ") + this.olkStartTimeControl.Time.ToString("HH:mm:ss")); //item.Start;
-                MeetingDetail.EndTime = DateTime.Parse(this.olkEndDateControl.Date.ToString("yyyy-MM-dd ") + this.olkEndTimeControl.Time.ToString("HH:mm:ss")); //item.End;
+                //MeetingDetail.StartTime = item.Start;// DateTime.Parse(this.olkStartDateControl.Date.ToString("yyyy-MM-dd ") + this.olkStartTimeControl.Time.ToString("HH:mm:ss")); //item.Start;
+                //MeetingDetail.EndTime = item.End;// DateTime.Parse(this.olkEndDateControl.Date.ToString("yyyy-MM-dd ") + this.olkEndTimeControl.Time.ToString("HH:mm:ss")); //item.End;
 
                 if (this.obtliji.Value == true)
                 {
@@ -494,7 +545,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             }
         }
 
-        public SVCMMeetingDetail MeetingDetail 
+        public SVCMMeetingDetail MeetingDetail
         {
             get;
             set;
