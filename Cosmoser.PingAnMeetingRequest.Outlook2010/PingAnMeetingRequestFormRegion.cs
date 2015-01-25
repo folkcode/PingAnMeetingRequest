@@ -346,10 +346,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 this.commandButton1.Caption = "发送";
 
             string meetingId = this._apptMgr.GetMeetingIdFromAppointment(item);
+            int hashCode = item.GetHashCode();
             if (meetingId != null)
             {
                 SVCMMeetingDetail meeting;
-                int hashCode = item.GetHashCode();
                 if (!ClientServiceFactory.Create().TryGetMeetingDetail(meetingId, OutlookFacade.Instance().Session, out meeting))
                 {
                     if (OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meetingId))
@@ -438,6 +438,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 OutlookFacade.Instance().MyRibbon.MeetingDetail = new SVCMMeetingDetail();
                 this.MeetingDetail = OutlookFacade.Instance().MyRibbon.MeetingDetail;
+
+                if (!OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
+                    OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(hashCode, this.MeetingDetail);
                 //默认语音激励
                 this.obtxsms0.Value = true;
                 //默认视频会议
