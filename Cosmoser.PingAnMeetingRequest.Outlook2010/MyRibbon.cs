@@ -239,7 +239,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
                             if (succeed)
                             {
-                                //this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
+                                this._apptMgr.SaveMeetingToAppointment(this.MeetingDetail, item, false);
                                 this.MeetingDetail = null;
                                 this._updatingQueueCollection.Remove(hashCode);
                                 //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
