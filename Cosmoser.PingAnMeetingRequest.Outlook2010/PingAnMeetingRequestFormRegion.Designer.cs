@@ -2,7 +2,6 @@
 {
     partial class PingAnMeetingRequestFormRegion : Microsoft.Office.Tools.Outlook.ImportedFormRegionBase
     {
-        private Microsoft.Office.Interop.Outlook.OlkInfoBar olkInfoBar1;
         private Microsoft.Office.Interop.Outlook._DDocSiteControl _DocSiteControlComment;
         private Microsoft.Office.Interop.Outlook.OlkFrameHeader olkFrameHeader;
         private Microsoft.Office.Interop.Outlook.OlkTextBox olkTxtSubject;
@@ -58,7 +57,6 @@
 
         protected override void InitializeControls()
         {
-            this.olkInfoBar1 = (Microsoft.Office.Interop.Outlook.OlkInfoBar)GetFormRegionControl("OlkInfoBar1");
             this._DocSiteControlComment = (Microsoft.Office.Interop.Outlook._DDocSiteControl)GetFormRegionControl("_DocSiteControlComment");
             this.olkFrameHeader = (Microsoft.Office.Interop.Outlook.OlkFrameHeader)GetFormRegionControl("OlkFrameHeader");
             this.olkTxtSubject = (Microsoft.Office.Interop.Outlook.OlkTextBox)GetFormRegionControl("OlkTxtSubject");
