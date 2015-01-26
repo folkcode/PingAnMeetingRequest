@@ -132,6 +132,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void commandButton1_Click()
         {
             Outlook._AppointmentItem appt = (Outlook._AppointmentItem)item;
+            appt.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
             Outlook.Recipient recipient = null;
 
             try
