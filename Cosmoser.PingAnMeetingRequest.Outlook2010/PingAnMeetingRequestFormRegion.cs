@@ -129,6 +129,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         }
 
+        bool isSendingMeeting = false;
         void commandButton1_Click()
         {
             Outlook._AppointmentItem appt = (Outlook._AppointmentItem)item;
@@ -157,8 +158,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     Marshal.ReleaseComObject(recipient);
                 }
 
+                isSendingMeeting = true;
                 appt.Send();
-                appt.Save();
+                //appt.Save();
                 MessageBox.Show("邮件发送成功！");
                 this.commandButton1.Caption = "发送更新";
             }
@@ -326,6 +328,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void item_Write(ref bool Cancel)
         {
+            if (isSendingMeeting)
+            {
+                isSendingMeeting = false;
+                Cancel = true;
+                return;
+            }
+
             var updatingMeeting = OutlookFacade.Instance().MyRibbon.MeetingDetail;//this.MeetingDetail;//this._apptMgr.GetMeetingFromAppointment(item, true);
             if (updatingMeeting != null)
             {

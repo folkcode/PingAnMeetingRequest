@@ -291,6 +291,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            if (this.dateTimePickerStart.Value > this.dateTimePickerEnd.Value)
+            {
+                MessageBox.Show("查询开始时间大约结束时间！");
+                return;
+            }
             lblMessage.Text = "正在同步...";
             lblMessage.ForeColor = Color.Red;
 

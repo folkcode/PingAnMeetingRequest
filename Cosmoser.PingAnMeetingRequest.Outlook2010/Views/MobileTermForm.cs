@@ -53,6 +53,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
                 listBoxAvailable.DataSource = this._allTermList;
                 listBoxSelected.DataSource = this.MobileTermList;
+
+                this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
+                this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
             }
             else
             {
@@ -83,6 +86,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             listBoxSelected.DataSource = null;
             listBoxAvailable.DataSource = this._allTermList;
             listBoxSelected.DataSource = this.MobileTermList;
+
+            this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
+            this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -105,6 +111,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             listBoxSelected.DataSource = null;
             listBoxAvailable.DataSource = this._allTermList;
             listBoxSelected.DataSource = this.MobileTermList;
+
+            this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
+            this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
