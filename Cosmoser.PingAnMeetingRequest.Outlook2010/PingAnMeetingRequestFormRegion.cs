@@ -127,6 +127,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
             this.commandButton1.Click += new Outlook.OlkCommandButtonEvents_ClickEventHandler(commandButton1_Click);
 
+            OutlookFacade.Instance().ItemSend += new EventHandler(PingAnMeetingRequestFormRegion_ItemSend);
+        }
+
+        void PingAnMeetingRequestFormRegion_ItemSend(object sender, EventArgs e)
+        {
+            MessageBox.Show("邮件发送成功！");
+            this.commandButton1.Caption = "发送更新";
         }
 
         bool isSendingMeeting = false;
@@ -159,10 +166,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 }
 
                 isSendingMeeting = true;
-                appt.Send();
-                //appt.Save();
-                MessageBox.Show("邮件发送成功！");
-                this.commandButton1.Caption = "发送更新";
+                appt.Send();               
+                
             }
             catch (Exception ex)
             {
@@ -456,6 +461,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 //默认视频会议
                 this.obtshipin.Value = true;
                 //this.SaveMeetingToAppointment();
+
+                this.olkTextBox1.Text = OutlookFacade.Instance().Session.Address;
             }
         }
 

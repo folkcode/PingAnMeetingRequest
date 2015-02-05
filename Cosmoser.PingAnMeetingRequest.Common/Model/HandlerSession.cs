@@ -58,5 +58,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
 
         public string OutlookVersion { get; set; }
 
+        public string Address { get; set; }
+
     }
 }

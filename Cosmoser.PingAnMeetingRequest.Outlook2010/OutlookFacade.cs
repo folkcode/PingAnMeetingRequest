@@ -27,6 +27,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         private CalendarFolder _calendarFolder;
         private HandlerSession _session = new HandlerSession();
 
+        public event EventHandler ItemSend;
+
         public HandlerSession Session
         {
             get
@@ -92,6 +94,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 Globals.ThisAddIn.Application.Inspectors.NewInspector += new Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
                 this._activeExplorer.FolderSwitch += new Outlook.ExplorerEvents_10_FolderSwitchEventHandler(_activeExplorer_FolderSwitch);
 
+                Globals.ThisAddIn.Application.ItemSend += new Outlook.ApplicationEvents_11_ItemSendEventHandler(Application_ItemSend);
+
                 if (this._session.OutlookVersion.StartsWith("12.0"))
                 {
 
@@ -107,6 +111,17 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             catch (Exception ex)
             {
                 logger.Error("ThisAddIn_Startup 启动失败！" + ex.Message + "\n" + ex.StackTrace);
+            }
+        }
+
+        void Application_ItemSend(object Item, ref bool Cancel)
+        {
+            var appt = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+
+            if (appt != null && appt.MessageClass == "IPM.Appointment.PingAnMeetingRequest")
+            {
+                if (this.ItemSend != null)
+                    this.ItemSend(this, new EventArgs());
             }
         }
 
@@ -149,9 +164,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 //this._session = new HandlerSession();
                 this._session.UserName = System.Configuration.ConfigurationManager.AppSettings["Username"];
 
+                this._session.Address = this.Application.Session.CurrentUser.Address;
+
                 var currentUser = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser();
                 if (currentUser != null)
+                {
                     this._session.UserName = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser().PrimarySmtpAddress.Split("@".ToArray())[0];
+                    this._session.Address = this.Application.Session.CurrentUser.AddressEntry.GetExchangeUser().PrimarySmtpAddress;
+                }
                 this._session.IP = System.Configuration.ConfigurationManager.AppSettings["IP"];
                 this._session.Port = System.Configuration.ConfigurationManager.AppSettings["Port"];
                 this._session.OutlookVersion = this.Application.Version;
