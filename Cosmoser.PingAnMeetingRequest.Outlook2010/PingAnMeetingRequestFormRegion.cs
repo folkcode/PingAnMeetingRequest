@@ -234,6 +234,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.obtbendi.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtbendi_Click);
             this.obtshipin.Click -= new Outlook.OlkOptionButtonEvents_ClickEventHandler(obtshipin_Click);
             item.Write -= new Outlook.ItemEvents_10_WriteEventHandler(item_Write);
+
+            OutlookFacade.Instance().ItemSend -= new EventHandler(PingAnMeetingRequestFormRegion_ItemSend);
         }
 
         void olkbtnMobileTerm_Click()
