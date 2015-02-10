@@ -165,7 +165,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 SVCMMeetingDetail meeting = this._apptMgr.GetMeetingFromAppointment(item, false);
                 if (meeting != null)
                 {
-                    if (MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    if (MessageBox.Show("你确定要删除该会议并发送取消会议邮件?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
                     {
                         return;
                     }
@@ -180,6 +180,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                         {
                             calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
                             calendarManager.SavaMeetingDataToCalendarFolder();
+
+                            //48 issue
+                            OutlookFacade.Instance().ItemSend += new EventHandler(MyRibbon_ItemSend);
+                            Outlook._AppointmentItem appt = (Outlook._AppointmentItem)item;
+                            appt.MeetingStatus = Outlook.OlMeetingStatus.olMeetingCanceled;
+                            appt.Send();
+                            OutlookFacade.Instance().ItemSend -= new EventHandler(MyRibbon_ItemSend);
                         }
                         else
                         {
@@ -205,6 +212,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 logger.Error("DoDelete error", ex);
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        void MyRibbon_ItemSend(object sender, EventArgs e)
+        {
+            MessageBox.Show("取消会议发送成功！");
+            OutlookFacade.Instance().ItemSend -= new EventHandler(MyRibbon_ItemSend);
         }
 
         public void DoSaveAndClose(Office.IRibbonControl control)

@@ -143,7 +143,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         return;
 
                     // add by robin at 20141231 start 
-                    if ( MessageBox.Show("你确定要删除该会议?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    if ( MessageBox.Show("你确定要删除该会议并发送取消会议邮件?", "提示信息", MessageBoxButtons.YesNo) != DialogResult.Yes)
                     {
                         //this._appointmentManager.RemoveItemDeleteStatus(appt);
                         Cancel = true;
@@ -162,6 +162,13 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                             this._calendarManager.SavaMeetingDataToCalendarFolder();
                             if (this._appointmentList.ContainsKey(meeting.Id))
                                 this._appointmentList.Remove(meeting.Id);
+
+                            //48 issue
+                            OutlookFacade.Instance().ItemSend += new EventHandler(CalendarFolder_ItemSend);
+                            Outlook._AppointmentItem item = (Outlook._AppointmentItem)appt;
+                            item.MeetingStatus = Outlook.OlMeetingStatus.olMeetingCanceled;
+                            item.Send();
+                            OutlookFacade.Instance().ItemSend -= new EventHandler(CalendarFolder_ItemSend);
                         }
                         else
                         {
@@ -187,6 +194,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 logger.Error("item_BeforeDelete error!", ex);
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        void CalendarFolder_ItemSend(object sender, EventArgs e)
+        {
+            MessageBox.Show("取消会议发送成功！");
+            OutlookFacade.Instance().ItemSend -= new EventHandler(CalendarFolder_ItemSend);
         }
 
         private bool IsPingAnMeetingAppointment(Outlook.AppointmentItem item)

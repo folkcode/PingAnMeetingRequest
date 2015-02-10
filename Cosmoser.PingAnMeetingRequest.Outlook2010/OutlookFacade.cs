@@ -116,13 +116,29 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void Application_ItemSend(object Item, ref bool Cancel)
         {
-            var appt = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
-
-            if (appt != null && appt.MessageClass == "IPM.Appointment.PingAnMeetingRequest")
+            Outlook.MeetingItem meetingItem = Item as Outlook.MeetingItem;
+            if (meetingItem != null && meetingItem.GetAssociatedAppointment(false).MessageClass == "IPM.Appointment.PingAnMeetingRequest")
             {
                 if (this.ItemSend != null)
                     this.ItemSend(this, new EventArgs());
             }
+            
+            //Outlook.AppointmentItem appt = null;
+            //if (Globals.ThisAddIn.Application.ActiveInspector() != null)
+            //{
+            //    appt = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
+            //    if (appt != null && appt.MessageClass == "IPM.Appointment.PingAnMeetingRequest")
+            //    {
+            //        if (this.ItemSend != null)
+            //            this.ItemSend(this, new EventArgs());
+            //    }
+            //}
+            //else
+            //{
+                
+            //}
+
+           
         }
 
         public void Shutdown()

@@ -140,7 +140,17 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void commandButton1_Click()
         {
             Outlook._AppointmentItem appt = (Outlook._AppointmentItem)item;
-            appt.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
+            if (appt.MeetingStatus == Outlook.OlMeetingStatus.olMeeting)
+            {
+                appt.ForceUpdateToAllAttendees = true;
+                appt.Save();
+            }
+            else
+            {
+                appt.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
+            }
+
+            appt.ForceUpdateToAllAttendees = true;
             Outlook.Recipient recipient = null;
 
             try

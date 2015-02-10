@@ -36,7 +36,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             this.lblMeetingName.Content = this.MeetingDetail.Name;
             this.lblStartTime.Content = this.MeetingDetail.StartTime.ToString("yyyy-MM-dd HH:mm:ss");
             this.lblEndTime.Content = this.MeetingDetail.EndTime.ToString("yyyy-MM-dd HH:mm:ss");
-            this.lblMeetingType.Content = this.MeetingDetail.RegularMeetingType == 1?"本地普通会议":"视频会议";
+            this.lblMeetingType.Content = this.MeetingDetail.ConfMideaType ==  MideaType.Local?"本地普通会议":"视频会议";
             this.lblStatus.Content = this.MeetingDetail.StatusStr;
             this.lblIpCount.Content = this.MeetingDetail.IpTelephoneNumber;
             this.lblAttendNum.Content = this.MeetingDetail.ParticipatorNumber;
