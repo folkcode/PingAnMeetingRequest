@@ -133,6 +133,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void PingAnMeetingRequestFormRegion_ItemSend(object sender, EventArgs e)
         {
             MessageBox.Show("邮件发送成功！");
+            isSendingMeeting = true;
             this.commandButton1.Caption = "发送更新";
         }
 
@@ -348,7 +349,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             if (isSendingMeeting)
             {
                 isSendingMeeting = false;
-                Cancel = true;
+                return;
+            }
+
+            if (OutlookFacade.Instance().MyRibbon.IsRibbonAction)
+            {
                 return;
             }
 
@@ -366,6 +371,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             logger.Debug("Begin getting MeetingId");
             this.txtPhone.MaxLength = 20;
             this.txtPeopleCount.MaxLength = 4;
+
+            this.label1.Caption = "邀请与会者";
+           
 
             if (item.Recipients.Count > 0)
                 this.commandButton1.Caption = "发送更新";

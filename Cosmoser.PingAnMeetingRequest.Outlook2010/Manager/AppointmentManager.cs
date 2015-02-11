@@ -8,6 +8,7 @@ using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 using log4net;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 {
@@ -174,7 +175,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                                 break;
                             }
                         }
-                    }
+                    }                   
                 }
                 else
                 {
@@ -211,6 +212,88 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             item.Save();
 
             return item;
+        }
+
+        public void AppointmentSendMeeting(Outlook.AppointmentItem item)
+        {
+            Outlook._AppointmentItem appt = (Outlook._AppointmentItem)item;
+           
+            appt.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;            
+
+            appt.ForceUpdateToAllAttendees = true;
+            Outlook.Recipient recipient = null;
+
+            try
+            {
+                if (appt.Recipients.Count == 0)
+                {
+                    MessageBox.Show(string.Format("没有收件人，请设置收件人！"));
+                    return;
+                }
+
+                foreach (var r in appt.Recipients)
+                {
+                    recipient = (Outlook.Recipient)r;
+                    recipient.Resolve();
+                    string email = recipient.Address;
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        MessageBox.Show(string.Format("收件人{0}不能识别，请修正！", recipient.Name));
+                        return;
+                    }
+
+                    Marshal.ReleaseComObject(recipient);
+                }
+
+                appt.Send();
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error("send meeting failed.", ex);
+                if (recipient != null)
+                    Marshal.ReleaseComObject(recipient);
+            }
+        }
+
+        public bool ResolveRecipients(Outlook.AppointmentItem item, out string message)
+        {
+            message = string.Empty;
+
+            Outlook._AppointmentItem appt = (Outlook._AppointmentItem)item;           
+
+            appt.ForceUpdateToAllAttendees = true;
+            Outlook.Recipient recipient = null;
+
+            try
+            {
+                if (appt.Recipients.Count == 0)
+                {
+                    message = "没有收件人，请设置收件人！";
+                    return false;
+                }
+
+                foreach (var r in appt.Recipients)
+                {
+                    recipient = (Outlook.Recipient)r;
+                    recipient.Resolve();
+                    string email = recipient.Address;
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        message = string.Format("收件人{0}不能识别，请修正！", recipient.Name);
+                        return false;
+                    }
+
+                    Marshal.ReleaseComObject(recipient);
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                return false;
+            }
+
+            return true;
         }
     }
 }

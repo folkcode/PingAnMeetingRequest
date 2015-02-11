@@ -121,24 +121,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 if (this.ItemSend != null)
                     this.ItemSend(this, new EventArgs());
-            }
-            
-            //Outlook.AppointmentItem appt = null;
-            //if (Globals.ThisAddIn.Application.ActiveInspector() != null)
-            //{
-            //    appt = Globals.ThisAddIn.Application.ActiveInspector().CurrentItem as Outlook.AppointmentItem;
-            //    if (appt != null && appt.MessageClass == "IPM.Appointment.PingAnMeetingRequest")
-            //    {
-            //        if (this.ItemSend != null)
-            //            this.ItemSend(this, new EventArgs());
-            //    }
-            //}
-            //else
-            //{
-                
-            //}
-
-           
+            }       
+              
         }
 
         public void Shutdown()
