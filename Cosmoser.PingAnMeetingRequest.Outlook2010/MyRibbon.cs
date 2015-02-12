@@ -275,7 +275,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                                 this._updatingQueueCollection.Remove(hashCode);
                                 //this._apptMgr.RemoveUpdatingMeetingFromAppt(item);
                                 this._apptMgr.AppointmentSendMeeting(item);
-                                Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+
+                                if (Globals.ThisAddIn.Application.ActiveInspector() != null)
+                                    Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
                             }
                             else
                             {
@@ -361,7 +363,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             catch (Exception ex)
             {
                 logger.Error("DoSaveAndClose error", ex);
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("保存发送发生异常错误，请重试或联系管理员！");
             }
 
             IsRibbonAction = false;
