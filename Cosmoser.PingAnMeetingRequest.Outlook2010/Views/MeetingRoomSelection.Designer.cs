@@ -43,6 +43,7 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnMainRoomSetting = new System.Windows.Forms.Button();
+            this.lblMainRoom = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // listBoxMeetingRoom
@@ -98,7 +99,7 @@
             this.listBoxAvailableRoom.ItemHeight = 12;
             this.listBoxAvailableRoom.Location = new System.Drawing.Point(53, 308);
             this.listBoxAvailableRoom.Name = "listBoxAvailableRoom";
-            this.listBoxAvailableRoom.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.listBoxAvailableRoom.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxAvailableRoom.Size = new System.Drawing.Size(219, 88);
             this.listBoxAvailableRoom.TabIndex = 4;
             // 
@@ -117,7 +118,7 @@
             this.listBoxSelectedRooms.ItemHeight = 12;
             this.listBoxSelectedRooms.Location = new System.Drawing.Point(468, 60);
             this.listBoxSelectedRooms.Name = "listBoxSelectedRooms";
-            this.listBoxSelectedRooms.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.listBoxSelectedRooms.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxSelectedRooms.Size = new System.Drawing.Size(219, 268);
             this.listBoxSelectedRooms.TabIndex = 6;
             // 
@@ -183,7 +184,7 @@
             // 
             // btnMainRoomSetting
             // 
-            this.btnMainRoomSetting.Location = new System.Drawing.Point(511, 350);
+            this.btnMainRoomSetting.Location = new System.Drawing.Point(511, 361);
             this.btnMainRoomSetting.Name = "btnMainRoomSetting";
             this.btnMainRoomSetting.Size = new System.Drawing.Size(118, 23);
             this.btnMainRoomSetting.TabIndex = 14;
@@ -191,11 +192,21 @@
             this.btnMainRoomSetting.UseVisualStyleBackColor = true;
             this.btnMainRoomSetting.Click += new System.EventHandler(this.btnMainRoomSetting_Click);
             // 
+            // lblMainRoom
+            // 
+            this.lblMainRoom.AutoSize = true;
+            this.lblMainRoom.ForeColor = System.Drawing.Color.Red;
+            this.lblMainRoom.Location = new System.Drawing.Point(468, 335);
+            this.lblMainRoom.Name = "lblMainRoom";
+            this.lblMainRoom.Size = new System.Drawing.Size(0, 12);
+            this.lblMainRoom.TabIndex = 15;
+            // 
             // MeetingRoomSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(741, 464);
+            this.Controls.Add(this.lblMainRoom);
             this.Controls.Add(this.btnMainRoomSetting);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
@@ -238,5 +249,6 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnMainRoomSetting;
+        private System.Windows.Forms.Label lblMainRoom;
     }
 }

@@ -44,7 +44,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             this.lblAccount.Content = this.MeetingDetail.AccountName;
             this.lblAccountPhone.Content = this.MeetingDetail.Phone;
             this.lblAccountDepartment.Content = this.MeetingDetail.Department;
-            this.lblLeader.Content = this.MeetingDetail.LeaderListStr;
+            this.lblLeader.Content = this.MeetingDetail.LeaderNameListStr;
             this.lblLeaderRoom.Content = this.MeetingDetail.LeaderRoom;
             this.lblMemo.Content = this.MeetingDetail.Memo;
 

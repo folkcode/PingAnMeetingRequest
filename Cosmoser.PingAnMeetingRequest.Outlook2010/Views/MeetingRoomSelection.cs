@@ -109,6 +109,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 //本地会议不需要设置主会场
                 if (this.ConfType == MideaType.Local)
                     this.btnMainRoomSetting.Enabled = false;
+
+                if (this.MainRoom != null)
+                    this.lblMainRoom.Text = "主会场:" + this.MainRoom.Name;
+                else
+                    this.lblMainRoom.Text = "主会场：无";
             }
             catch (Exception ex)
             {
@@ -289,6 +294,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 //Graphics g = e.Graphics;//获取Graphics对象。
                 //Rectangle bound = e.Bounds;//获取当前要绘制的行的一个矩形范围。
 
+                this.lblMainRoom.Text = "主会场:" + this.MainRoom.Name;
+                MessageBox.Show("主会场 " + this.MainRoom.Name + " 已设置.");
             }
         }
 

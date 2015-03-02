@@ -439,7 +439,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                         var node = item as XmlNode;
                         var region = new RegionInfo();
                         region.Code = node.SelectSingleNode("boroughCode").InnerText;
-                        region.Name = node.SelectSingleNode("boroughCode").InnerText;
+                        XmlNode nameNode = node.SelectSingleNode("boroughName");
+                        if(nameNode == null)
+                            nameNode = node.SelectSingleNode("cityName");
+                        region.Name = nameNode.InnerText;
 
                         regionCatagory.BoroughList.Add(region);
                     }

@@ -34,6 +34,7 @@
             label="显示" >
           <button id ="btnAppointmentSearch" label ="日程查询" imageMso="CalendarInsert" onAction="DoSchedulerSearch" size="large" screentip="日程查询" />
         </group>
+        <group idMso="GroupInclude"  />
       </tab>
     </tabs>
   </ribbon>

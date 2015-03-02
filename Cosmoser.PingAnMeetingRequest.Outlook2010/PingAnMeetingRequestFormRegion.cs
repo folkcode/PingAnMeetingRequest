@@ -284,7 +284,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void obtshipin_Click()
         {
             this.EnableVideoSet(true);
-
+            this.obtshipin.Value = true;
             this.SaveMeetingToAppointment();
         }
 
@@ -300,7 +300,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         void obtbendi_Click()
         {
             this.EnableVideoSet(false);
-
+            this.obtbendi.Value = true;
             this.SaveMeetingToAppointment();
         }
 
@@ -436,9 +436,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 }
 
                 if (MeetingDetail.ConfMideaType == MideaType.Local)
+                {
                     this.obtbendi.Value = true;
+                    this.EnableVideoSet(false);
+                }
                 else
+                {
                     this.obtshipin.Value = true;
+                    this.EnableVideoSet(true);
+                }
                 this.txtPeopleCount.Text = MeetingDetail.ParticipatorNumber.ToString();
                 this.txtPhone.Text = MeetingDetail.Phone;
 
@@ -473,7 +479,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 OutlookFacade.Instance().MyRibbon.MeetingDetail = new SVCMMeetingDetail();
                 this.MeetingDetail = OutlookFacade.Instance().MyRibbon.MeetingDetail;
-
+                this.MeetingDetail.ConfMideaType = MideaType.Video;
+                this.MeetingDetail.VideoSet = VideoSet.Audio;
                 if (!OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
                     OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(hashCode, this.MeetingDetail);
                 //默认语音激励
