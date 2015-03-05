@@ -39,7 +39,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     {
                         session.ConfTypeList.Add((ConferenceType)int.Parse(item));
                     }
-                    session.IfBookMobileTerm = response.SelectSingleNode("login").SelectSingleNode("confType").InnerText == "1" ? true : false;
+                    session.IfBookMobileTerm = response.SelectSingleNode("login").SelectSingleNode("ifBookMobileTerm").InnerText == "1" ? true : false;
+                    session.IfBookIPConf = response.SelectSingleNode("login").SelectSingleNode("ifBookIPConf").InnerText == "1" ? true : false;
                     session.IsActive = true;
                     //每次登陆都需要重设messageId
                     session.ResetMessageId();
@@ -504,6 +505,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                    detail.Phone = root.SelectSingleNode("telephone").InnerText.Replace("null", "");
 
                    var leaders = root.SelectSingleNode("leader").InnerText.Replace("null", "").Split(",".ToArray());
+                   
                    foreach (var item in leaders)
                    {
                        detail.LeaderList.Add(new MeetingLeader()
@@ -512,6 +514,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                        });
                    }
 
+                   detail.LeaderNameListStr = root.SelectSingleNode("leaderName").InnerText;
                    detail.LeaderRoom = root.SelectSingleNode("leaderRoom").InnerText.Replace("null", "");
                    detail.IpTelephoneNumber = root.SelectSingleNode("ipTelephoneNumber").InnerText;
                    detail.Department = root.SelectSingleNode("department").InnerText;

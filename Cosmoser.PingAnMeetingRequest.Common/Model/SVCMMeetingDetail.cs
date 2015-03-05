@@ -90,11 +90,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         public string LeaderNameListStr
         {
 
-            get
-            {
-
-                return string.Join(",", this.LeaderList.Select(x => x.Name).ToList());
-            }
+            get;
+            set;
         }
 
         public string RoomsStr

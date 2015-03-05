@@ -372,6 +372,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.txtPhone.MaxLength = 20;
             this.txtPeopleCount.MaxLength = 4;
 
+            //权限控制
+            if (!OutlookFacade.Instance().Session.ConfTypeList.Contains(ConferenceType.Furture))
+            {
+                this.obtyuyue.Enabled = false;
+                this.obtliji.Value = true;
+            }
+            if (!OutlookFacade.Instance().Session.ConfTypeList.Contains(ConferenceType.Immediate))
+                this.obtliji.Enabled = false;
+            if (OutlookFacade.Instance().Session.IfBookIPConf == false)
+                this.txtIPCount.Enabled = false;
+            if (OutlookFacade.Instance().Session.IfBookMobileTerm == false)
+                this.olkbtnMobileTerm.Enabled = false;
+
             this.label1.Caption = "邀请与会者";
            
 

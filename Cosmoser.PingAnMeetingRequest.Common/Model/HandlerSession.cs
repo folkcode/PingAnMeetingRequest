@@ -55,7 +55,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
         public List<ConferenceType> ConfTypeList { get; set; }
 
         public bool IfBookMobileTerm { get; set; }
-
+        public bool IfBookIPConf { get; set; }
         public string OutlookVersion { get; set; }
 
         public string Address { get; set; }
