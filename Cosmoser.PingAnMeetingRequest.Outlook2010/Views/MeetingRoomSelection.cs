@@ -249,9 +249,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         bool select2all = false;
         private void btnSelectAllOnSecondLevel_Click(object sender, EventArgs e)
         {
-            select2all = true;
-            this.listBoxLevel.SelectedIndex = 1;
+            //select2all = true;
+            //this.listBoxLevel.SelectedIndex = 1;
 
+            this.LoadRoomList("-2");
             this.SelectAll();
         }
 
@@ -266,9 +267,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         bool select1all = false;
         private void btnSelectAllOnCountry_Click(object sender, EventArgs e)
         {
-            select1all = true;
-            this.listBoxLevel.SelectedIndex = 0;
+            //select1all = true;
+            //this.listBoxLevel.SelectedIndex = 0;
 
+            this.LoadRoomList("-1");
             this.SelectAll();
         }
 

@@ -251,13 +251,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 }
 
                 logger.Debug("TryValidateApppointmentUIInput!");
+                if (this.MeetingDetail != null) this.MeetingDetail.Memo = item.Body;
                 if (this._apptMgr.TryValidateApppointmentUIInput(this.MeetingDetail, out message))
                 {
 
                     if (this.MeetingDetail != null)
                     {
                         //set comment
-                        this.MeetingDetail.Memo = item.Body;
+                        //this.MeetingDetail.Memo = item.Body;
                         this.MeetingDetail.StartTime = item.Start;
                         this.MeetingDetail.EndTime = item.End;
 

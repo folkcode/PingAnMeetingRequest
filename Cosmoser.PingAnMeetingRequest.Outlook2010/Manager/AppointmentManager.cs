@@ -164,6 +164,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         sb.AppendLine("预约本地会议不能选择ip电话参会!");
                     }
 
+                    if(meeting.Memo.Length > 200)
+                        sb.AppendLine("会议备注长度不能超过200个字符或100个汉字！");
+
                     if (meeting.ConfMideaType == MideaType.Video && !string.IsNullOrWhiteSpace(meeting.IPDesc))
                     {
                         var array = meeting.IPDesc.Split(" ".ToArray());
