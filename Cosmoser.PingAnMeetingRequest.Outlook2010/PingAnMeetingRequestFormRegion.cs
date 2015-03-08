@@ -285,6 +285,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             this.EnableVideoSet(true);
             this.obtshipin.Value = true;
+            this.txtIPCount.Enabled = true;
+            this.olkbtnMobileTerm.Enabled = true;
             this.SaveMeetingToAppointment();
         }
 
@@ -301,6 +303,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             this.EnableVideoSet(false);
             this.obtbendi.Value = true;
+            this.txtIPCount.Enabled = false;
+            this.olkbtnMobileTerm.Enabled = false;
             this.SaveMeetingToAppointment();
         }
 
@@ -452,6 +456,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 {
                     this.obtbendi.Value = true;
                     this.EnableVideoSet(false);
+                    this.txtIPCount.Enabled = false;
+                    this.olkbtnMobileTerm.Enabled = false;
                 }
                 else
                 {
