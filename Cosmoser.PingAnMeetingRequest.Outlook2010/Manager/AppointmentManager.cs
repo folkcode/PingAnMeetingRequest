@@ -167,6 +167,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                     if(meeting.Memo.Length > 200)
                         sb.AppendLine("会议备注长度不能超过200个字符或100个汉字！");
 
+                    if (meeting.Memo.Contains("&") || meeting.Memo.Contains("^"))
+                        sb.AppendLine("会议备注不能包含特殊字符，如&，^ 等");
+
                     if (meeting.ConfMideaType == MideaType.Video && !string.IsNullOrWhiteSpace(meeting.IPDesc))
                     {
                         var array = meeting.IPDesc.Split(" ".ToArray());

@@ -377,6 +377,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.txtPeopleCount.MaxLength = 4;
 
             //权限控制
+            if (!OutlookFacade.Instance().Session.IsActive)
+            {
+                var session = OutlookFacade.Instance().Session;
+                ClientServiceFactory.Create().Login(ref session);
+            }
+
             if (!OutlookFacade.Instance().Session.ConfTypeList.Contains(ConferenceType.Furture))
             {
                 this.obtyuyue.Enabled = false;

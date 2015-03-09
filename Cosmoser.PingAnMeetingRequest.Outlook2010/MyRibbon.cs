@@ -251,7 +251,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 }
 
                 logger.Debug("TryValidateApppointmentUIInput!");
-                if (this.MeetingDetail != null) this.MeetingDetail.Memo = item.Body;
+                if (this.MeetingDetail != null) this.MeetingDetail.Memo = item.Body != null ? item.Body.Trim() : string.Empty;
                 if (this._apptMgr.TryValidateApppointmentUIInput(this.MeetingDetail, out message))
                 {
 
@@ -300,7 +300,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                             {
                                 if(item.MeetingStatus != Outlook.OlMeetingStatus.olMeeting)
                                     this._apptMgr.AppointmentSendMeeting(item);
-                                Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
+                                if (Globals.ThisAddIn.Application.ActiveInspector() != null)
+                                    Globals.ThisAddIn.Application.ActiveInspector().Close(Outlook.OlInspectorClose.olSave);
 
                                 if (item.Start != this.MeetingDetail.StartTime || item.End != this.MeetingDetail.EndTime)
                                 {
