@@ -287,6 +287,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.obtshipin.Value = true;
             this.txtIPCount.Enabled = true;
             this.olkbtnMobileTerm.Enabled = true;
+
+            this.ControlUIDisplay();
+
             this.SaveMeetingToAppointment();
         }
 
@@ -305,6 +308,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.obtbendi.Value = true;
             this.txtIPCount.Enabled = false;
             this.olkbtnMobileTerm.Enabled = false;
+
+            this.ControlUIDisplay();
+
             this.SaveMeetingToAppointment();
         }
 
@@ -369,6 +375,21 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             }
         }
 
+        void ControlUIDisplay()
+        {
+            if (!OutlookFacade.Instance().Session.ConfTypeList.Contains(ConferenceType.Furture))
+            {
+                this.obtyuyue.Enabled = false;
+                this.obtliji.Value = true;
+            }
+            if (!OutlookFacade.Instance().Session.ConfTypeList.Contains(ConferenceType.Immediate))
+                this.obtliji.Enabled = false;
+            if (OutlookFacade.Instance().Session.IfBookIPConf == false)
+                this.txtIPCount.Enabled = false;
+            if (OutlookFacade.Instance().Session.IfBookMobileTerm == false)
+                this.olkbtnMobileTerm.Enabled = false;
+        }
+
         void InitializeUI()
         {
             logger.Debug("InitializeUI");
@@ -383,17 +404,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 ClientServiceFactory.Create().Login(ref session);
             }
 
-            if (!OutlookFacade.Instance().Session.ConfTypeList.Contains(ConferenceType.Furture))
-            {
-                this.obtyuyue.Enabled = false;
-                this.obtliji.Value = true;
-            }
-            if (!OutlookFacade.Instance().Session.ConfTypeList.Contains(ConferenceType.Immediate))
-                this.obtliji.Enabled = false;
-            if (OutlookFacade.Instance().Session.IfBookIPConf == false)
-                this.txtIPCount.Enabled = false;
-            if (OutlookFacade.Instance().Session.IfBookMobileTerm == false)
-                this.olkbtnMobileTerm.Enabled = false;
+            this.ControlUIDisplay();
 
             this.label1.Caption = "邀请与会者";
            

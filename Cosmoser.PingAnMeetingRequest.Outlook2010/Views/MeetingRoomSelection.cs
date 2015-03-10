@@ -193,29 +193,34 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                     return;
                 }
 
-                foreach (var item in this.listBoxAvailableRoom.SelectedItems)
-                {
-                    MeetingRoom room = item as MeetingRoom;
-
-                    if (room != null && !this.MeetingRoomList.Exists(x => x.RoomId == room.RoomId))
-                    {
-                        this.MeetingRoomList.Add(room);
-                        this._availableroomList.Remove(room);
-                    }
-                }
-
-                this.listBoxSelectedRooms.DataSource = null;
-                this.listBoxAvailableRoom.DataSource = null;
-                this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
-                this.listBoxAvailableRoom.DataSource = this._availableroomList;
-
-                if (this.listBoxAvailableRoom.SelectedItems != null)
-                    this.listBoxAvailableRoom.SelectedItems.Clear();
+                this.DoAddItems();
             }
             else
             {
                 MessageBox.Show("请在待选会议室里选择一个会议室！");
             }
+        }
+
+        private void DoAddItems()
+        {
+            foreach (var item in this.listBoxAvailableRoom.SelectedItems)
+            {
+                MeetingRoom room = item as MeetingRoom;
+
+                if (room != null && !this.MeetingRoomList.Exists(x => x.RoomId == room.RoomId))
+                {
+                    this.MeetingRoomList.Add(room);
+                    this._availableroomList.Remove(room);
+                }
+            }
+
+            this.listBoxSelectedRooms.DataSource = null;
+            this.listBoxAvailableRoom.DataSource = null;
+            this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+            this.listBoxAvailableRoom.DataSource = this._availableroomList;
+
+            if (this.listBoxAvailableRoom.SelectedItems != null)
+                this.listBoxAvailableRoom.SelectedItems.Clear();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -254,6 +259,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             this.LoadRoomList("-2");
             this.SelectAll();
+            this.DoAddItems();
         }
 
         private void SelectAll()
@@ -272,6 +278,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
             this.LoadRoomList("-1");
             this.SelectAll();
+            this.DoAddItems();
         }
 
         private void btnMainRoomSetting_Click(object sender, EventArgs e)
