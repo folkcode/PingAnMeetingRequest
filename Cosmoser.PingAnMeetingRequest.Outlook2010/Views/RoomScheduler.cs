@@ -54,15 +54,25 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                             {
                                 Color c = Color.Blue;
 
-                                switch (room.Status)
+                                //switch (room.Status)
+                                //{
+                                //    case 1:
+                                //    case 2:
+                                //    case 3:
+                                //        c = Color.FromArgb(0xff, 0x79, 0x00);
+                                //        break;
+                                //    case 6:
+                                //        c = Color.FromArgb(0xff, 0xff, 0x00);
+                                //        break;
+                                //}
+
+                                switch (room.ApproveStatus)
                                 {
-                                    case 1:
-                                    case 2:
-                                    case 3:
-                                        c = Color.FromArgb(0xff, 0x79, 0x00);
-                                        break;
-                                    case 6:
+                                    case 0:
                                         c = Color.FromArgb(0xff, 0xff, 0x00);
+                                        break;
+                                    case 1:
+                                        c = Color.FromArgb(0xff, 0x79, 0x00);
                                         break;
                                 }
 

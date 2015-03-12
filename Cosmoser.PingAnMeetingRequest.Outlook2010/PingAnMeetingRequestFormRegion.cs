@@ -268,6 +268,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             this.olkStartDateControl.Enabled = false;
             this.olkStartTimeControl.Enabled = false;
 
+            this.obtliji.Value = true;
             item.End = DateTime.Now.AddMinutes(33);
 
             this.SaveMeetingToAppointment();
@@ -277,7 +278,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             this.olkStartDateControl.Enabled = true;
             this.olkStartTimeControl.Enabled = true;
-
+            this.obtyuyue.Value = true;
             this.SaveMeetingToAppointment();
         }
 
