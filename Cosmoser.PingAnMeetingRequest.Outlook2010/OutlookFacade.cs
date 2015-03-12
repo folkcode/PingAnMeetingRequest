@@ -12,6 +12,7 @@ using Cosmoser.PingAnMeetingRequest.Common.ClientService;
 using System.Threading.Tasks;
 using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 {
@@ -85,7 +86,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             try
             {
                 logger.Info("ThisAddIn_Startup");
-
+                this.DeleteRegistry();
                 this.InitializeSession();
 
                 this._activeExplorer = Globals.ThisAddIn.Application.ActiveExplorer();
@@ -274,6 +275,26 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 name = Application.Session.Accounts[0].DisplayName;
             logger.Info(string.Format("Current time: {0} , current user: {1}", DateTime.Now, name));
         }
+
+        private void DeleteRegistry()
+        {
+            RegistryKey lm = Registry.CurrentUser;
+            RegistryKey software;
+            software = lm.OpenSubKey("Software\\Microsoft\\Office\\Outlook\\Addins\\PingAnMeeting.Outlook2010", false);
+            if (software != null)
+            {
+                software = lm.OpenSubKey("Software\\Microsoft\\Office\\Outlook\\Addins", true);
+            }
+            try
+            {
+                software.DeleteSubKeyTree("PingAnMeeting.Outlook2010");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Delete Subkey Failed", ex);
+            }
+        }
+
 
     }
 }

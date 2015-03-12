@@ -37,7 +37,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
                 newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(Office.MsoControlType.msoControlPopup);
                 if (newMenuBar != null)
                 {
-                    newMenuBar.Caption = "定制会议";
+                    newMenuBar.Caption = "电子会议";
                     newMenuBar.Tag = menuTag;
                     buttonOne = this.CreateMenu(newMenuBar, "预约会议", "booking");
                     buttonOne.Click += new Office._CommandBarButtonEvents_ClickEventHandler(buttonOne_Click);
