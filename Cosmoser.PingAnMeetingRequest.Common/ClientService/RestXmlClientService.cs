@@ -113,7 +113,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             try
             {
                 session.AddMessageId();
-                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><deleteConfer><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId></deleteConfer>", session.MessageId, session.Token, conferId);
+                string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><deleteConfer><messageId>{0}</messageId><token>{1}</token><conferId>{2}</conferId><conf_operate_obj>2</conf_operate_obj></deleteConfer>", session.MessageId, session.Token, conferId);
                 logger.Debug(string.Format("DeleteMeeting, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "deleteConfer", xmlData);
                 logger.Debug(string.Format("DeleteMeeting response, xmldata: {0}", response.OuterXml));
@@ -547,21 +547,34 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                        foreach (var item in root.SelectSingleNode("roomList").SelectNodes("roomInfo"))
                        {
                            var node = item as XmlNode;
-                           detail.Rooms.Add(new MeetingRoom()
-                           {
-                               RoomId = node.SelectSingleNode("roomId").InnerText,
-                               Name = node.SelectSingleNode("roomName").InnerText,
-                               Address = node.SelectSingleNode("address").InnerText
+                           string termType = node.SelectSingleNode("termType").InnerText;
 
-                           });
-
-                           if (node.SelectSingleNode("roomType").InnerText == "1")
+                           if (termType == "1")
                            {
-                               detail.MainRoom = new MeetingRoom()
+                               detail.Rooms.Add(new MeetingRoom()
                                {
                                    RoomId = node.SelectSingleNode("roomId").InnerText,
-                                   Name = node.SelectSingleNode("roomName").InnerText
-                               };
+                                   Name = node.SelectSingleNode("roomName").InnerText,
+                                   Address = node.SelectSingleNode("address").InnerText
+
+                               });
+
+                               if (node.SelectSingleNode("roomType").InnerText == "1")
+                               {
+                                   detail.MainRoom = new MeetingRoom()
+                                   {
+                                       RoomId = node.SelectSingleNode("roomId").InnerText,
+                                       Name = node.SelectSingleNode("roomName").InnerText
+                                   };
+                               }
+                           }
+                           else
+                           {
+                               detail.MobileTermList.Add(new MobileTerm()
+                               {
+                                   RoomId = node.SelectSingleNode("roomId").InnerText,
+                                   RoomName = node.SelectSingleNode("roomName").InnerText
+                               });
                            }
                        }
                    }
@@ -709,6 +722,11 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                         XmlNode  statusNode = node.SelectSingleNode("status");
                         if(startNode != null)
                         meeting.Status = int.Parse(node.SelectSingleNode("status").InnerText);
+
+                        XmlNode approveStatus = node.SelectSingleNode("approveStatus");
+                        if (approveStatus != null)
+                            meeting.ApproveStatus = int.Parse(node.SelectSingleNode("approveStatus").InnerText);
+
                         schedulerList.Add(meeting);
                     }
 

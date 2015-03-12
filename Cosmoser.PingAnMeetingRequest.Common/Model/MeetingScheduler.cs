@@ -30,5 +30,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
 
         public string ConferId { get; set; }
 
+        /// <summary>
+        /// 0  待审批， 1 审批通过
+        /// </summary>
+        public int ApproveStatus { get; set; }
+
     }
 }

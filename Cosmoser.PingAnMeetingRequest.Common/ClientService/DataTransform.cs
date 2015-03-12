@@ -61,7 +61,9 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             this.AddChildrenNode(xmlDoc, root, "everyFewMonths", ((int)detail.EveryFewMonths).ToString());
             this.AddChildrenNode(xmlDoc, root, "theFirstFew", ((int)detail.TheFirstFew).ToString());
             this.AddChildrenNode(xmlDoc, root, "week", detail.Week.ToString());
-            
+
+            //----会议操作对象，1：web端，2：outlook客户端，3：快乐平安客户端---
+            this.AddChildrenNode(xmlDoc, root, "conf_operate_obj", "2");
             return xmlDoc.InnerXml;
         }
 
@@ -95,6 +97,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
             this.AddChildrenNode(xmlDoc, root, "conferMideaType", ((int)detail.ConfMideaType).ToString());
             this.AddChildrenNode(xmlDoc, root, "operateType", operationType);
 
+            //----会议操作对象，1：web端，2：outlook客户端，3：快乐平安客户端---
+            this.AddChildrenNode(xmlDoc, root, "conf_operate_obj", "2");
 
             return xmlDoc.InnerXml;
         }
