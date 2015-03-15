@@ -568,14 +568,14 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                    };
                                }
                            }
-                           else
-                           {
-                               detail.MobileTermList.Add(new MobileTerm()
-                               {
-                                   RoomId = node.SelectSingleNode("roomId").InnerText,
-                                   RoomName = node.SelectSingleNode("roomName").InnerText
-                               });
-                           }
+                           //else
+                           //{
+                           //    detail.MobileTermList.Add(new MobileTerm()
+                           //    {
+                           //        RoomId = node.SelectSingleNode("roomId").InnerText,
+                           //        RoomName = node.SelectSingleNode("roomName").InnerText
+                           //    });
+                           //}
                        }
                    }
 
@@ -697,37 +697,54 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     foreach (var item in root.SelectSingleNode("roomList").SelectNodes("roomInfo"))
                     {
                         var node = item as XmlNode;
-                        var meeting = new MeetingScheduler();
-                        meeting.RoomId = node.SelectSingleNode("roomId").InnerText;
-                        meeting.RoomName = node.SelectSingleNode("roomName").InnerText;
-                        meeting.IfTerminal = int.Parse(node.SelectSingleNode("IfTerminal").InnerText);
-                        XmlNode startNode = node.SelectSingleNode("startTime");
-                        if (startNode != null)
+
+                        string roomId = node.SelectSingleNode("roomId").InnerText;
+                        string roomName = node.SelectSingleNode("roomName").InnerText;
+                        string seriesName = node.SelectSingleNode("seriesName").InnerText;
+                        int IfTerminal = int.Parse(node.SelectSingleNode("IfTerminal").InnerText);
+                        string property = node.SelectSingleNode("property").InnerText;                     
+                        string address = node.SelectSingleNode("seriesName").InnerText;
+
+                        var conferIdNodes = node.SelectNodes("conferId");
+                        var startTimeNodes = node.SelectNodes("startTime");
+                        var endTimeNodes = node.SelectNodes("endTime");
+                        var approveStatusNodes = node.SelectNodes("approveStatus");
+                        var statusNodes = node.SelectNodes("status");
+
+                        if (conferIdNodes != null && conferIdNodes.Count > 0)
                         {
-                            meeting.StartTime = DateTime.Parse(node.SelectSingleNode("startTime").InnerText);
+                            for (int i = 0; i < conferIdNodes.Count; i++)
+                            {
+                                var meeting = new MeetingScheduler();
+                                meeting.RoomId = roomId;
+                                meeting.RoomName = roomName;
+                                meeting.IfTerminal = IfTerminal;
+                                meeting.Property = property;
+                                meeting.Address = address;
+                                meeting.SeriesName = seriesName;
+
+                                meeting.ConferId = conferIdNodes[i].InnerText;
+                                meeting.StartTime = DateTime.Parse(startTimeNodes[i].InnerText);
+                                meeting.EndTime = DateTime.Parse(endTimeNodes[i].InnerText);
+                                meeting.ApproveStatus = int.Parse(approveStatusNodes[i].InnerText);
+                                meeting.Status = int.Parse(statusNodes[i].InnerText);
+
+                                schedulerList.Add(meeting);
+                            }
                         }
                         else
                         {
+                            var meeting = new MeetingScheduler();
+                            meeting.RoomId = roomId;
+                            meeting.RoomName = roomName;
+                            meeting.IfTerminal = IfTerminal;
+                            meeting.Property = property;
+                            meeting.Address = address;
+                            meeting.SeriesName = seriesName;
                             meeting.StartTime = DateTime.MinValue;
-                        }
-                        XmlNode endNode = node.SelectSingleNode("endTime");
-                        if(endNode != null)
-                        meeting.EndTime = DateTime.Parse(node.SelectSingleNode("endTime").InnerText);
-                        XmlNode conferIdNode = node.SelectSingleNode("conferId");
-                        if(conferIdNode != null)
-                        meeting.ConferId = node.SelectSingleNode("conferId").InnerText;
-                        meeting.Property = node.SelectSingleNode("property").InnerText;
-                        meeting.Address = node.SelectSingleNode("address").InnerText;
-                        meeting.SeriesName = node.SelectSingleNode("seriesName").InnerText;
-                        XmlNode  statusNode = node.SelectSingleNode("status");
-                        if(startNode != null)
-                        meeting.Status = int.Parse(node.SelectSingleNode("status").InnerText);
 
-                        XmlNode approveStatus = node.SelectSingleNode("approveStatus");
-                        if (approveStatus != null)
-                            meeting.ApproveStatus = int.Parse(node.SelectSingleNode("approveStatus").InnerText);
-
-                        schedulerList.Add(meeting);
+                            schedulerList.Add(meeting);
+                        }                
                     }
 
                     return true;
