@@ -44,6 +44,10 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnMainRoomSetting = new System.Windows.Forms.Button();
             this.lblMainRoom = new System.Windows.Forms.Label();
+            this.txtAvailableSearch = new System.Windows.Forms.TextBox();
+            this.txtSelectSearch = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // listBoxMeetingRoom
@@ -97,7 +101,7 @@
             // 
             this.listBoxAvailableRoom.FormattingEnabled = true;
             this.listBoxAvailableRoom.ItemHeight = 12;
-            this.listBoxAvailableRoom.Location = new System.Drawing.Point(53, 308);
+            this.listBoxAvailableRoom.Location = new System.Drawing.Point(53, 335);
             this.listBoxAvailableRoom.Name = "listBoxAvailableRoom";
             this.listBoxAvailableRoom.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxAvailableRoom.Size = new System.Drawing.Size(219, 88);
@@ -116,7 +120,7 @@
             // 
             this.listBoxSelectedRooms.FormattingEnabled = true;
             this.listBoxSelectedRooms.ItemHeight = 12;
-            this.listBoxSelectedRooms.Location = new System.Drawing.Point(468, 60);
+            this.listBoxSelectedRooms.Location = new System.Drawing.Point(470, 89);
             this.listBoxSelectedRooms.Name = "listBoxSelectedRooms";
             this.listBoxSelectedRooms.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxSelectedRooms.Size = new System.Drawing.Size(219, 268);
@@ -164,7 +168,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(236, 429);
+            this.btnOk.Location = new System.Drawing.Point(283, 429);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 12;
@@ -174,7 +178,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(350, 429);
+            this.btnCancel.Location = new System.Drawing.Point(382, 429);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 13;
@@ -184,7 +188,7 @@
             // 
             // btnMainRoomSetting
             // 
-            this.btnMainRoomSetting.Location = new System.Drawing.Point(511, 361);
+            this.btnMainRoomSetting.Location = new System.Drawing.Point(518, 379);
             this.btnMainRoomSetting.Name = "btnMainRoomSetting";
             this.btnMainRoomSetting.Size = new System.Drawing.Size(118, 23);
             this.btnMainRoomSetting.TabIndex = 14;
@@ -201,11 +205,49 @@
             this.lblMainRoom.Size = new System.Drawing.Size(0, 12);
             this.lblMainRoom.TabIndex = 15;
             // 
+            // txtAvailableSearch
+            // 
+            this.txtAvailableSearch.Location = new System.Drawing.Point(98, 305);
+            this.txtAvailableSearch.Name = "txtAvailableSearch";
+            this.txtAvailableSearch.Size = new System.Drawing.Size(172, 21);
+            this.txtAvailableSearch.TabIndex = 16;
+            this.txtAvailableSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtAvailableSearch_KeyDown);
+            // 
+            // txtSelectSearch
+            // 
+            this.txtSelectSearch.Location = new System.Drawing.Point(515, 60);
+            this.txtSelectSearch.Name = "txtSelectSearch";
+            this.txtSelectSearch.Size = new System.Drawing.Size(174, 21);
+            this.txtSelectSearch.TabIndex = 17;
+            this.txtSelectSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSelectSearch_KeyDown);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(51, 308);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(41, 12);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "搜索：";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(468, 63);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(41, 12);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "搜索：";
+            // 
             // MeetingRoomSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(741, 464);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtSelectSearch);
+            this.Controls.Add(this.txtAvailableSearch);
             this.Controls.Add(this.lblMainRoom);
             this.Controls.Add(this.btnMainRoomSetting);
             this.Controls.Add(this.btnCancel);
@@ -250,5 +292,9 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnMainRoomSetting;
         private System.Windows.Forms.Label lblMainRoom;
+        private System.Windows.Forms.TextBox txtAvailableSearch;
+        private System.Windows.Forms.TextBox txtSelectSearch;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

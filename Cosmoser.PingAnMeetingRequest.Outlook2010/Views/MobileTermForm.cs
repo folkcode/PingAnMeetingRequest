@@ -121,5 +121,41 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
+
+        private void txtAvailabelSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.listBoxAvailable.SelectedItems.Clear();
+                string str = this.txtAvailabelSearch.Text.Trim();
+
+                if (!string.IsNullOrEmpty(str))
+                {
+                    for (int i = 0; i < this.listBoxAvailable.Items.Count; i++)
+                    {
+                        if (this.listBoxAvailable.Items[i].ToString().Contains(str))
+                            this.listBoxAvailable.SetSelected(i, true);
+                    }
+                }
+            }
+        }
+
+        private void txtSelectedSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.listBoxSelected.SelectedItems.Clear();
+                string str = this.txtSelectedSearch.Text.Trim();
+
+                if (!string.IsNullOrEmpty(str))
+                {
+                    for (int i = 0; i < this.listBoxSelected.Items.Count; i++)
+                    {
+                        if (this.listBoxSelected.Items[i].ToString().Contains(str))
+                            this.listBoxSelected.SetSelected(i, true);
+                    }
+                }
+            }
+        }
     }
 }

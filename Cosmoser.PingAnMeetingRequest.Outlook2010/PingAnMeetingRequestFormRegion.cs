@@ -454,8 +454,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 if (MeetingDetail.ConfType == ConferenceType.Immediate)
                 {
                     this.obtliji.Value = true;
-                    //this.obtliji.Enabled = false;
-                    //this.obtbendi.Enabled = false;
+
+                    this.olkStartDateControl.Enabled = false;
+                    this.olkStartTimeControl.Enabled = false;
                 }
                 else if (MeetingDetail.ConfType == ConferenceType.Furture)
                 {

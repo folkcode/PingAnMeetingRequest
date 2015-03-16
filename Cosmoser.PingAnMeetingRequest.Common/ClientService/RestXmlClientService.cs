@@ -549,7 +549,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                            var node = item as XmlNode;
                            string termType = node.SelectSingleNode("termType").InnerText;
 
-                           if (termType == "1")
+                           if (termType != "1")
                            {
                                detail.Rooms.Add(new MeetingRoom()
                                {

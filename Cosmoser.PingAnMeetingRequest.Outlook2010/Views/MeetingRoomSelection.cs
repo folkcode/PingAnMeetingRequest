@@ -313,5 +313,41 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
+
+        private void txtAvailableSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.listBoxAvailableRoom.SelectedItems.Clear();
+                string str = this.txtAvailableSearch.Text.Trim();
+
+                if (!string.IsNullOrEmpty(str))
+                {
+                    for (int i = 0; i < this.listBoxAvailableRoom.Items.Count; i++)
+                    {
+                        if (this.listBoxAvailableRoom.Items[i].ToString().Contains(str))
+                            this.listBoxAvailableRoom.SetSelected(i, true);
+                    }
+                }
+            }
+        }
+
+        private void txtSelectSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.listBoxSelectedRooms.SelectedItems.Clear();
+                string str = this.txtSelectSearch.Text.Trim();
+
+                if (!string.IsNullOrEmpty(str))
+                {
+                    for (int i = 0; i < this.listBoxSelectedRooms.Items.Count; i++)
+                    {
+                        if (this.listBoxSelectedRooms.Items[i].ToString().Contains(str))
+                            this.listBoxSelectedRooms.SetSelected(i, true);
+                    }
+                }
+            }
+        }
     }
 }

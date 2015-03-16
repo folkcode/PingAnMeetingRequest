@@ -36,14 +36,19 @@
             this.lblSelected = new System.Windows.Forms.Label();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
+            this.txtAvailabelSearch = new System.Windows.Forms.TextBox();
+            this.txtSelectedSearch = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // listBoxAvailable
             // 
             this.listBoxAvailable.FormattingEnabled = true;
             this.listBoxAvailable.ItemHeight = 12;
-            this.listBoxAvailable.Location = new System.Drawing.Point(12, 46);
+            this.listBoxAvailable.Location = new System.Drawing.Point(12, 66);
             this.listBoxAvailable.Name = "listBoxAvailable";
+            this.listBoxAvailable.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxAvailable.Size = new System.Drawing.Size(163, 256);
             this.listBoxAvailable.TabIndex = 0;
             // 
@@ -51,14 +56,15 @@
             // 
             this.listBoxSelected.FormattingEnabled = true;
             this.listBoxSelected.ItemHeight = 12;
-            this.listBoxSelected.Location = new System.Drawing.Point(297, 46);
+            this.listBoxSelected.Location = new System.Drawing.Point(296, 66);
             this.listBoxSelected.Name = "listBoxSelected";
+            this.listBoxSelected.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxSelected.Size = new System.Drawing.Size(167, 256);
             this.listBoxSelected.TabIndex = 1;
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(197, 93);
+            this.btnAdd.Location = new System.Drawing.Point(197, 120);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 23);
             this.btnAdd.TabIndex = 2;
@@ -68,7 +74,7 @@
             // 
             // btnRemove
             // 
-            this.btnRemove.Location = new System.Drawing.Point(197, 189);
+            this.btnRemove.Location = new System.Drawing.Point(197, 197);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(75, 23);
             this.btnRemove.TabIndex = 3;
@@ -79,7 +85,7 @@
             // lblAvailable
             // 
             this.lblAvailable.AutoSize = true;
-            this.lblAvailable.Location = new System.Drawing.Point(25, 22);
+            this.lblAvailable.Location = new System.Drawing.Point(12, 9);
             this.lblAvailable.Name = "lblAvailable";
             this.lblAvailable.Size = new System.Drawing.Size(119, 12);
             this.lblAvailable.TabIndex = 4;
@@ -88,7 +94,7 @@
             // lblSelected
             // 
             this.lblSelected.AutoSize = true;
-            this.lblSelected.Location = new System.Drawing.Point(309, 22);
+            this.lblSelected.Location = new System.Drawing.Point(294, 9);
             this.lblSelected.Name = "lblSelected";
             this.lblSelected.Size = new System.Drawing.Size(119, 12);
             this.lblSelected.TabIndex = 5;
@@ -96,7 +102,7 @@
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(131, 330);
+            this.btnSubmit.Location = new System.Drawing.Point(130, 344);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 6;
@@ -106,7 +112,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(251, 330);
+            this.btnClose.Location = new System.Drawing.Point(250, 344);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 7;
@@ -114,11 +120,49 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // txtAvailabelSearch
+            // 
+            this.txtAvailabelSearch.Location = new System.Drawing.Point(54, 35);
+            this.txtAvailabelSearch.Name = "txtAvailabelSearch";
+            this.txtAvailabelSearch.Size = new System.Drawing.Size(121, 21);
+            this.txtAvailabelSearch.TabIndex = 8;
+            this.txtAvailabelSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtAvailabelSearch_KeyDown);
+            // 
+            // txtSelectedSearch
+            // 
+            this.txtSelectedSearch.Location = new System.Drawing.Point(339, 35);
+            this.txtSelectedSearch.Name = "txtSelectedSearch";
+            this.txtSelectedSearch.Size = new System.Drawing.Size(124, 21);
+            this.txtSelectedSearch.TabIndex = 9;
+            this.txtSelectedSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSelectedSearch_KeyDown);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 38);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(41, 12);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "搜索：";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(292, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "搜索：";
+            // 
             // MobileTermForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(493, 379);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtSelectedSearch);
+            this.Controls.Add(this.txtAvailabelSearch);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnSubmit);
             this.Controls.Add(this.lblSelected);
@@ -147,5 +191,9 @@
         private System.Windows.Forms.Label lblSelected;
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.TextBox txtAvailabelSearch;
+        private System.Windows.Forms.TextBox txtSelectedSearch;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label1;
     }
 }
