@@ -32,6 +32,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
 
                 string result = reader.ReadToEnd();
 
+                result = result.Replace("<confMemo>", "<confMemo><![CDATA[").Replace("</confMemo>", "]]></confMemo>");
                 doc.LoadXml(result);
             }
 
