@@ -72,23 +72,32 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 return;
             }
 
-            MobileTerm term = listBoxAvailable.SelectedItem as MobileTerm;
-
-            this._allTermList.Remove(term);
-
-            if (!this.MobileTermList.Contains(term))
-            {
-                this.MobileTermList.Add(term);
-                this._allTermList.Remove(term);
-            }
-
-            listBoxAvailable.DataSource = null;
-            listBoxSelected.DataSource = null;
-            listBoxAvailable.DataSource = this._allTermList;
-            listBoxSelected.DataSource = this.MobileTermList;
+            this.DoAddItems();
 
             this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
             this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
+        }
+
+        private void DoAddItems()
+        {
+            foreach (var item in this.listBoxAvailable.SelectedItems)
+            {
+                MobileTerm room = item as MobileTerm;
+
+                if (room != null && !this.MobileTermList.Exists(x => x.RoomId == room.RoomId))
+                {
+                    this.MobileTermList.Add(room);
+                    this._allTermList.Remove(room);
+                }
+            }
+
+            this.listBoxSelected.DataSource = null;
+            this.listBoxAvailable.DataSource = null;
+            this.listBoxSelected.DataSource = this.MobileTermList;
+            this.listBoxAvailable.DataSource = this._allTermList;
+
+            if (this.listBoxAvailable.SelectedItems != null)
+                this.listBoxAvailable.SelectedItems.Clear();
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -99,12 +108,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 return;
             }
 
-            MobileTerm term = listBoxSelected.SelectedItem as MobileTerm;
-
-            this.MobileTermList.Remove(term);
-            if (!this._allTermList.Contains(term))
+            foreach (var item in listBoxSelected.SelectedItems)
             {
-                this._allTermList.Add(term);
+                MobileTerm term = item as MobileTerm;
+                this.MobileTermList.Remove(term);
+                if (!this._allTermList.Contains(term))
+                {
+                    this._allTermList.Add(term);
+                }
             }
 
             listBoxAvailable.DataSource = null;

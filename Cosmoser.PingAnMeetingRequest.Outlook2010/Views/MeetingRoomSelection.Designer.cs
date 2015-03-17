@@ -120,7 +120,7 @@
             // 
             this.listBoxSelectedRooms.FormattingEnabled = true;
             this.listBoxSelectedRooms.ItemHeight = 12;
-            this.listBoxSelectedRooms.Location = new System.Drawing.Point(470, 89);
+            this.listBoxSelectedRooms.Location = new System.Drawing.Point(470, 87);
             this.listBoxSelectedRooms.Name = "listBoxSelectedRooms";
             this.listBoxSelectedRooms.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxSelectedRooms.Size = new System.Drawing.Size(219, 268);
@@ -188,7 +188,7 @@
             // 
             // btnMainRoomSetting
             // 
-            this.btnMainRoomSetting.Location = new System.Drawing.Point(518, 379);
+            this.btnMainRoomSetting.Location = new System.Drawing.Point(515, 400);
             this.btnMainRoomSetting.Name = "btnMainRoomSetting";
             this.btnMainRoomSetting.Size = new System.Drawing.Size(118, 23);
             this.btnMainRoomSetting.TabIndex = 14;
@@ -200,7 +200,7 @@
             // 
             this.lblMainRoom.AutoSize = true;
             this.lblMainRoom.ForeColor = System.Drawing.Color.Red;
-            this.lblMainRoom.Location = new System.Drawing.Point(468, 335);
+            this.lblMainRoom.Location = new System.Drawing.Point(472, 372);
             this.lblMainRoom.Name = "lblMainRoom";
             this.lblMainRoom.Size = new System.Drawing.Size(0, 12);
             this.lblMainRoom.TabIndex = 15;
