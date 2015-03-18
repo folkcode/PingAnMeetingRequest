@@ -323,7 +323,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
                 if (!string.IsNullOrEmpty(str))
                 {
-                    for (int i = 0; i < this.listBoxAvailableRoom.Items.Count; i++)
+                    int count = this.listBoxAvailableRoom.Items.Count;
+                    for (int i = count - 1; i >= 0; i--)
                     {
                         if (this.listBoxAvailableRoom.Items[i].ToString().Contains(str))
                             this.listBoxAvailableRoom.SetSelected(i, true);

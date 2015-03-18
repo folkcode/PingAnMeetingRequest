@@ -104,7 +104,7 @@
             this.listBoxAvailableRoom.Location = new System.Drawing.Point(53, 335);
             this.listBoxAvailableRoom.Name = "listBoxAvailableRoom";
             this.listBoxAvailableRoom.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxAvailableRoom.Size = new System.Drawing.Size(219, 88);
+            this.listBoxAvailableRoom.Size = new System.Drawing.Size(219, 124);
             this.listBoxAvailableRoom.TabIndex = 4;
             // 
             // label4
@@ -168,7 +168,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(283, 429);
+            this.btnOk.Location = new System.Drawing.Point(283, 468);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 12;
@@ -178,7 +178,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(382, 429);
+            this.btnCancel.Location = new System.Drawing.Point(388, 468);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 13;
@@ -243,7 +243,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(741, 464);
+            this.ClientSize = new System.Drawing.Size(741, 503);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtSelectSearch);
