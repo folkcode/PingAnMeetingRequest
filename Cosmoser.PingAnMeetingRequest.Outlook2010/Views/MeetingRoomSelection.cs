@@ -257,9 +257,43 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             //select2all = true;
             //this.listBoxLevel.SelectedIndex = 1;
 
-            this.LoadRoomList("-2");
-            this.SelectAll();
-            this.DoAddItems();
+            //this.LoadRoomList("-2");
+
+            this.SelectAllForOneAndSecondLevel("-2");
+
+            //this.SelectAll();
+            //this.DoAddItems();
+        }
+
+        private void SelectAllForOneAndSecondLevel(string levelId)
+        {
+            MeetingRoomListQuery query = new MeetingRoomListQuery();
+            query.LevelId = levelId;// (this.listBoxLevel.SelectedItem as ListViewItem).Tag.ToString();
+            query.SeriesId = (this.listBoxMeetingRoom.SelectedItem as MeetingSeries).Id;
+            query.ConfType = this.ConfType;
+            query.StartTime = this.StarTime;
+            query.EndTime = this.EndTime;
+
+            //this._availableroomList = null;
+
+            List<MeetingRoom> queryRoomList = null;
+
+            if (ClientServiceFactory.Create().TryGetMeetingRoomList(query, OutlookFacade.Instance().Session, out queryRoomList))
+            {
+                List<MeetingRoom> removedRooms = new List<MeetingRoom>();
+                foreach (var item in queryRoomList)
+                {
+                    if (!this.MeetingRoomList.Exists(x => x.RoomId == item.RoomId))
+                        this.MeetingRoomList.Add(item);
+                }
+
+                this.listBoxSelectedRooms.DataSource = null;
+                this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
+            }
+            else
+            {
+                MessageBox.Show("获取会议室信息失败，请重试！");
+            }
         }
 
         private void SelectAll()
@@ -275,10 +309,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             //select1all = true;
             //this.listBoxLevel.SelectedIndex = 0;
+            this.SelectAllForOneAndSecondLevel("-1");
 
-            this.LoadRoomList("-1");
-            this.SelectAll();
-            this.DoAddItems();
+            //this.LoadRoomList("-1");
+            //this.SelectAll();
+            //this.DoAddItems();
         }
 
         private void btnMainRoomSetting_Click(object sender, EventArgs e)
