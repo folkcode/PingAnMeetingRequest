@@ -41,6 +41,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     }
                     session.IfBookMobileTerm = response.SelectSingleNode("login").SelectSingleNode("ifBookMobileTerm").InnerText == "1" ? true : false;
                     session.IfBookIPConf = response.SelectSingleNode("login").SelectSingleNode("ifBookIPConf").InnerText == "1" ? true : false;
+                    session.VideoConfPreMinutes = int.Parse(response.SelectSingleNode("login").SelectSingleNode("videoConfPreMinutes").InnerText);
                     session.IsActive = true;
                     //每次登陆都需要重设messageId
                     session.ResetMessageId();

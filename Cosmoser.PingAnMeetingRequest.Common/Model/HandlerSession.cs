@@ -60,6 +60,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
 
         public string Address { get; set; }
 
+        public int VideoConfPreMinutes { get; set; }
+
         public HandlerSession()
         {
             ConfTypeList = new List<ConferenceType>();

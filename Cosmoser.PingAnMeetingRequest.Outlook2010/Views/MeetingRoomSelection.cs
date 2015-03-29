@@ -285,9 +285,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 {
                     if (!this.MeetingRoomList.Exists(x => x.RoomId == item.RoomId))
                         this.MeetingRoomList.Add(item);
+
+                    var room = this._availableroomList.SingleOrDefault(x => x.RoomId == item.RoomId);
+                    if (room != null)
+                        this._availableroomList.Remove(room);
                 }
 
+                this.listBoxAvailableRoom.DataSource = null;
                 this.listBoxSelectedRooms.DataSource = null;
+                this.listBoxAvailableRoom.DataSource = this._availableroomList;
                 this.listBoxSelectedRooms.DataSource = this.MeetingRoomList;
             }
             else

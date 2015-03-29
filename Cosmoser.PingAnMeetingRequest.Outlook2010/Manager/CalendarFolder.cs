@@ -311,7 +311,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                         //Create a holiday appointmet and set properties
                         Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
-
+                        //
+                        if (apptItem.Start.Date == DateTime.Today)
+                            apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
                         //display the appointment
                         Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
                         inspect.Display(false);
@@ -330,7 +332,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                     //Create a holiday appointmet and set properties
                     Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
-
+                    if (apptItem.Start.Date == DateTime.Today)
+                        apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
                     //display the appointment
                     Outlook.Inspector inspect = Globals.ThisAddIn.Application.Inspectors.Add(apptItem);
                     inspect.Display(false);
