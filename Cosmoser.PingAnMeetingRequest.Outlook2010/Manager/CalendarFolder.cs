@@ -315,9 +315,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         if (apptItem.Start.Date == DateTime.Today)
                         {
                             if (OutlookFacade.Instance().Session.UserRole.IsSysManager)
-                                apptItem.Start = DateTime.Now.AddMinutes(3);
+                                apptItem.Start = DateTime.Now;
                             else
-                                apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
+                                apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes);
                         }
                         else
                         {
@@ -345,9 +345,9 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                     if (apptItem.Start.Date == DateTime.Today)
                     {
                         if (OutlookFacade.Instance().Session.UserRole.IsSysManager)
-                            apptItem.Start = DateTime.Now.AddMinutes(3);
+                            apptItem.Start = DateTime.Now;
                         else
-                            apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
+                            apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes);
                     }
                     else
                     {
