@@ -42,6 +42,10 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     session.IfBookMobileTerm = response.SelectSingleNode("login").SelectSingleNode("ifBookMobileTerm").InnerText == "1" ? true : false;
                     session.IfBookIPConf = response.SelectSingleNode("login").SelectSingleNode("ifBookIPConf").InnerText == "1" ? true : false;
                     session.VideoConfPreMinutes = int.Parse(response.SelectSingleNode("login").SelectSingleNode("videoConfPreMinutes").InnerText);
+                    session.UserRole.IsSysManager = response.SelectSingleNode("login").SelectSingleNode("userRoleList").SelectSingleNode("sysManager").InnerText == "1" ? true : false;
+                    session.UserRole.IsSysManager1 = response.SelectSingleNode("login").SelectSingleNode("userRoleList").SelectSingleNode("sysManager1").InnerText == "1" ? true : false;
+                    session.UserRole.IsBoardroomAdmin = response.SelectSingleNode("login").SelectSingleNode("userRoleList").SelectSingleNode("boardroomAdmin").InnerText == "1" ? true : false;
+                    session.UserRole.IsApproveAdmin = response.SelectSingleNode("login").SelectSingleNode("userRoleList").SelectSingleNode("approveAdmin").InnerText == "1" ? true : false;
                     session.IsActive = true;
                     //每次登陆都需要重设messageId
                     session.ResetMessageId();

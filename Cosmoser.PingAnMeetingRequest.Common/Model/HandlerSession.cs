@@ -62,9 +62,11 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Model
 
         public int VideoConfPreMinutes { get; set; }
 
+        public UserRole UserRole { get; private set; }
         public HandlerSession()
         {
             ConfTypeList = new List<ConferenceType>();
+            UserRole = new UserRole();
         }
 
     }
