@@ -260,7 +260,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                     {
                         var node = item as XmlNode;
                         var room = new MeetingRoom();
-                        room.RoomId = node.SelectSingleNode("roomId").InnerText;
+                        room.RoomId = node.SelectSingleNode("roomId").InnerText.Split(",".ToArray())[0];
                         room.Name = node.SelectSingleNode("roomName").InnerText;
 
                         roomList.Add(room);

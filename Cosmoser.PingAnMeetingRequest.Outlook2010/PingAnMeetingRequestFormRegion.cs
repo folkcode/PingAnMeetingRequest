@@ -195,12 +195,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkStartDateControl_Change()
         {
-            if (item.Start < DateTime.Now)
-            {
-                MessageBox.Show("你不能选择过去的时间作为开始时间！");
-                item.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
-                return;
-            }
+            //if (item.Start < DateTime.Now)
+            //{
+            //    MessageBox.Show("你不能选择过去的时间作为开始时间！");
+            //    item.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
+            //    return;
+            //}
             this.SaveMeetingToAppointment();
         }
 
@@ -212,12 +212,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkStartTimeControl_Change()
         {
-            if (item.Start < DateTime.Now)
-            {
-                MessageBox.Show("你不能选择过去的时间作为开始时间！");
-                item.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
-                return;
-            }
+            //if (item.Start < DateTime.Now)
+            //{
+            //    MessageBox.Show("你不能选择过去的时间作为开始时间！");
+            //    item.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes + 3);
+            //    return;
+            //}
             //item.Start = this.olkStartTimeControl.Time;
             //this.SaveMeetingToAppointment();
         }
@@ -554,7 +554,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
             view.ConfType = MeetingDetail.ConfMideaType;
             view.StarTime = item.Start; //MeetingDetail.StartTime;
-            view.EndTime = item.Start; //MeetingDetail.EndTime;
+            view.EndTime = item.End; //MeetingDetail.EndTime;
 
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {

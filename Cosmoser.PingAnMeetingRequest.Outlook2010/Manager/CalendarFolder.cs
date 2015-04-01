@@ -314,10 +314,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         //
                         if (apptItem.Start.Date == DateTime.Today)
                         {
-                            if (OutlookFacade.Instance().Session.UserRole.IsSysManager)
-                                apptItem.Start = DateTime.Now;
+                            int offset = DateTime.Now.Minute % 10;
+                            if (offset > 5)
+                                offset = 10 - offset;
                             else
-                                apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes);
+                                offset = 5 - offset;
+                            DateTime now = DateTime.Now.AddMinutes(offset);
+                            if (OutlookFacade.Instance().Session.UserRole.IsSysManager)
+                                apptItem.Start = now;
+                            else
+                                apptItem.Start = now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes);
                         }
                         else
                         {
@@ -344,10 +350,16 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                     Outlook.AppointmentItem apptItem = OutlookFacade.Instance().CalendarFolder.MAPIFolder.Items.Add("IPM.Appointment.PingAnMeetingRequest");
                     if (apptItem.Start.Date == DateTime.Today)
                     {
-                        if (OutlookFacade.Instance().Session.UserRole.IsSysManager)
-                            apptItem.Start = DateTime.Now;
+                        int offset = DateTime.Now.Minute % 10;
+                        if (offset > 5)
+                            offset = 10 - offset;
                         else
-                            apptItem.Start = DateTime.Now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes);
+                            offset = 5 - offset;
+                        DateTime now = DateTime.Now.AddMinutes(offset);
+                        if (OutlookFacade.Instance().Session.UserRole.IsSysManager)
+                            apptItem.Start = now;
+                        else
+                            apptItem.Start = now.AddMinutes(OutlookFacade.Instance().Session.VideoConfPreMinutes);
                     }
                     else
                     {
