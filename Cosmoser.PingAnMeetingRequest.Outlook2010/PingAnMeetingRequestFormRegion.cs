@@ -190,6 +190,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkEndDateControl_Change()
         {
+            if (this.olkEndTimeControl.Time < this.olkStartTimeControl.Time || this.olkEndDateControl.Date < this.olkStartDateControl.Date)
+            {
+                MessageBox.Show("会议结束时间不能早于开始时间！");
+                this.olkEndDateControl.Date = this.olkStartDateControl.Date;
+                //this.olkEndTimeControl.Time = this.olkStartTimeControl.Time.AddMinutes(30);
+                return;
+            }
+
             this.SaveMeetingToAppointment();
         }
 
@@ -206,7 +214,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkEndTimeControl_Change()
         {
-            //item.End = this.olkEndTimeControl.Time;
+            if (this.olkEndTimeControl.Time < this.olkStartTimeControl.Time)
+            {
+                MessageBox.Show("会议结束时间不能早于开始时间！");
+                this.olkEndTimeControl.Time = this.olkStartTimeControl.Time.AddMinutes(30);
+            }
             //this.SaveMeetingToAppointment();
         }
 

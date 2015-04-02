@@ -137,6 +137,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                 if (meeting != null)
                 {
+                    if(meeting.EndTime < meeting.StartTime)
+                        sb.AppendLine("会议结束时间不能早于开始时间！");
                     if (meeting.Rooms == null || meeting.Rooms.Count == 0)
                         sb.AppendLine("请至少选择一个会议室！");
 
