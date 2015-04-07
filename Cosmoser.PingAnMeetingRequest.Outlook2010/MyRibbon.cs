@@ -254,7 +254,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 if (this.MeetingDetail != null)
                 {
                     this.MeetingDetail.Memo = item.Body != null ? item.Body.Trim() : string.Empty;
-                    this.MeetingDetail.StartTime = item.Start;
+                    this.MeetingDetail.StartTime = item.Start;                    
                     this.MeetingDetail.EndTime = item.End;
                 }
                 if (this._apptMgr.TryValidateApppointmentUIInput(this.MeetingDetail, out message))
@@ -264,7 +264,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     {
                         //set comment
                         //this.MeetingDetail.Memo = item.Body;
-                        this.MeetingDetail.StartTime = item.Start;
+                        if (this.MeetingDetail.ConfType == ConferenceType.Immediate)
+                            this.MeetingDetail.StartTime = DateTime.Now;
                         this.MeetingDetail.EndTime = item.End;
 
                         string error;

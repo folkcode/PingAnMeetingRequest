@@ -190,7 +190,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkEndDateControl_Change()
         {
-            if (this.olkEndTimeControl.Time < this.olkStartTimeControl.Time || this.olkEndDateControl.Date < this.olkStartDateControl.Date)
+            if (!isLijiAction && (this.olkEndDateControl.Date < this.olkStartDateControl.Date))
             {
                 MessageBox.Show("会议结束时间不能早于开始时间！");
                 this.olkEndDateControl.Date = this.olkStartDateControl.Date;
@@ -214,7 +214,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         void olkEndTimeControl_Change()
         {
-            if (this.olkEndTimeControl.Time < this.olkStartTimeControl.Time)
+            if (!isLijiAction && (this.olkEndTimeControl.Time < this.olkStartTimeControl.Time))
             {
                 MessageBox.Show("会议结束时间不能早于开始时间！");
                 this.olkEndTimeControl.Time = this.olkStartTimeControl.Time.AddMinutes(30);
@@ -285,17 +285,32 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             }
         }
 
+        bool isLijiAction = false;
         void obtliji_Click()
         {
-            item.Start = DateTime.Now.AddMinutes(3);
+            //item.Start = DateTime.Now;
+            isLijiAction = true;
+            if (item.Start.Date == DateTime.Today)
+            {
+                this.olkStartDateControl.Date = DateTime.Now;
+                this.olkStartTimeControl.Time = DateTime.Now;
+                this.olkEndDateControl.Date = DateTime.Now.AddMinutes(30);
+                this.olkEndTimeControl.Time = DateTime.Now.AddMinutes(30);
+            }
+            else
+            {
+                item.Start = DateTime.Now;
+                item.End = DateTime.Now.AddMinutes(30);
+            }
 
             this.olkStartDateControl.Enabled = false;
             this.olkStartTimeControl.Enabled = false;
 
             this.obtliji.Value = true;
-            item.End = DateTime.Now.AddMinutes(33);
 
             this.SaveMeetingToAppointment();
+
+            isLijiAction = false;
         }
 
         void obtyuyue_Click()
