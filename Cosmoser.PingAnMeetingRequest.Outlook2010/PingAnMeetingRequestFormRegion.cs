@@ -290,18 +290,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             //item.Start = DateTime.Now;
             isLijiAction = true;
-            if (item.Start.Date == DateTime.Today)
-            {
-                this.olkStartDateControl.Date = DateTime.Now;
-                this.olkStartTimeControl.Time = DateTime.Now;
-                this.olkEndDateControl.Date = DateTime.Now.AddMinutes(30);
-                this.olkEndTimeControl.Time = DateTime.Now.AddMinutes(30);
-            }
-            else
-            {
-                item.Start = DateTime.Now;
-                item.End = DateTime.Now.AddMinutes(30);
-            }
+            
+            item.Start = DateTime.Now;
+            item.End = DateTime.Now.AddMinutes(30);
+            
 
             this.olkStartDateControl.Enabled = false;
             this.olkStartTimeControl.Enabled = false;
