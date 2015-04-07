@@ -265,7 +265,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                         //set comment
                         //this.MeetingDetail.Memo = item.Body;
                         if (this.MeetingDetail.ConfType == ConferenceType.Immediate)
+                        {
                             this.MeetingDetail.StartTime = DateTime.Now;
+                            item.Start = DateTime.Now;
+                        }
                         this.MeetingDetail.EndTime = item.End;
 
                         string error;
