@@ -187,7 +187,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             if (this.listBoxAvailableRoom.SelectedIndex > -1)
             {
-                if (this.listBoxSelectedRooms.Items.Count > 0 && this.ConfType == MideaType.Local)
+                if (this.ConfType == MideaType.Local && (this.listBoxSelectedRooms.Items.Count > 0 || this.listBoxAvailableRoom.SelectedItems.Count > 1)  )
                 {
                     MessageBox.Show("本地会议只能选一个会议室！");
                     return;

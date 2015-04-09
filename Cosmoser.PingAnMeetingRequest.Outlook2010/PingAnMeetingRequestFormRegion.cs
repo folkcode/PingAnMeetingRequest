@@ -460,14 +460,19 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                     else
                         this.MeetingDetail = this._apptMgr.GetMeetingFromAppointment(item, false);
 
-                    if (!OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
-                        OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(hashCode, this.MeetingDetail);
+                    if (OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
+                    {
+                        OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Remove(hashCode);
+                    }                   
+                    OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(hashCode, this.MeetingDetail);
                 }
                 else
                 {
                     this.MeetingDetail = meeting;
-                    if (!OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
-                        OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(item.GetHashCode(), this.MeetingDetail);
+                    if (OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.ContainsKey(hashCode))
+                        OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Remove(hashCode);
+                    OutlookFacade.Instance().MyRibbon.UpdatingQueueCollection.Add(item.GetHashCode(), this.MeetingDetail);
+                    
 
                     //update local meetingDetailData
                     if (OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
