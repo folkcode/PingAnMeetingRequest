@@ -181,6 +181,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             this.Close();
         }
 
+        bool isUpdating;
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(currentMeetingId))
@@ -192,6 +193,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                 }
                 var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
                 appt.Display();
+                isUpdating = true;
             }
             else
             {
@@ -215,16 +217,22 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
                     MessageBox.Show("会议正在进行，不能删除！");
                     return;
                 }
-                var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
-                appt.Delete();
-
-                if (!OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(currentMeetingId))
+                try
                 {
-                    _meetingData.Remove(currentMeetingId);
-                    currentMeetingId = null;
+                    var appt = OutlookFacade.Instance().CalendarFolder.AppointmentCollection[currentMeetingId];
+                    appt.Delete();
+
+                    if (!OutlookFacade.Instance().CalendarFolder.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(currentMeetingId))
+                    {
+                        _meetingData.Remove(currentMeetingId);
+                        currentMeetingId = null;
+                    }
+                    this.SetDataSource(_meetingData.Values.ToList());
                 }
-                this.SetDataSource(_meetingData.Values.ToList());
-                
+                catch (Exception ex)
+                {
+                    logger.Error(ex.Message,ex);
+                }
             }
             else
             {
@@ -234,6 +242,12 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void MeetingCenterForm_Activated(object sender, EventArgs e)
         {
+            if (!isUpdating)
+            {                
+                return;
+            }
+
+            isUpdating = false;
             lblMessage.Text = "正在同步...";
             lblMessage.ForeColor = Color.Red;
 
@@ -289,6 +303,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             }
         }
 
+       
         private void btnSearch_Click(object sender, EventArgs e)
         {
             if (this.dateTimePickerStart.Value > this.dateTimePickerEnd.Value)
