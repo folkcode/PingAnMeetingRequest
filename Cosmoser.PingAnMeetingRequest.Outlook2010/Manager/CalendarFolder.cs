@@ -283,7 +283,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
                         bool sendToMe = false;
 
-                        if (appt.MeetingStatus == Outlook.OlMeetingStatus.olMeetingReceived)
+                        if (appt.MeetingStatus == Outlook.OlMeetingStatus.olMeetingReceived || appt.MeetingStatus ==  Outlook.OlMeetingStatus.olMeetingReceivedAndCanceled)
                             sendToMe = true;
 
                         //if (appt.Recipients != null)
