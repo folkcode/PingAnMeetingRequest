@@ -282,6 +282,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         logger.Info("meateting status: " + appt.MeetingStatus.ToString());
 
                         bool sendToMe = false;
+
+                        if (appt.MeetingStatus == Outlook.OlMeetingStatus.olMeetingReceived)
+                            sendToMe = true;
+
                         if (appt.Recipients != null)
                         {
                             Outlook.Recipient recipient = null;
