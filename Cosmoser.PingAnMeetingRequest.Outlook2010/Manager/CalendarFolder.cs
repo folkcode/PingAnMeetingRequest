@@ -248,7 +248,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             catch (Exception ex)
             {
                 logger.Error("Items_ItemChange error!", ex);
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -279,8 +279,27 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                     else
                     {
                         logger.Error("Item Added, Meeting or MeetingId is null!");
-                        appt.Delete();
-                        MessageBox.Show("会议参数不全，放弃保存！");
+                        logger.Info("meateting status: " + appt.MeetingStatus.ToString());
+
+                        bool sendToMe = false;
+                        if (appt.Recipients != null)
+                        {
+                            Outlook.Recipient recipient = null;
+                            logger.Info("my email: " + OutlookFacade.Instance().Session.Address);
+                            foreach (var item in appt.Recipients)
+                            {
+                                recipient = (Outlook.Recipient)item;
+                                logger.Info("meeting to: " + recipient.Address);
+                                if (recipient.Address.Contains(OutlookFacade.Instance().Session.Address))
+                                    sendToMe = true;
+                            }
+                        }
+
+                        if (sendToMe == false)
+                        {
+                            appt.Delete();
+                            MessageBox.Show("会议参数不全，放弃保存！");
+                        }
                     }
                 }
             }
