@@ -286,18 +286,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         if (appt.MeetingStatus == Outlook.OlMeetingStatus.olMeetingReceived)
                             sendToMe = true;
 
-                        if (appt.Recipients != null)
-                        {
-                            Outlook.Recipient recipient = null;
-                            logger.Info("my email: " + OutlookFacade.Instance().Session.Address);
-                            foreach (var item in appt.Recipients)
-                            {
-                                recipient = (Outlook.Recipient)item;
-                                logger.Info("meeting to: " + recipient.Address);
-                                if (recipient.Address.Contains(OutlookFacade.Instance().Session.Address))
-                                    sendToMe = true;
-                            }
-                        }
+                        //if (appt.Recipients != null)
+                        //{
+                        //    Outlook.Recipient recipient = null;
+                        //    logger.Info("my email: " + OutlookFacade.Instance().Session.Address);
+                        //    foreach (var item in appt.Recipients)
+                        //    {
+                        //        recipient = (Outlook.Recipient)item;
+                        //        logger.Info("meeting to: " + recipient.Address);
+                        //        if (recipient.Address.Contains(OutlookFacade.Instance().Session.Address))
+                        //            sendToMe = true;
+                        //    }
+                        //}
 
                         if (sendToMe == false)
                         {
