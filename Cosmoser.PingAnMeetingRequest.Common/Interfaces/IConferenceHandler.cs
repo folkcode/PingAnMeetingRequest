@@ -17,7 +17,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.Interfaces
         bool TryGetSeriesList(HandlerSession session, out List<MeetingSeries> seriesList);
         bool TryGetMeetingRoomList(MeetingRoomListQuery query, HandlerSession session, out List<MeetingRoom> roomList);
         bool TryGetLeaderList(HandlerSession session, out List<MeetingLeader> leaderList);
-        bool TryGetMobileTermList(HandlerSession session, out List<MobileTerm> mobileTermList);
+        bool TryGetMobileTermList(HandlerSession session, DateTime from, DateTime to, out List<MobileTerm> mobileTermList);
         bool TryGetRegionCatagory(RegionCatagoryQuery query, HandlerSession session, out RegionCatagory regionCatagory);
         bool TryGetMeetingScheduler(MeetingSchedulerQuery query, HandlerSession session, out List<MeetingScheduler> schedulerList);
     }

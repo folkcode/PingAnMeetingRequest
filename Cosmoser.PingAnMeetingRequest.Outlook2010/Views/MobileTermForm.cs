@@ -28,7 +28,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             get;
 
             set;
+        }
 
+        public DateTime From
+        {
+            get;
+            set;
+        }
+
+        public DateTime To
+        {
+            get;
+            set;
         }
 
         private List<MobileTerm> _allTermList;
@@ -42,7 +53,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         {
             List<MobileTerm> all;
 
-            if (ClientServiceFactory.Create().TryGetMobileTermList(OutlookFacade.Instance().Session, out all))
+            if (ClientServiceFactory.Create().TryGetMobileTermList(OutlookFacade.Instance().Session, this.From,this.To, out all))
             {
                 this._allTermList = new List<MobileTerm>();
                 foreach (var item in all)

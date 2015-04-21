@@ -332,7 +332,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
            
         }
 
-        public bool TryGetMobileTermList(Model.HandlerSession session, out List<Model.MobileTerm> mobileTermList)
+        public bool TryGetMobileTermList(Model.HandlerSession session, DateTime from, DateTime to, out List<Model.MobileTerm> mobileTermList)
         {
             mobileTermList = new List<MobileTerm>();
             try
@@ -341,8 +341,8 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><mobileTermList><messageId>{0}</messageId><token>{1}</token><startTime>{2}</startTime><endTime>{3}</endTime></mobileTermList>",
                                                 session.MessageId,
                                                 session.Token,
-                                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                                                DateTime.Now.AddMinutes(30).ToString("yyyy-MM-dd HH:mm:ss"));
+                                                from.ToString("yyyy-MM-dd HH:mm:ss"),
+                                                to.AddMinutes(30).ToString("yyyy-MM-dd HH:mm:ss"));
                 logger.Debug(string.Format("TryGetMobileTermList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "mobileTermList", xmlData);
                 logger.Debug(string.Format("TryGetMobileTermList response, xmldata: {0}", response.OuterXml));

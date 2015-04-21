@@ -277,6 +277,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
         {
             IMobileTermView view = new MobileTermForm();
             view.MobileTermList = new List<MobileTerm>();
+            view.From = item.Start;
+            view.To = item.End;
             view.MobileTermList.AddRange(MeetingDetail.MobileTermList);
             if (view.Display() == System.Windows.Forms.DialogResult.OK)
             {

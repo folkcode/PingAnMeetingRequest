@@ -10,6 +10,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
     public interface IMobileTermView
     {
         List<MobileTerm> MobileTermList { get; set; }
+        DateTime From { get; set; }
+        DateTime To { get; set; }
         DialogResult Display();
     }
 }
