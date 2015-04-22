@@ -342,7 +342,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 session.MessageId,
                                                 session.Token,
                                                 from.ToString("yyyy-MM-dd HH:mm:ss"),
-                                                to.AddMinutes(30).ToString("yyyy-MM-dd HH:mm:ss"));
+                                                to.ToString("yyyy-MM-dd HH:mm:ss"));
                 logger.Debug(string.Format("TryGetMobileTermList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "mobileTermList", xmlData);
                 logger.Debug(string.Format("TryGetMobileTermList response, xmldata: {0}", response.OuterXml));
