@@ -63,12 +63,18 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Menus
             // If the menu already exists, remove it. 
             try
             {
+                logger.Info("RemoveMenubar");
+                
                 Office.CommandBarPopup foundMenu = (Office.CommandBarPopup)
                     OutlookFacade.Instance().CurrentExplorer.CommandBars.ActiveMenuBar.
-                    FindControl(Office.MsoControlType.msoControlPopup,Type.Missing,menuTag,true,true);
-                if (foundMenu != null)
+                    FindControl(Office.MsoControlType.msoControlPopup, Type.Missing, menuTag, true, true);
+                while (foundMenu != null)
                 {
+                    logger.Info("foundMenu.Delete(true);");
                     foundMenu.Delete(true);
+                    foundMenu = (Office.CommandBarPopup)
+                    OutlookFacade.Instance().CurrentExplorer.CommandBars.ActiveMenuBar.
+                    FindControl(Office.MsoControlType.msoControlPopup, Type.Missing, menuTag, true, true);
                 }
             }
             catch (Exception ex)

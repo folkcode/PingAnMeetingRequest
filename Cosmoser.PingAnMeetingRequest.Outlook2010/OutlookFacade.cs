@@ -96,7 +96,7 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
                 this._activeExplorer.FolderSwitch += new Outlook.ExplorerEvents_10_FolderSwitchEventHandler(_activeExplorer_FolderSwitch);
 
                 Globals.ThisAddIn.Application.ItemSend += new Outlook.ApplicationEvents_11_ItemSendEventHandler(Application_ItemSend);
-
+                logger.Info("Outlook Version:" + this._session.OutlookVersion);
                 if (this._session.OutlookVersion.StartsWith("12.0"))
                 {
 
@@ -132,11 +132,11 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             {
                 this.CalendarFolder.CalendarDataManager.SavaMeetingDataToCalendarFolder();
 
-                if (this._session.OutlookVersion.StartsWith("12.0"))
-                {
-                    if (_menuMgr != null)
-                        _menuMgr.RemoveMenubar();
-                }
+                //if (this._session.OutlookVersion.StartsWith("12.0"))
+                //{
+                //    if (_menuMgr != null)
+                //        _menuMgr.RemoveMenubar();
+                //}
             }
             catch (Exception ex)
             {
@@ -284,14 +284,15 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
             if (software != null)
             {
                 software = lm.OpenSubKey("Software\\Microsoft\\Office\\Outlook\\Addins", true);
-            }
-            try
-            {
-                software.DeleteSubKeyTree("PingAnMeeting.Outlook2010");
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Delete Subkey Failed", ex);
+
+                try
+                {
+                    software.DeleteSubKeyTree("PingAnMeeting.Outlook2010");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Delete Subkey Failed", ex);
+                }
             }
         }
 
