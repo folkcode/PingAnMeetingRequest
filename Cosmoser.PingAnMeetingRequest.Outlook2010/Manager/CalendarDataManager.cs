@@ -138,7 +138,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                                     {
                                         var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
                                         appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
-                                        this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
+                                        if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                                            this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
                                     }
                                     else
                                     {
