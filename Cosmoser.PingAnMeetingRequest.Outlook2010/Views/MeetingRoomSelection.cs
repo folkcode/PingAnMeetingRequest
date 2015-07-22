@@ -118,30 +118,43 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
             catch (Exception ex)
             {
                 logger.Error("MeetingRoomSelection_Load", ex);
-                MessageBox.Show("");
             }
         }
 
         private void listBoxMeetingRoom_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.listBoxLevel.SelectedIndex > -1)
+            try
             {
-                this.LoadRoomList((this.listBoxLevel.SelectedItem as RoomLevel).LevelId);
+                if (this.listBoxLevel.SelectedIndex > -1)
+                {
+                    this.LoadRoomList((this.listBoxLevel.SelectedItem as RoomLevel).LevelId);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("listBoxMeetingRoom_SelectedIndexChanged", ex);
             }
         }
 
         private void listBoxLevel_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.listBoxMeetingRoom.SelectedIndex > -1)
+            try
             {
-                this.LoadRoomList((this.listBoxLevel.SelectedItem as RoomLevel).LevelId);
-
-                if (select2all || select1all)
+                if (this.listBoxMeetingRoom.SelectedIndex > -1)
                 {
-                    this.SelectAll();
-                    select2all = false;
-                    select1all = false;
+                    this.LoadRoomList((this.listBoxLevel.SelectedItem as RoomLevel).LevelId);
+
+                    if (select2all || select1all)
+                    {
+                        this.SelectAll();
+                        select2all = false;
+                        select1all = false;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("listBoxLevel_SelectedIndexChanged", ex);
             }
         }
 
@@ -254,15 +267,22 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         bool select2all = false;
         private void btnSelectAllOnSecondLevel_Click(object sender, EventArgs e)
         {
-            //select2all = true;
-            //this.listBoxLevel.SelectedIndex = 1;
+            try
+            {
+                //select2all = true;
+                //this.listBoxLevel.SelectedIndex = 1;
 
-            //this.LoadRoomList("-2");
+                //this.LoadRoomList("-2");
 
-            this.SelectAllForOneAndSecondLevel("-2");
+                this.SelectAllForOneAndSecondLevel("-2");
 
-            //this.SelectAll();
-            //this.DoAddItems();
+                //this.SelectAll();
+                //this.DoAddItems();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("btnSelectAllOnSecondLevel_Click", ex);
+            }
         }
 
         private void SelectAllForOneAndSecondLevel(string levelId)
@@ -313,13 +333,20 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
         bool select1all = false;
         private void btnSelectAllOnCountry_Click(object sender, EventArgs e)
         {
-            //select1all = true;
-            //this.listBoxLevel.SelectedIndex = 0;
-            this.SelectAllForOneAndSecondLevel("-1");
+            try
+            {
+                //select1all = true;
+                //this.listBoxLevel.SelectedIndex = 0;
+                this.SelectAllForOneAndSecondLevel("-1");
 
-            //this.LoadRoomList("-1");
-            //this.SelectAll();
-            //this.DoAddItems();
+                //this.LoadRoomList("-1");
+                //this.SelectAll();
+                //this.DoAddItems();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("btnSelectAllOnSecondLevel_Click", ex);
+            }
         }
 
         private void btnMainRoomSetting_Click(object sender, EventArgs e)

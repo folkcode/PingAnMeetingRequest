@@ -8,11 +8,15 @@ using System.Text;
 using System.Windows.Forms;
 using Cosmoser.PingAnMeetingRequest.Common.Model;
 using Cosmoser.PingAnMeetingRequest.Common.ClientService;
+using log4net;
+using Cosmoser.PingAnMeetingRequest.Common.Utilities;
 
 namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 {
     public partial class MobileTermForm : Form,IMobileTermView
     {
+        static ILog logger = IosLogManager.GetLogger(typeof(MobileTermForm));
+
         public MobileTermForm()
         {
             InitializeComponent();
@@ -51,42 +55,61 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Views
 
         private void MobileTermForm_Load(object sender, EventArgs e)
         {
-            List<MobileTerm> all;
-
-            if (ClientServiceFactory.Create().TryGetMobileTermList(OutlookFacade.Instance().Session, this.From,this.To, out all))
+            try
             {
-                this._allTermList = new List<MobileTerm>();
-                foreach (var item in all)
+                List<MobileTerm> all;
+
+                if (ClientServiceFactory.Create().TryGetMobileTermList(OutlookFacade.Instance().Session, this.From, this.To, out all))
                 {
-                    if (!this.MobileTermList.Exists(x => x.RoomId == item.RoomId))
-                        this._allTermList.Add(item);
+                    if (this.MobileTermList == null)
+                    {
+                        logger.Error("MobileTermList is null.");
+                    }
+
+                    this._allTermList = new List<MobileTerm>();
+                    foreach (var item in all)
+                    {
+                        if (!this.MobileTermList.Exists(x => x.RoomId == item.RoomId))
+                            this._allTermList.Add(item);
+                    }
+
+                    listBoxAvailable.DataSource = this._allTermList;
+                    listBoxSelected.DataSource = this.MobileTermList;
+
+                    this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
+                    this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
                 }
-
-                listBoxAvailable.DataSource = this._allTermList;
-                listBoxSelected.DataSource = this.MobileTermList;
-
-                this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
-                this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
+                else
+                {
+                    MessageBox.Show("获取移动终端失败");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("获取移动终端失败");
+                logger.Error("MobileTermForm_Load 失败", ex);
             }
 
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (listBoxAvailable.SelectedItem == null)
+            try
             {
-                MessageBox.Show("请在可选列表里选择一个！");
-                return;
+                if (listBoxAvailable.SelectedItem == null)
+                {
+                    MessageBox.Show("请在可选列表里选择一个！");
+                    return;
+                }
+
+                this.DoAddItems();
+
+                this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
+                this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
             }
-
-            this.DoAddItems();
-
-            this.lblAvailable.Text = string.Format("待选移动终端(共{0}个)", this._allTermList.Count);
-            this.lblSelected.Text = string.Format("已选移动终端(共{0}个)", this.MobileTermList.Count);
+            catch (Exception ex)
+            {
+                logger.Error("btnAdd_Click 失败", ex);
+            }
         }
 
         private void DoAddItems()
