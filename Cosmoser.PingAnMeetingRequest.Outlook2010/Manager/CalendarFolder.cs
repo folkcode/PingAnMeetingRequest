@@ -227,28 +227,10 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             try
             {
                 this._calendarManager.SavaMeetingDataToCalendarFolder();
-                //Outlook.AppointmentItem appt = Item as Outlook.AppointmentItem;
-                //if (IsPingAnMeetingAppointment(appt))
-                //{
-                //    SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(appt, false);
-
-                //    if (meeting != null && !string.IsNullOrEmpty(meeting.Id))
-                //    {
-                //        if (this._calendarManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
-                //        {
-                //            this._calendarManager.MeetingDetailDataLocal.Remove(meeting.Id);
-                //        }
-
-                //        this._calendarManager.MeetingDetailDataLocal.Add(meeting.Id, meeting);
-                //        this._calendarManager.SavaMeetingDataToCalendarFolder();
-
-                //    }
-                //}
             }
             catch (Exception ex)
             {
                 logger.Error("Items_ItemChange error!", ex);
-                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -286,19 +268,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                         if (appt.MeetingStatus == Outlook.OlMeetingStatus.olMeetingReceived || appt.MeetingStatus ==  Outlook.OlMeetingStatus.olMeetingReceivedAndCanceled)
                             sendToMe = true;
 
-                        //if (appt.Recipients != null)
-                        //{
-                        //    Outlook.Recipient recipient = null;
-                        //    logger.Info("my email: " + OutlookFacade.Instance().Session.Address);
-                        //    foreach (var item in appt.Recipients)
-                        //    {
-                        //        recipient = (Outlook.Recipient)item;
-                        //        logger.Info("meeting to: " + recipient.Address);
-                        //        if (recipient.Address.Contains(OutlookFacade.Instance().Session.Address))
-                        //            sendToMe = true;
-                        //    }
-                        //}
-
                         if (sendToMe == false)
                         {
                             appt.Delete();
@@ -311,7 +280,6 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             {
                 logger.Error("Item Added error!", ex);
                 MessageBox.Show(ex.Message);
-
             }
         }
 

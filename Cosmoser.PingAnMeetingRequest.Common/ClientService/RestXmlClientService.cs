@@ -196,7 +196,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><seriesList><messageId>{0}</messageId><token>{1}</token></seriesList>", session.MessageId, session.Token);
                 logger.Debug(string.Format("TryGetSeriesList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "seriesList", xmlData);
-                logger.Debug(string.Format("TryGetSeriesList response, xmldata: {0}", response.OuterXml));
+                //logger.Debug(string.Format("TryGetSeriesList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("seriesList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -249,7 +249,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 );
                 logger.Debug(string.Format("TryGetMeetingRoomList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "roomList", xmlData);
-                logger.Debug(string.Format("TryGetMeetingRoomList response, xmldata: {0}", response.OuterXml));
+                //logger.Debug(string.Format("TryGetMeetingRoomList response, xmldata: {0}", response.OuterXml));
 
                 XmlNode root = response.SelectSingleNode("roomList");
                 string status = root.SelectSingleNode("result").InnerText;
@@ -294,7 +294,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                 string xmlData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><leaderList><messageId>{0}</messageId><token>{1}</token></leaderList>", session.MessageId, session.Token);
                 logger.Debug(string.Format("TryGetLeaderList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "leaderList", xmlData);
-                logger.Debug(string.Format("TryGetLeaderList response, xmldata: {0}", response.OuterXml));
+                //logger.Debug(string.Format("TryGetLeaderList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("leaderList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -345,7 +345,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 to.ToString("yyyy-MM-dd HH:mm:ss"));
                 logger.Debug(string.Format("TryGetMobileTermList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "mobileTermList", xmlData);
-                logger.Debug(string.Format("TryGetMobileTermList response, xmldata: {0}", response.OuterXml));
+                //logger.Debug(string.Format("TryGetMobileTermList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("mobileTermList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -396,7 +396,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                 query.BoroughCode);
                 logger.Debug(string.Format("TryGetRegionCatagory, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "searchcity", xmlData);
-                logger.Debug(string.Format("TryGetRegionCatagory response, xmldata: {0}", response.OuterXml));
+                //logger.Debug(string.Format("TryGetRegionCatagory response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("searchCity");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -573,14 +573,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                    };
                                }
                            }
-                           //else
-                           //{
-                           //    detail.MobileTermList.Add(new MobileTerm()
-                           //    {
-                           //        RoomId = node.SelectSingleNode("roomId").InnerText,
-                           //        RoomName = node.SelectSingleNode("roomName").InnerText
-                           //    });
-                           //}
+                           
                        }
                    }
 
@@ -626,7 +619,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                query.ConfType);
                 logger.Debug(string.Format("TryGetMeetingList, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "bookingConferList", xmlData);
-                logger.Debug(string.Format("TryGetMeetingList response, xmldata: {0}", response.OuterXml));
+                //logger.Debug(string.Format("TryGetMeetingList response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("bookingConferList");
                 string status = root.SelectSingleNode("result").InnerText;
 
@@ -693,7 +686,7 @@ namespace Cosmoser.PingAnMeetingRequest.Common.ClientService
                                                query.DataAll);
                 logger.Debug(string.Format("TryGetMeetingScheduler, xmldata: {0}", xmlData));
                 var response = this._client.DoHttpWebRequest(session.BaseUrl + "termConferList", xmlData);
-                logger.Debug(string.Format("TryGetMeetingScheduler response, xmldata: {0}", response.OuterXml));
+                //logger.Debug(string.Format("TryGetMeetingScheduler response, xmldata: {0}", response.OuterXml));
                 XmlNode root = response.SelectSingleNode("termConferList");
                 string status = root.SelectSingleNode("result").InnerText;
 

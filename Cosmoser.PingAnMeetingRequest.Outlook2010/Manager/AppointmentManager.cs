@@ -38,20 +38,27 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         public void SaveMeetingToAppointment(SVCMMeetingDetail meeting, Outlook.AppointmentItem item, bool isUpdating)
         {
-            if (isUpdating)
+            try
             {
-               
-                item.PropertyAccessor.SetProperty(path + "PingAnMeetingUpdating", Toolbox.Serialize(meeting));
-            }
-            else
-            {
-               
-                item.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meeting));
-            }
+                if (isUpdating)
+                {
 
-            if (!string.IsNullOrEmpty(meeting.Id))
+                    item.PropertyAccessor.SetProperty(path + "PingAnMeetingUpdating", Toolbox.Serialize(meeting));
+                }
+                else
+                {
+
+                    item.PropertyAccessor.SetProperty(path + "PingAnMeeting", Toolbox.Serialize(meeting));
+                }
+
+                if (!string.IsNullOrEmpty(meeting.Id))
+                {
+                    item.PropertyAccessor.SetProperty(path + "PingAnMeetingId", meeting.Id);
+                }
+            }
+            catch (Exception ex)
             {
-                item.PropertyAccessor.SetProperty(path + "PingAnMeetingId", meeting.Id);
+                logger.Error("SaveMeetingToAppointment failed", ex);
             }
 
         }
@@ -96,8 +103,14 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         public void SetAppointmentDeleted(Outlook.AppointmentItem item, bool isDeleted)
         {
-            item.PropertyAccessor.SetProperty(path + "IsDeleted", isDeleted.ToString());
-
+            try
+            {
+                item.PropertyAccessor.SetProperty(path + "IsDeleted", isDeleted.ToString());
+            }
+            catch(Exception ex)
+            {
+                logger.Error("SetAppointmentDeleted failed", ex);
+            }
         }
 
         public bool IsAppointmentStatusDeleted(Outlook.AppointmentItem item)
@@ -210,16 +223,25 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
 
         internal Outlook.AppointmentItem AddAppointment(Outlook.MAPIFolder mAPIFolder, SVCMMeetingDetail detail)
         {
-            Outlook.AppointmentItem item = mAPIFolder.Application.CreateItem(Outlook.OlItemType.olAppointmentItem);
-            item.Subject = detail.Name;
-            item.Start = detail.StartTime;
-            item.End = detail.EndTime;
-            item.MessageClass = "IPM.Appointment.PingAnMeetingRequest";
+            try
+            {
+                Outlook.AppointmentItem item = mAPIFolder.Application.CreateItem(Outlook.OlItemType.olAppointmentItem);
+                item.Subject = detail.Name;
+                item.Start = detail.StartTime;
+                item.End = detail.EndTime;
+                item.MessageClass = "IPM.Appointment.PingAnMeetingRequest";
 
-            this.SaveMeetingToAppointment(detail, item, false);
-            item.Save();
+                this.SaveMeetingToAppointment(detail, item, false);
+                item.Save();
 
-            return item;
+                return item;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("AddAppointment failed", ex);
+            }
+
+            return null;
         }
 
         public void AppointmentSendMeeting(Outlook.AppointmentItem item)

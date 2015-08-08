@@ -126,68 +126,79 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                     {
                         lock (locker)
                         {
-                            bool succed = result.Result;
-                            if (succed)
+                            try
                             {
-                                this._meetingListServer = meetingData;
-
-                                foreach (var item in this._meetingListServer.Values)
+                                bool succed = result.Result;
+                                if (succed)
                                 {
-                                    SVCMMeetingDetail detail = this.ConvertDetail(item);
-                                    if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                                    this._meetingListServer = meetingData;
+
+                                    foreach (var item in this._meetingListServer.Values)
                                     {
-                                        var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
-                                        appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
+                                        SVCMMeetingDetail detail = this.ConvertDetail(item);
                                         if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
-                                            this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
-                                    }
-                                    else
-                                    {
-                                        var appt = this._calendarFolder.AppointmentCollection[item.Id];
-                                        if (detail.StartTime != appt.Start || detail.EndTime != appt.End)
                                         {
-                                            appt.Start = detail.StartTime;
-                                            appt.End = detail.EndTime;
-                                            appt.Save();
+                                            var appt = this._appointmentManager.AddAppointment(this._calendarFolder.MAPIFolder, detail);
+                                            if (appt != null)
+                                            {
+                                                appt.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
+                                                if ((!this._calendarFolder.AppointmentCollection.ContainsKey(item.Id)))
+                                                    this._calendarFolder.AppointmentCollection.Add(item.Id, appt);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var appt = this._calendarFolder.AppointmentCollection[item.Id];
+                                            if (detail.StartTime != appt.Start || detail.EndTime != appt.End)
+                                            {
+                                                appt.Start = detail.StartTime;
+                                                appt.End = detail.EndTime;
+                                                appt.Save();
+                                            }
+                                        }
+
+                                        if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
+                                        {
+                                            this.MeetingDetailDataLocal.Add(detail.Id, detail);
+                                        }
+                                    }
+                                    List<string> removeList = new List<string>();
+                                    foreach (var item in _calendarFolder.AppointmentCollection.Keys)
+                                    {
+                                        if (!this._meetingListServer.ContainsKey(item))
+                                        {
+                                            logger.Debug(string.Format("MeetingId {0} is deleted from server, remove it from outlook.", item));
+                                            var appt = this._calendarFolder.AppointmentCollection[item];
+
+                                            if (appt.End > DateTime.Now)
+                                            {
+                                                appt.BeforeDelete -= new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
+                                                appt.Delete();
+                                                this._meetingDataLocal.Remove(item);
+                                                removeList.Add(item);
+                                            }
                                         }
                                     }
 
-                                    if (!this.MeetingDetailDataLocal.ContainsKey(item.Id))
+                                    foreach (var item in removeList)
                                     {
-                                        this.MeetingDetailDataLocal.Add(detail.Id, detail);
+                                        _calendarFolder.AppointmentCollection.Remove(item);
                                     }
+
+                                    this.SavaMeetingDataToCalendarFolder();
+
                                 }
-                                List<string> removeList = new List<string>();
-                                foreach (var item in _calendarFolder.AppointmentCollection.Keys)
+                                else
                                 {
-                                    if (!this._meetingListServer.ContainsKey(item))
-                                    {
-                                        logger.Debug(string.Format("MeetingId {0} is deleted from server, remove it from outlook.", item));
-                                        var appt = this._calendarFolder.AppointmentCollection[item];
-
-                                        if (appt.End > DateTime.Now)
-                                        {
-                                            appt.BeforeDelete -= new Outlook.ItemEvents_10_BeforeDeleteEventHandler(this._calendarFolder.item_BeforeDelete);
-                                            appt.Delete();
-                                            this._meetingDataLocal.Remove(item);
-                                            removeList.Add(item);
-                                        }
-                                    }
+                                    logger.Error("同步会议列表信息错误！");
                                 }
-
-                                foreach (var item in removeList)
-                                {
-                                    _calendarFolder.AppointmentCollection.Remove(item);
-                                }
-
-                                this.SavaMeetingDataToCalendarFolder();
-
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                logger.Error("同步会议列表信息错误！");
+                                logger.Error("SyncMeetingList faied", ex);
                             }
                         }
+                       
                     });
                 }
                 else

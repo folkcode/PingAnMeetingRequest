@@ -278,21 +278,28 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010
 
         private void DeleteRegistry()
         {
-            RegistryKey lm = Registry.CurrentUser;
-            RegistryKey software;
-            software = lm.OpenSubKey("Software\\Microsoft\\Office\\Outlook\\Addins\\PingAnMeeting.Outlook2010", false);
-            if (software != null)
+            try
             {
-                software = lm.OpenSubKey("Software\\Microsoft\\Office\\Outlook\\Addins", true);
+                RegistryKey lm = Registry.CurrentUser;
+                RegistryKey software;
+                software = lm.OpenSubKey("Software\\Microsoft\\Office\\Outlook\\Addins\\PingAnMeeting.Outlook2010", false);
+                if (software != null)
+                {
+                    software = lm.OpenSubKey("Software\\Microsoft\\Office\\Outlook\\Addins", true);
 
-                try
-                {
-                    software.DeleteSubKeyTree("PingAnMeeting.Outlook2010");
+                    try
+                    {
+                        software.DeleteSubKeyTree("PingAnMeeting.Outlook2010");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Delete Subkey Failed", ex);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    logger.Error("Delete Subkey Failed", ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Delete Subkey Failed", ex);
             }
         }
 
