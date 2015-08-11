@@ -67,7 +67,8 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
                 if (folder.DefaultItemType == Outlook.OlItemType.olAppointmentItem || folder.Name == "日历" || folder.Name == "Calendar")
                 {
                     this._mapiFolder = folder;
-                    logger.Debug("Calendar Folder catched!");
+                    logger.Debug("Calendar Folder catched! Name：" + folder.Name);
+                    logger.Debug("Calendar Folder catched! Folder type：" + folder.DefaultItemType.ToString());
                     break;
                 }
             }
@@ -94,32 +95,36 @@ namespace Cosmoser.PingAnMeetingRequest.Outlook2010.Manager
             {
                 logger.Debug("RegisterAppointmentItemEvents");
                 this._appointmentList.Clear();
-                foreach (Outlook.AppointmentItem item in this._appointmentItems)
+                foreach (var item1 in this._appointmentItems)
                 {
-                    if (IsPingAnMeetingAppointment(item))
+                    Outlook.AppointmentItem item = item1 as Outlook.AppointmentItem;
+                    if (item != null)
                     {
-                        SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(item, false);
-                        if (meeting != null)
+                        if (IsPingAnMeetingAppointment(item))
                         {
-                            if (!string.IsNullOrWhiteSpace(meeting.Id) && this.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                            SVCMMeetingDetail meeting = this._appointmentManager.GetMeetingFromAppointment(item, false);
+                            if (meeting != null)
                             {
-                                this._appointmentManager.SaveMeetingToAppointment(this.CalendarDataManager.MeetingDetailDataLocal[meeting.Id],item, false);
-                            }
+                                if (!string.IsNullOrWhiteSpace(meeting.Id) && this.CalendarDataManager.MeetingDetailDataLocal.ContainsKey(meeting.Id))
+                                {
+                                    this._appointmentManager.SaveMeetingToAppointment(this.CalendarDataManager.MeetingDetailDataLocal[meeting.Id], item, false);
+                                }
 
-                            if (!this._appointmentList.ContainsKey(meeting.Id))
-                            {
-                                this._appointmentList.Add(meeting.Id, item);
-                                item.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
+                                if (!this._appointmentList.ContainsKey(meeting.Id))
+                                {
+                                    this._appointmentList.Add(meeting.Id, item);
+                                    item.BeforeDelete += new Outlook.ItemEvents_10_BeforeDeleteEventHandler(item_BeforeDelete);
+                                }
+                                else
+                                {
+                                    item.Delete();
+                                }
                             }
                             else
                             {
+                                //无效appointment，删除
                                 item.Delete();
                             }
-                        }
-                        else
-                        {
-                            //无效appointment，删除
-                            item.Delete();
                         }
                     }
                 }
